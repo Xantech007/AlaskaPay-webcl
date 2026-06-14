@@ -4,7 +4,7 @@
 $servername = "sql207.infinityfree.com";
 $username   = "if0_42170113";
 $password   = "3jJpEBIxRDsqaGo";
-$dbname     = "f0_42170113_webcl";
+$dbname     = "if0_42170113_webcl";
 
 // MySQLi Connection (you already use this)
 $conn = mysqli_connect($servername, $username, $password, $dbname);
