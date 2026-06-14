@@ -110,7 +110,7 @@ try {
     $approved = count(array_filter($loans, fn($l) => $l['status'] === 'approved'));
 
 } catch (Exception $e) {
-    die("Database error. Please try again later.");
+    die("ERROR: " . $e->getMessage());
 }
 ?>
 
