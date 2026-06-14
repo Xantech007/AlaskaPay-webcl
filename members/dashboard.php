@@ -1,6 +1,9 @@
 <?php
 // members/dashboard.php - Updated Verification Status: 0 = Not Verified, 1 = Pending, 2 = Verified
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 require '../config/db.php';
 
