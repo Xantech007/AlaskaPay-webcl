@@ -290,7 +290,7 @@ button:hover{
 
     <div class="col-left">
 
-        <img src="assets/logo-white.png" alt="Alaska Energy Network">
+        <img src="assets/logo.png" alt="Alaska Energy Network">
 
         <h1>Power the Future. Earn Monthly Rewards.</h1>
 
