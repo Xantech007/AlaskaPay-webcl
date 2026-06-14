@@ -1,22 +1,7 @@
-<?php
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../login.php');
-    exit;
-}
-include '../../config/db.php'; // Adjust path if needed
-
-// Fetch user name for navbar
-$user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT full_name FROM users WHERE id = ?");
-$stmt->execute([$user_id]);
-$user = $stmt->fetch();
-$full_name = $user['full_name'] ?? 'User';
-?>
-
-<div class="navbar">
-    <div class="logo">CedisPay</div>
-    <div class="user-info">
-        <span>Welcome, <?php echo htmlspecialchars($full_name); ?></span>
-    </div>
+<div class="nav-tabs">
+    <button class="active" onclick="location.href='dashboard.php'">Dashboard</button>
+    <button onclick="location.href='apply-loan.php'">Apply Loan</button>
+    <button onclick="location.href='loan-history.php'">Loan History</button>
+    <button onclick="location.href='profile.php'">Profile</button>
+    <button onclick="logout()">Logout</button>
 </div>
