@@ -1,7 +1,10 @@
-    </div> <!-- Close main-content -->
-</div> <!-- Close container -->
-<footer class="footer">
-    &copy; <?php echo date('Y'); ?> CedisPay. All rights reserved. | <a href="privacy.php" style="color: white;">Privacy Policy</a> | <a href="terms.php" style="color: white;">Terms of Service</a>
-</footer>
+<script>
+function logout() {
+    if (confirm('Are you sure you want to log out?')) {
+        window.location.href = 'logout.php';
+    }
+}
+</script>
+
 </body>
 </html>
