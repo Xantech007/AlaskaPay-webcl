@@ -1,10 +1,10 @@
 <?php
 // config/db.php - Works with both MySQLi and PDO (for InfinityFree)
 
-$servername = "sql301.infinityfree.com";
-$username   = "if0_40691229";
-$password   = "SyIBNQUk56";
-$dbname     = "if0_40691229_db";
+$servername = "sql207.infinityfree.com";
+$username   = "if0_42170113";
+$password   = "3jJpEBIxRDsqaGo";
+$dbname     = "f0_42170113_webcl";
 
 // MySQLi Connection (you already use this)
 $conn = mysqli_connect($servername, $username, $password, $dbname);
