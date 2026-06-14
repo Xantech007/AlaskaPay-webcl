@@ -274,7 +274,7 @@ button:hover{
     <div class="col-left">
 
         <img
-            src="assets/logo-white.png"
+            src="assets/logo.png"
             alt="Alaska Energy Network"
         >
 
