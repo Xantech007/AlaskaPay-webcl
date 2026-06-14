@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FAQs - CedisPay | Frequently Asked Questions</title>
+    <title>FAQs - Alaska Energy Network | Frequently Asked Questions</title>
+
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
     <style>
         header {
             display: flex;
@@ -17,6 +19,7 @@
             top: 0;
             z-index: 100;
         }
+
         .logo {
             display: flex;
             align-items: center;
@@ -25,22 +28,34 @@
             font-weight: bold;
             color: #fff;
         }
-        .logo-img { height: 55px; width: auto; object-fit: contain; }
-        nav { display: flex; }
-        nav.active { display: block; }
 
-        /* Hero Section - Same colour as header, white text */
+        .logo-img {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        nav {
+            display: flex;
+        }
+
+        nav.active {
+            display: block;
+        }
+
         .faqs-hero {
             background: #003366;
             color: white;
             padding: 120px 20px 100px;
             text-align: center;
         }
+
         .faqs-hero h1 {
             font-size: 3rem;
             margin: 0 0 20px 0;
             color: white;
         }
+
         .faqs-hero p {
             font-size: 1.4rem;
             max-width: 800px;
@@ -50,16 +65,17 @@
             opacity: 0.95;
         }
 
-        /* FAQs Content */
         .faqs-container {
             max-width: 1000px;
             margin: 60px auto;
             padding: 0 20px;
         }
+
         .faq-item {
             margin-bottom: 15px;
             border-bottom: 1px solid #ddd;
         }
+
         .faq-question {
             width: 100%;
             text-align: left;
@@ -75,16 +91,22 @@
             color: #003366;
             transition: background 0.3s;
         }
-        .faq-question:hover { background: #e9ecef; }
+
+        .faq-question:hover {
+            background: #e9ecef;
+        }
+
         .faq-question::after {
-            content: '\f107'; /* chevron down */
+            content: '\f107';
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             font-size: 1.4rem;
         }
+
         .faq-question.active::after {
-            content: '\f106'; /* chevron up */
+            content: '\f106';
         }
+
         .faq-answer {
             padding: 0 20px;
             max-height: 0;
@@ -92,11 +114,13 @@
             transition: max-height 0.4s ease, padding 0.4s ease;
             background: #fff;
         }
+
         .faq-answer p {
             padding: 20px 0;
             line-height: 1.7;
             color: #444;
         }
+
         .faq-answer.active {
             max-height: 500px;
             padding: 0 20px 20px;
@@ -115,151 +139,257 @@
             text-decoration: none;
             margin-top: 30px;
         }
-        .cta-button:hover { background-color: #FFCA2C; }
+
+        .cta-button:hover {
+            background-color: #FFCA2C;
+        }
     </style>
 </head>
+
 <body>
 
-    <header>
-        <div class="logo">
-            <img src="../assets/logo.png" alt="CedisPay Logo" class="logo-img" />
-        </div>
-        <i class="fa-solid fa-bars fa-xl"></i>
-        <nav>
-            <ul>
-                <li><a href="./index.html">Home</a></li>
-                <li><a href="register.php">Apply</a></li>
-                <li><a href="./faqs.html" class="active">FAQs</a></li>
-                <li><a href="./about.html">About</a></li>
-            </ul>
-        </nav>
-        <div class="phone">
-            <a href="tel:+233501234567"><i class="fa-solid fa-phone"></i> Call Us Now: +233 50 123 4567</a>
-        </div>
-    </header>
+<header>
+    <div class="logo">
+        <img src="../assets/logo.png" alt="Alaska Energy Network Logo" class="logo-img" />
+    </div>
 
-    <!-- Hero Section -->
-    <section class="faqs-hero">
-        <h1>Frequently Asked Questions</h1>
-        <p>Find quick answers to the most common questions about CedisPay loans.</p>
-    </section>
+    <i class="fa-solid fa-bars fa-xl"></i>
 
-    <!-- FAQs Accordion -->
-    <div class="faqs-container">
-        <div class="faq-item">
-            <button class="faq-question">Who is eligible to apply for a CedisPay loan?<span></span></button>
-            <div class="faq-answer">
-                <p>Any Ghanaian aged 21–60 with a valid Ghana Card, regular income (salary or business), and an active mobile money account or bank account can apply.</p>
-            </div>
-        </div>
+    <nav>
+        <ul>
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="register.php">Join Network</a></li>
+            <li><a href="./faqs.html" class="active">FAQs</a></li>
+            <li><a href="./about.html">About</a></li>
+        </ul>
+    </nav>
 
-        <div class="faq-item">
-            <button class="faq-question">What documents do I need to apply?</button>
-            <div class="faq-answer">
-                <p>• Valid Ghana Card<br>• Recent payslip or proof of income<br>• Bank statement or MoMo statement (last 3–6 months)<br>• One passport-sized photo</p>
-            </div>
-        </div>
+    <div class="phone">
+        <a href="tel:+1501234567">
+            <i class="fa-solid fa-phone"></i>
+            Support: +1 50 123 4567
+        </a>
+    </div>
+</header>
 
-        <div class="faq-item">
-            <button class="faq-question">How long does approval take?</button>
-            <div class="faq-answer">
-                <p>Once all required documents are submitted, approval usually takes 24–48 hours. You will receive an SMS and email notification.</p>
-            </div>
-        </div>
+<section class="faqs-hero">
+    <h1>Frequently Asked Questions</h1>
+    <p>
+        Find answers to common questions about participation,
+        rewards, and our distributed energy network.
+    </p>
+</section>
 
-        <div class="faq-item">
-            <button class="faq-question">How is the loan disbursed?</button>
-            <div class="faq-answer">
-                <p>Approved loans are sent directly to your Mobile Money wallet or bank account within minutes of final approval.</p>
-            </div>
-        </div>
+<div class="faqs-container">
 
-        <div class="faq-item">
-            <button class="faq-question">What are the interest rates?</button>
-            <div class="faq-answer">
-                <p>Interest rates are competitive and range from 8%–15% per month depending on loan amount and tenure. Full repayment schedule is shown before you accept the loan.</p>
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <button class="faq-question">Can I repay early?</button>
-            <div class="faq-answer">
-                <p>Yes! There are no penalties for early repayment. You can pay off your loan anytime and save on interest.</p>
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <button class="faq-question">What happens if I miss a repayment?</button>
-            <div class="faq-answer">
-                <p>A small penalty fee will be applied, and it may affect your credit score with us. We encourage you to contact us immediately if you foresee any difficulty so we can restructure your repayment plan.</p>
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <button class="faq-question">Is my information safe?</button>
-            <div class="faq-answer">
-                <p>Yes. We use bank-level encryption and never share your data with third parties without your consent. We are fully compliant with Ghana’s Data Protection Act.</p>
-            </div>
-        </div>
-
-        <div style="text-align: center;">
-            <a href="register.php" class="cta-button">Apply for a Loan Now</a>
+    <div class="faq-item">
+        <button class="faq-question">
+            Who can join the Alaska Energy Network?
+        </button>
+        <div class="faq-answer">
+            <p>
+                Any eligible U.S. resident with access to a compatible device
+                and internet connection may apply to participate in the network,
+                subject to verification and regional availability.
+            </p>
         </div>
     </div>
 
-    <!-- Footer (same as other pages) -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>About Us</h4>
-                <p>CedisPay provides fast, transparent, and reliable loans to Ghanaians. We help individuals meet their financial goals with flexible repayment options.</p>
-            </div>
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="register.php">Apply</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="faqs.html">FAQs</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Contact Us</h4>
-                <p><i class="fa-solid fa-location-dot"></i> Accra, Ghana</p>
-                <p><i class="fa-solid fa-phone"></i> <a href="tel:+233501234567">+233 50 123 4567</a></p>
-                <p><i class="fa-solid fa-envelope"></i> <a href="mailto:cedispay.wuaze.com@gmail.com">cedispay.wuaze.com@gmail.com</a></p>
-            </div>
+    <div class="faq-item">
+        <button class="faq-question">
+            How does the network work?
+        </button>
+        <div class="faq-answer">
+            <p>
+                Participants contribute computing resources that help support
+                digital infrastructure and network operations. Contributions are
+                measured through our monitoring systems and may qualify for
+                monthly rewards based on verified activity.
+            </p>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 CedisPay Loans. All Rights Reserved.</p>
-        </div>
-    </footer>
+    </div>
 
-    <script>
-        // Mobile menu
-        const menuIcon = document.querySelector('.fa-bars');
-        const navMenu = document.querySelector('nav');
-        menuIcon.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
+    <div class="faq-item">
+        <button class="faq-question">
+            Is there a cost to join?
+        </button>
+        <div class="faq-answer">
+            <p>
+                Registration is simple and accessible. Any participation
+                requirements, eligibility criteria, or operational costs will be
+                clearly disclosed during the registration process.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">
+            How are rewards calculated?
+        </button>
+        <div class="faq-answer">
+            <p>
+                Rewards are based on verified participation metrics,
+                network activity, contribution levels, and regional
+                performance factors.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">
+            When are rewards distributed?
+        </button>
+        <div class="faq-answer">
+            <p>
+                Eligible participants receive reward distributions on
+                a monthly basis according to the network's payout
+                schedule and verification process.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">
+            Do I need specialized equipment?
+        </button>
+        <div class="faq-answer">
+            <p>
+                Most participants can get started using compatible
+                computing devices. Specific technical requirements
+                will be provided during registration.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">
+            Can I track my participation?
+        </button>
+        <div class="faq-answer">
+            <p>
+                Yes. Participants receive access to a dashboard where
+                they can monitor activity, contribution metrics,
+                reward eligibility, and account information in real time.
+            </p>
+        </div>
+    </div>
+    <div class="faq-item">
+        <button class="faq-question">
+            Is my information secure?
+        </button>
+        <div class="faq-answer">
+            <p>
+                Absolutely. We use industry-standard security measures,
+                encryption technologies, and privacy protections to safeguard
+                participant information and network data.
+            </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">
+            How do I get started?
+        </button>
+        <div class="faq-answer">
+            <p>
+                Simply create an account, complete the verification process,
+                and follow the setup instructions provided within your
+                participant dashboard.
+            </p>
+        </div>
+    </div>
+
+    <div style="text-align: center;">
+        <a href="register.php" class="cta-button">
+            Join the Network Today
+        </a>
+    </div>
+
+</div>
+
+<footer>
+    <div class="footer-container">
+
+        <div class="footer-section">
+            <h4>About Us</h4>
+            <p>
+                Alaska Energy Network connects participants across the United
+                States through a distributed computing ecosystem. Members
+                contribute resources that support modern digital infrastructure
+                while earning rewards through verified participation.
+            </p>
+        </div>
+
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="register.php">Join Network</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="faqs.html">FAQs</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h4>Contact Us</h4>
+
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+                New York, USA
+            </p>
+
+            <p>
+                <i class="fa-solid fa-phone"></i>
+                <a href="tel:+1501234567">+1 50 123 4567</a>
+            </p>
+
+            <p>
+                <i class="fa-solid fa-envelope"></i>
+                <a href="mailto:support@alaskaenergynetwork.com">
+                    support@alaskaenergynetwork.com
+                </a>
+            </p>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2026 Alaska Energy Network. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script>
+    // Mobile Menu
+    const menuIcon = document.querySelector('.fa-bars');
+    const navMenu = document.querySelector('nav');
+
+    menuIcon.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+    });
+
+    // FAQ Accordion
+    document.querySelectorAll('.faq-question').forEach(button => {
+
+        button.addEventListener('click', () => {
+
+            const answer = button.nextElementSibling;
+            const isActive = button.classList.contains('active');
+
+            document.querySelectorAll('.faq-question')
+                .forEach(btn => btn.classList.remove('active'));
+
+            document.querySelectorAll('.faq-answer')
+                .forEach(ans => ans.classList.remove('active'));
+
+            if (!isActive) {
+                button.classList.add('active');
+                answer.classList.add('active');
+            }
+
         });
 
-        // FAQ Accordion
-        document.querySelectorAll('.faq-question').forEach(button => {
-            button.addEventListener('click', () => {
-                const answer = button.nextElementSibling;
-                const isActive = button.classList.contains('active');
+    });
+</script>
 
-                // Close all others
-                document.querySelectorAll('.faq-question').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('active'));
-
-                // Open clicked one
-                if (!isActive) {
-                    button.classList.add('active');
-                    answer.classList.add('active');
-                }
-            });
-        });
-    </script>
 </body>
 </html>
