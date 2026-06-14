@@ -1,9 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CedisPay - Fast & Reliable Loans for Ghanaians</title>
+    <title>Alaska Energy Network - Earn Monthly Rewards</title>
+
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
@@ -19,6 +21,7 @@
             top: 0;
             z-index: 100;
         }
+
         .logo {
             display: flex;
             align-items: center;
@@ -27,29 +30,51 @@
             font-weight: bold;
             color: #fff;
         }
+
         .logo-img {
             height: 55px;
             width: auto;
             object-fit: contain;
         }
-        nav { display: flex; }
-        nav.active { display: block; }
+
+        nav {
+            display: flex;
+        }
+
+        nav.active {
+            display: block;
+        }
+
         .membership-info {
             background-color: #003366;
             color: white;
             padding: 40px 20px;
             text-align: center;
         }
+
         .member-info-container {
             max-width: 1200px;
             margin: 10px auto;
         }
-        .member-info-container p { color: #fff; }
-        h1 { font-size: 2.5em; margin-bottom: 20px; }
-        .fee, .shares, .payment-terms, .membership-status, .loan-info {
+
+        .member-info-container p {
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .fee,
+        .shares,
+        .payment-terms,
+        .membership-status,
+        .loan-info {
             font-size: 1.2em;
             margin: 10px 0;
         }
+
         .cta-button {
             background-color: #FFC107;
             color: #333;
@@ -60,102 +85,250 @@
             border-radius: 5px;
             transition: background-color 0.3s;
         }
-        .cta-button a { text-decoration: none; color: #333; }
-        .cta-button:hover { background-color: #FFCA2C; }
+
+        .cta-button a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .cta-button:hover {
+            background-color: #FFCA2C;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            max-width: 900px;
+            margin: 25px auto;
+            text-align: left;
+        }
+
         .feature-item i {
-            margin-right: 15px;
             margin-top: 5px;
             color: #003366;
+            font-size: 24px;
+        }
+
+        .feature-item h3 {
+            margin-bottom: 5px;
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <div class="logo">
-            <img src="../assets/logo.png" alt="CedisPay Logo" class="logo-img" />
-        </div>
-        <i class="fa-solid fa-bars fa-xl"></i>
-        <nav>
-            <ul>
-                <li><a href="./index.html" class="active">Home</a></li>
-                <li><a href="./register.php">Apply</a></li>
-                <li><a href="./faqs.html">FAQs</a></li>
-                <li><a href="./about.html">About</a></li>
-            </ul>
-        </nav>
-        <div class="phone">
-            <a href="tel:+233501234567"><i class="fa-solid fa-phone"></i> Call Us Now: +233 50 123 4567</a>
-        </div>
-    </header>
 
-    <section class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1>CedisPay Loans for Every Ghanaian</h1>
-                    <p>Access quick, secure and flexible loans tailored for workers across Ghana. Fast approval. Easy repayment.</p>
-                    <a href="register.php" class="btn">Apply Now</a>
-                </div>
-                <div class="hero-image">
-                    <img src="../assets/Savings-cuate.png" alt="Loan Assistance" />
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="membership-info">
-        <div class="member-info-container">
-            <h1>Why Choose CedisPay?</h1>
-            <p class="fee">Minimum Loan Amount: <span>GHS 500</span></p>
-            <p class="shares">Maximum Loan Amount: <span>Up to GHS 50,000</span></p>
-            <p class="payment-terms">Flexible repayment terms up to <strong>24 months</strong>.</p>
-            <p class="membership-status">No savings required to start. Just apply and get funded.</p>
-            <p class="loan-info">Approval within <strong>24–48 hours</strong> after submitting required documents.</p>
-            <button class="cta-button"><a href="register.php">Apply for a Loan</a></button>
-        </div>
-    </section>
-
-    <div class="container-loan-container">
-        <h1>Loan Products</h1>
-        <p id="payslip" style="font-style: italic;">*Payslip or income proof required for all loans</p>
-
-        <!-- Loan cards section remains same design but text rewritten -->
+<header>
+    <div class="logo">
+        <img src="../assets/logo.png" alt="Alaska Energy Network Logo" class="logo-img" />
     </div>
 
-    <footer>
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>About Us</h4>
-                <p>CedisPay provides fast, transparent, and reliable loans to Ghanaians. We help individuals meet their financial goals with flexible repayment options.</p>
-            </div>
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="register.php">Apply</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="faqs.html">FAQs</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Contact Us</h4>
-                <p><i class="fa-solid fa-location-dot"></i> Accra, Ghana</p>
-                <p><i class="fa-solid fa-phone"></i> <a href="tel:+233501234567">+233 50 123 4567</a></p>
-                <p><i class="fa-solid fa-envelope"></i> <a href="mailto:cedispay.wuaze.com@gmail.com">cedispay.wuaze.com@gmail.com</a></p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 CedisPay Loans. All Rights Reserved.</p>
-        </div>
-    </footer>
+    <i class="fa-solid fa-bars fa-xl"></i>
 
-    <script>
-        const menuIcon = document.querySelector('.fa-bars');
-        const navMenu = document.querySelector('nav');
-        menuIcon.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-    </script>
+    <nav>
+        <ul>
+            <li><a href="./index.html" class="active">Home</a></li>
+            <li><a href="./register.php">Join Network</a></li>
+            <li><a href="./faqs.html">FAQs</a></li>
+            <li><a href="./about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <div class="phone">
+        <a href="tel:+1501234567">
+            <i class="fa-solid fa-phone"></i>
+            Support: +1 50 123 4567
+        </a>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+
+            <div class="hero-text">
+                <h1>Power the Future. Earn Monthly Rewards.</h1>
+
+                <p>
+                    Join thousands of participants across the United States helping
+                    power the future of digital infrastructure. Contribute computing
+                    resources to our distributed energy network and receive monthly
+                    rewards based on verified participation and regional activity.
+                </p>
+
+                <a href="register.php" class="btn">
+                    Join the Network
+                </a>
+            </div>
+
+            <div class="hero-image">
+                <img src="../assets/Savings-cuate.png"
+                    alt="Distributed Energy Network" />
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="membership-info">
+    <div class="member-info-container">
+
+        <h1>Why Join Our Network?</h1>
+
+        <p class="fee">
+            Nationwide participation across all 50 U.S. states.
+        </p>
+
+        <p class="shares">
+            Earn monthly rewards based on verified contribution metrics.
+        </p>
+
+        <p class="payment-terms">
+            Transparent tracking and performance reporting for all participants.
+        </p>
+
+        <p class="membership-status">
+            No specialized equipment required to get started.
+        </p>
+
+        <p class="loan-info">
+            Fast registration and immediate access to your participant dashboard.
+        </p>
+
+        <button class="cta-button">
+            <a href="register.php">
+                Become a Participant
+            </a>
+        </button>
+
+    </div>
+</section>
+
+<div class="container-loan-container">
+
+    <h1>Network Benefits</h1>
+
+    <p id="payslip" style="font-style: italic;">
+        *Rewards are based on verified participation metrics and network performance.
+    </p>
+
+    <div class="feature-item">
+        <i class="fa-solid fa-network-wired"></i>
+
+        <div>
+            <h3>Distributed Infrastructure</h3>
+            <p>
+                Support a nationwide network designed to power next-generation
+                digital technologies and computing services.
+            </p>
+        </div>
+    </div>
+
+    <div class="feature-item">
+        <i class="fa-solid fa-chart-line"></i>
+
+        <div>
+            <h3>Monthly Reward Program</h3>
+            <p>
+                Receive recurring monthly payouts based on verified activity
+                and participation levels.
+            </p>
+        </div>
+    </div>
+
+    <div class="feature-item">
+        <i class="fa-solid fa-shield-halved"></i>
+
+        <div>
+            <h3>Secure & Transparent</h3>
+            <p>
+                Our monitoring and verification systems provide transparency,
+                reliability, and accountability across the network.
+            </p>
+        </div>
+    </div>
+
+    <div class="feature-item">
+        <i class="fa-solid fa-earth-americas"></i>
+
+        <div>
+            <h3>Nationwide Coverage</h3>
+            <p>
+                Participants from every U.S. state can contribute and earn rewards
+                through our growing digital infrastructure ecosystem.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+
+    <div class="footer-container">
+
+        <div class="footer-section">
+            <h4>About Us</h4>
+
+            <p>
+                Alaska Energy Network connects participants across the United
+                States through a distributed computing ecosystem. Our platform
+                enables members to contribute resources that support modern
+                digital infrastructure while earning monthly rewards through
+                verified participation.
+            </p>
+        </div>
+
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="register.php">Join Network</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="faqs.html">FAQs</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h4>Contact Us</h4>
+
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+                New York, USA
+            </p>
+
+            <p>
+                <i class="fa-solid fa-phone"></i>
+                <a href="tel:+1501234567">+1 50 123 4567</a>
+            </p>
+
+            <p>
+                <i class="fa-solid fa-envelope"></i>
+                <a href="mailto:support@alaskaenergynetwork.com">
+                    support@alaskaenergynetwork.com
+                </a>
+            </p>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p>
+            &copy; 2026 Alaska Energy Network. All Rights Reserved.
+        </p>
+    </div>
+
+</footer>
+
+<script>
+    const menuIcon = document.querySelector('.fa-bars');
+    const navMenu = document.querySelector('nav');
+
+    menuIcon.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+    });
+</script>
+
 </body>
 </html>
+```
