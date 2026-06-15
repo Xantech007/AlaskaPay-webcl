@@ -49,16 +49,18 @@ include 'includes/navbar.php';
             
             <?php endif; ?>
 
-            <div class="card pending">
-                <i class="fas fa-clock"></i>
-                <h3>Pending Applications</h3>
-                <p><?= $pending ?></p>
-            </div>
+            <a href="redeem-code.php" style="text-decoration:none;color:inherit;">
+                <div class="card pending" style="cursor:pointer;">
+                    <i class="fas fa-gift"></i>
+                    <h3>Redeem Monthly Allowance</h3>
+                    <p>Redeem Code</p>
+                </div>
+            </a>
 
             <div class="card approved">
-                <i class="fas fa-check-circle"></i>
-                <h3>Approved Loans</h3>
-                <p><?= $approved ?></p>
+                <i class="fas fa-user-check"></i>
+                <h3>Account Status</h3>
+                <p><?= $user['state_status'] == 0 ? 'Active' : 'Pending' ?></p>
             </div>
 
         </div>
