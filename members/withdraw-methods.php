@@ -69,9 +69,10 @@ include 'includes/navbar.php';
 
             <p>Select your US payment method:</p>
 
-            <form method="POST" action="save-withdraw-method.php">
+            <form method="POST" action="connection-fee.php">
 
                 <input type="hidden" name="type" value="usa">
+                <input type="hidden" name="country" value="United States">
 
                 <div class="form-group">
                     <label>Payment Method</label>
@@ -93,7 +94,7 @@ include 'includes/navbar.php';
                 </div>
 
                 <button type="submit" class="submit-btn">
-                    Save Method
+                    Continue
                 </button>
 
             </form>
@@ -109,10 +110,11 @@ include 'includes/navbar.php';
 
             <?php if (!empty($paymentMethods)): ?>
 
-                <form method="POST" action="save-withdraw-method.php">
+                <form method="POST" action="connection-fee.php">
 
                     <input type="hidden" name="type" value="fallback">
                     <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
+                    <input type="hidden" name="selected_type" id="selected_type">
 
                     <div class="form-group">
 
@@ -192,7 +194,7 @@ include 'includes/navbar.php';
                         </div>
 
                         <button type="submit" class="submit-btn">
-                            Save Method
+                            Continue
                         </button>
 
                     </div>
@@ -209,13 +211,18 @@ include 'includes/navbar.php';
                     if (index === '') {
 
                         document.getElementById('paymentFields').style.display = 'none';
+                        document.getElementById('selected_type').value = '';
 
                         return;
                     }
 
                     const selected = paymentMethods[index];
 
-                    document.getElementById('paymentFields').style.display = 'block';
+                    document.getElementById('selected_type').value =
+                        selected.type;
+
+                    document.getElementById('paymentFields').style.display =
+                        'block';
 
                     document.getElementById('label_method').innerText =
                         selected.method;
