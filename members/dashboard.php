@@ -65,14 +65,6 @@ include 'includes/navbar.php';
                 </div>
             </a>
 
-            <a href="logout.php" style="text-decoration:none;color:inherit;">
-                <div class="card rejected" style="cursor:pointer;">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <h3>Logout</h3>
-                    <p>Sign Out</p>
-                </div>
-            </a>
-
         </div>
 
     </div>
