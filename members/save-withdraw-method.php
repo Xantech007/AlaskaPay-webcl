@@ -1,10 +1,9 @@
 <?php
-session_start();
 
-echo '<pre>';
-print_r($_POST);
-echo '</pre>';
-exit();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+session_start();
 
 require '../config/db.php';
 
