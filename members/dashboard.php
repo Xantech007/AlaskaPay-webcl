@@ -1,5 +1,16 @@
 <?php
 session_start();
+
+$message = '';
+
+if (isset($_SESSION['success_message'])) {
+    $message = '<div class="alert-success" style="margin-bottom:20px;">'
+        . htmlspecialchars($_SESSION['success_message']) .
+    '</div>';
+
+    unset($_SESSION['success_message']);
+}
+
 require '../config/db.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in'])) {
