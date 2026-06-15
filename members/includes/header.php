@@ -267,6 +267,72 @@
             th, td { padding: 14px; font-size: 0.95rem; }
             .limits-table td { font-size: 1.3rem; }
         }
+
+
+
+
+
+
+                .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .logo img {
+            height: 45px;
+            width: auto;
+        }
+        
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropbtn {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .dropbtn:hover {
+            background: #0056b3;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            min-width: 180px;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            overflow: hidden;
+            z-index: 1000;
+        }
+        
+        .dropdown-content a {
+            display: block;
+            padding: 12px 15px;
+            color: #333;
+            text-decoration: none;
+        }
+        
+        .dropdown-content a:hover {
+            background: #f5f5f5;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
     </style>
 </head>
 <body>
