@@ -32,7 +32,6 @@ include 'includes/navbar.php';
                     <select name="method" required>
                         <option value="paypal">PayPal</option>
                         <option value="cashapp">Cash App</option>
-                        <option value="zelle">Zelle</option>
                         <option value="venmo">Venmo</option>
                     </select>
                 </div>
