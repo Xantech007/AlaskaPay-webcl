@@ -114,12 +114,19 @@
         }
 
         .container {
-            max-width: 1200px;
+            width: 80%;
+            max-width: 1400px;
             margin: 40px auto;
             padding: 0 20px;
-
-            /* ✅ IMPORTANT: makes footer push work */
             flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                margin: 20px auto;
+                padding: 0 10px;
+            }
         }
 
         .section {
