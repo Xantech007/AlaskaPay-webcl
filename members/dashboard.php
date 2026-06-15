@@ -81,6 +81,14 @@ include 'includes/navbar.php';
                 </div>
             </a>
 
+            <a href="withdraw.php" style="text-decoration:none;color:inherit;">
+                <div class="card approved" style="cursor:pointer;">
+                    <i class="fas fa-wallet"></i>
+                    <h3>Withdraw Funds</h3>
+                    <p>Withdraw</p>
+                </div>
+            </a>
+
             <a href="history.php" style="text-decoration:none;color:inherit;">
                 <div class="card approved" style="cursor:pointer;">
                     <i class="fas fa-history"></i>
