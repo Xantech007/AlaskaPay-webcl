@@ -19,8 +19,6 @@ if (!$user) {
 }
 
 if ((int)$user['state_status'] !== 1) {
-    $_SESSION['success_message'] = "State selected successfully! USD " . number_format($allowance['amount'], 2) . " has been added to your balance.";
-    
     header('Location: dashboard.php');
     exit();
 }
@@ -64,6 +62,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $pdo->beginTransaction();
 
+                // 🔒 prevent double claim
+                $check = $pdo->prepare("
+                    SELECT id FROM state_claims 
+                    WHERE user_id = ? AND state = ?
+                    LIMIT 1
+                ");
+                $check->execute([$user_id, $allowance['state']]);
+
+                if ($check->fetch()) {
+                    throw new Exception("You have already claimed this allowance.");
+                }
+
                 // 1. Update user
                 $update = $pdo->prepare("
                     UPDATE users
@@ -83,27 +93,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $user_id
                 ]);
 
+                if ($update->rowCount() === 0) {
+                    throw new Exception("State already processed or invalid.");
+                }
+
                 // 2. Log claim
                 $log = $pdo->prepare("
-                    INSERT INTO state_claims (user_id, region, state, amount)
-                    VALUES (?, ?, ?, ?)
+                    INSERT INTO state_claims (user_id, region, state, amount, description)
+                    VALUES (?, ?, ?, ?, ?)
                 ");
 
                 $log->execute([
                     $user_id,
                     $allowance['region'],
                     $allowance['state'],
-                    $allowance['amount']
+                    $allowance['amount'],
+                    'State Allowance Claim'
                 ]);
 
                 $pdo->commit();
+
+                // ✅ SUCCESS MESSAGE FOR DASHBOARD
+                $_SESSION['success_message'] = "State successfully claimed! Allowance of USD " . number_format($allowance['amount'], 2) . " has been added to your balance.";
 
                 header('Location: dashboard.php');
                 exit();
 
             } catch (Exception $e) {
                 $pdo->rollBack();
-                $message = '<div class="alert-error">Unable to process your request.</div>';
+                $message = '<div class="alert-error">' . $e->getMessage() . '</div>';
             }
         }
     }
@@ -125,7 +143,7 @@ include 'includes/navbar.php';
                 Choose Your State Of Origin
             </h2>
         
-            <!-- ✅ INSERT YOUR INSTRUCTIONS HERE -->
+            <!-- ✅ INFO BLOCK -->
             <div style="
                 background:#f8fbff;
                 border-left:5px solid var(--accent);
@@ -171,11 +189,10 @@ include 'includes/navbar.php';
                     Your State of Origin can only be selected once.
                     After claiming your allowance, you will not be able
                     to change your state or claim another state allowance.
-                    Please ensure that the information you provide is correct.
                 </div>
         
             </div>
-            <!-- ✅ END BLOCK -->
+            <!-- END INFO BLOCK -->
         
             <form method="POST">
 
