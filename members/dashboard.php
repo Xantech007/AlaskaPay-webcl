@@ -83,7 +83,7 @@ include 'includes/navbar.php';
 
             <a href="withdraw.php" style="text-decoration:none;color:inherit;">
                 <div class="card approved" style="cursor:pointer;">
-                    <i class="fas fa-wallet"></i>
+                    <i class="fas fa-money-bill-transfer"></i>
                     <h3>Withdraw Funds</h3>
                     <p>Withdraw</p>
                 </div>
