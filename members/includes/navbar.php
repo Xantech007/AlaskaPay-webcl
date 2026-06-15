@@ -1,6 +1,6 @@
 <div class="top-nav">
     <div class="logo">
-        <img src="../assets/logo.png" alt="Logo">
+        <img src="../assets/logo-white.png" alt="Logo">
     </div>
 
     <div class="dropdown">
