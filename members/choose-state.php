@@ -118,11 +118,63 @@ include 'includes/navbar.php';
         <?= $message ?>
 
         <div class="loan-form">
-
+        
             <h2 style="text-align:center;margin-bottom:30px;color:var(--primary);">
                 Choose Your State Of Origin
             </h2>
-
+        
+            <!-- ✅ INSERT YOUR INSTRUCTIONS HERE -->
+            <div style="
+                background:#f8fbff;
+                border-left:5px solid var(--accent);
+                padding:25px;
+                border-radius:12px;
+                margin-bottom:30px;
+            ">
+        
+                <h3 style="color:var(--primary);margin-bottom:15px;">
+                    <i class="fas fa-info-circle"></i>
+                    State Allowance Program
+                </h3>
+        
+                <p style="margin-bottom:15px;line-height:1.7;">
+                    Welcome to the State Allowance Program. Eligible members are entitled to
+                    receive a one-time state allowance based on their selected State of Origin.
+                    The allowance amount varies by state and is automatically credited to your
+                    account balance upon successful confirmation.
+                </p>
+        
+                <div style="margin-top:20px;">
+                    <h4 style="color:var(--primary);margin-bottom:10px;">
+                        How It Works
+                    </h4>
+        
+                    <ol style="padding-left:20px;line-height:1.8;">
+                        <li>Select your region from the list provided.</li>
+                        <li>Select your State of Origin.</li>
+                        <li>Review the allowance amount displayed beside the state.</li>
+                        <li>Click <strong>Confirm State & Claim Allowance</strong>.</li>
+                        <li>The allowance will be credited instantly to your account balance.</li>
+                    </ol>
+                </div>
+        
+                <div style="
+                    margin-top:20px;
+                    background:#fff3cd;
+                    color:#856404;
+                    padding:15px;
+                    border-radius:10px;
+                ">
+                    <strong>Important Notice:</strong><br>
+                    Your State of Origin can only be selected once.
+                    After claiming your allowance, you will not be able
+                    to change your state or claim another state allowance.
+                    Please ensure that the information you provide is correct.
+                </div>
+        
+            </div>
+            <!-- ✅ END BLOCK -->
+        
             <form method="POST">
 
                 <div class="form-group">
