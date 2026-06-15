@@ -1,29 +1,20 @@
-<?php
-$currentPage = basename($_SERVER['PHP_SELF']);
-?>
+<div class="top-nav">
+    <div class="logo">
+        <img src="../assets/logo.png" alt="Logo">
+    </div>
 
-<div class="nav-tabs">
-    <button class="<?= $currentPage == 'dashboard.php' ? 'active' : '' ?>"
-        onclick="location.href='dashboard.php'">
-        Dashboard
-    </button>
+    <div class="dropdown">
+        <button class="dropbtn">
+            <i class="fas fa-user-circle"></i> Account
+        </button>
 
-    <button class="<?= $currentPage == 'apply-loan.php' ? 'active' : '' ?>"
-        onclick="location.href='apply-loan.php'">
-        Apply Loan
-    </button>
-
-    <button class="<?= $currentPage == 'withdrawal-history.php' ? 'active' : '' ?>"
-        onclick="location.href='withdrawal-history.php'">
-        Withdrawal History
-    </button>
-
-    <button class="<?= $currentPage == 'profile.php' ? 'active' : '' ?>"
-        onclick="location.href='profile.php'">
-        Profile
-    </button>
-
-    <button onclick="logout()">
-        Logout
-    </button>
+        <div class="dropdown-content">
+            <a href="profile.php">
+                <i class="fas fa-user"></i> Profile
+            </a>
+            <a href="#" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
 </div>
