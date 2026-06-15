@@ -45,8 +45,12 @@ include 'includes/navbar.php';
 
             <?php if (count($history) > 0): ?>
 
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+                <div style="
+                    overflow-x: auto;
+                    max-width: 100%;
+                    border-radius: 10px;
+                ">
+                    <table class="table table-striped table-hover" style="min-width: 800px;">
 
                         <thead class="table-dark">
                             <tr>
