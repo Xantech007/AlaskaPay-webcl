@@ -78,16 +78,16 @@ if (empty($paymentMethods)) {
             <div class="alert-error"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
-        <!-- STEP 1 -->
-        <div id="step1">
+        <form method="POST" action="">
 
-            <form method="POST" action="">
+            <div class="form-group">
+                <label>Amount to Withdraw</label>
+                <input type="number" name="amount" min="1" step="0.01" required>
+            </div>
 
-                <div class="form-group">
-                    <label>Amount to Withdraw</label>
-                    <input type="number" name="amount" min="1" step="0.01" required>
-                </div>
-
+            <!-- STEP 1 -->
+            <div id="step1">
+            
                 <p style="margin-bottom:20px;">
                     Are you currently located outside the United States?
                 </p>
@@ -108,10 +108,12 @@ if (empty($paymentMethods)) {
                     </button>
 
                 </div>
+                
+            </div>
+            
+        </form>
+    
 
-            </form>
-
-        </div>
 
         <!-- STEP 2 (hidden initially) -->
         <div id="step2" style="display:none;">
