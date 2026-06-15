@@ -14,7 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $user_id = $_SESSION['user_id'];
 
-$country = $_POST['country'] ?? '';
+/* -----------------------------
+   RECEIVED DATA (SAFE HANDLING)
+------------------------------*/
+$country = trim($_POST['country'] ?? $_SESSION['country'] ?? '');
 $type = $_POST['type'] ?? '';
 
 $selected_type = $_POST['selected_type'] ?? '';
@@ -25,7 +28,20 @@ $withdraw_method_id = $_POST['method_id'] ?? '';
 
 $account = $_POST['account'] ?? '';
 
+/* --------------------------------
+   FIX: GET WITHDRAW AMOUNT (IMPORTANT)
+---------------------------------*/
+$amount = $_SESSION['withdraw_amount'] ?? null;
+
+if (!$amount || $amount <= 0) {
+    die("Invalid withdrawal amount. Please go back and enter a valid amount.");
+}
+
+/* --------------------------------
+   STORE FINAL WITHDRAW DATA
+---------------------------------*/
 $_SESSION['withdraw_data'] = [
+    'amount' => $amount,
     'country' => $country,
     'type' => $type,
     'selected_type' => $selected_type,
@@ -35,6 +51,9 @@ $_SESSION['withdraw_data'] = [
     'account' => $account
 ];
 
+/* --------------------------------
+   GET REGION SETTINGS
+---------------------------------*/
 $stmt = $conn->prepare("
     SELECT *
     FROM region_settings
@@ -47,15 +66,15 @@ $stmt->execute();
 
 $result = $stmt->get_result();
 $region = $result->fetch_assoc();
-
 $stmt->close();
 
 if (!$region) {
     die("No region settings configured for {$country}");
 }
 
-$fee = $region['fee'];
+$fee = (float) $region['fee'];
 ?>
+
 <?php include 'includes/header.php'; ?>
 <?php include 'includes/navbar.php'; ?>
 
@@ -82,11 +101,15 @@ $fee = $region['fee'];
             <h3>Payment Instructions</h3>
 
             <p>
-                Please transfer exactly the amount shown below and upload
-                proof of payment.
+                Please transfer exactly the amount shown below and upload proof of payment.
             </p>
 
             <hr style="margin:15px 0;">
+
+            <p>
+                <strong>Withdrawal Amount:</strong>
+                <?= number_format($amount, 2) ?>
+            </p>
 
             <p>
                 <strong>Country:</strong>
@@ -123,15 +146,12 @@ $fee = $region['fee'];
 
             <div class="form-group">
 
-                <label>
-                    Upload Payment Receipt
-                </label>
+                <label>Upload Payment Receipt</label>
 
-                <input
-                    type="file"
-                    name="receipt"
-                    accept="image/*"
-                    required>
+                <input type="file"
+                       name="receipt"
+                       accept="image/*"
+                       required>
 
             </div>
 
