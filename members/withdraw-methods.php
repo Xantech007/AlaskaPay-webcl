@@ -1,4 +1,3 @@
-```php
 <?php
 session_start();
 require '../config/db.php';
@@ -248,4 +247,3 @@ include 'includes/navbar.php';
 </div>
 
 <?php include 'includes/footer.php'; ?>
-```
