@@ -57,11 +57,13 @@ include 'includes/navbar.php';
                 </div>
             </a>
 
-            <div class="card approved">
-                <i class="fas fa-user-check"></i>
-                <h3>Account Status</h3>
-                <p><?= $user['state_status'] == 0 ? 'Active' : 'Pending' ?></p>
-            </div>
+            <a href="history.php" style="text-decoration:none;color:inherit;">
+                <div class="card approved" style="cursor:pointer;">
+                    <i class="fas fa-history"></i>
+                    <h3>History</h3>
+                    <p>View</p>
+                </div>
+            </a>
 
         </div>
 
