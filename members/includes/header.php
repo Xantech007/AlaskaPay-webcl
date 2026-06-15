@@ -371,104 +371,63 @@
             box-sizing: border-box;
         }
 
-
-        /* Top Navigation */
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 25px;
-            background: #1a1a1a;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-        }
-        
-        /* Logo */
-        .logo img {
-            height: 45px;
-            width: auto;
-        }
-        
-        /* Dropdown Container */
         .dropdown {
             position: relative;
             display: inline-block;
         }
         
-        /* Account Button */
         .dropbtn {
-            background: #007bff;
-            color: #fff;
+            background: transparent;
             border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
+            color: #fff;
             font-size: 15px;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.3s ease;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 6px;
+            transition: background 0.3s ease;
         }
         
         .dropbtn:hover {
-            background: #0056b3;
+            background: rgba(255,255,255,0.1);
         }
         
-        /* Dropdown Menu */
         .dropdown-content {
             display: none;
             position: absolute;
             right: 0;
-            top: 110%;
+            top: 100%;
             min-width: 180px;
             background: #fff;
             border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             z-index: 1000;
         }
         
-        /* Dropdown Links */
         .dropdown-content a {
             display: flex;
             align-items: center;
             gap: 10px;
             padding: 12px 15px;
-            color: #333;
             text-decoration: none;
+            color: #333;
             font-size: 14px;
-            transition: 0.3s ease;
+            transition: background 0.3s ease;
         }
         
         .dropdown-content a:hover {
             background: #f5f5f5;
-            color: #007bff;
         }
         
-        /* Show Dropdown on Hover */
         .dropdown:hover .dropdown-content {
             display: block;
         }
         
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .top-nav {
-                padding: 12px 15px;
-            }
-        
-            .logo img {
-                height: 38px;
-            }
-        
-            .dropbtn {
-                padding: 8px 14px;
-                font-size: 14px;
-            }
-        
-            .dropdown-content {
-                min-width: 160px;
-            }
+        .dropdown-content a:last-child {
+            color: #dc3545;
         }
+
         
     </style>
 </head>
