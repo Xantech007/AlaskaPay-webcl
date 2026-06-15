@@ -146,10 +146,6 @@ include 'includes/navbar.php';
 
         </form>
 
-    </div>
-
-
-    <div class="loan-form">
 
         <h2 style="text-align:center;margin-bottom:20px;">
             Link Withdrawal Method
