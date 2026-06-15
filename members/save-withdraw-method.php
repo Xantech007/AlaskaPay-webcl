@@ -1,4 +1,3 @@
-```php
 <?php
 session_start();
 require '../config/db.php';
@@ -78,4 +77,3 @@ $_SESSION['success_message'] =
 
 header('Location: dashboard.php');
 exit();
-```
