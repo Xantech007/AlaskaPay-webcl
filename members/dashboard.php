@@ -1,16 +1,6 @@
 <?php
 session_start();
 
-$message = '';
-
-if (isset($_SESSION['success_message'])) {
-    $message = '<div class="alert-success" style="margin-bottom:20px;">'
-        . htmlspecialchars($_SESSION['success_message']) .
-    '</div>';
-
-    unset($_SESSION['success_message']);
-}
-
 require '../config/db.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in'])) {
@@ -24,11 +14,34 @@ $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
+if (!$user) {
+    header('Location: logout.php');
+    exit();
+}
+
+/* -----------------------------
+   FLASH SUCCESS MESSAGE
+------------------------------*/
+$message = '';
+
+if (!empty($_SESSION['success_message'])) {
+    $message = '
+        <div class="alert-success" style="margin-bottom:20px;">
+            ' . htmlspecialchars($_SESSION['success_message']) . '
+        </div>
+    ';
+
+    unset($_SESSION['success_message']);
+}
+
 include 'includes/header.php';
 include 'includes/navbar.php';
 ?>
 
 <div class="container">
+
+    <!-- ✅ FLASH MESSAGE DISPLAY -->
+    <?= $message ?>
 
     <div id="dashboard" class="section active">
 
@@ -41,23 +54,23 @@ include 'includes/navbar.php';
             </div>
 
             <?php if ((int)$user['state_status'] === 1): ?>
-            
-            <a href="choose-state.php" style="text-decoration:none;color:inherit;">
-                <div class="card loans" style="cursor:pointer;">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <h3>Choose Your State Of Origin</h3>
-                    <p>Claim Allowance</p>
-                </div>
-            </a>
-            
+
+                <a href="choose-state.php" style="text-decoration:none;color:inherit;">
+                    <div class="card loans" style="cursor:pointer;">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>Choose Your State Of Origin</h3>
+                        <p>Claim Allowance</p>
+                    </div>
+                </a>
+
             <?php else: ?>
-            
-            <div class="card loans">
-                <i class="fas fa-map-marker-alt"></i>
-                <h3>State Of Origin</h3>
-                <p><?= htmlspecialchars($user['state'] ?? 'Not Set') ?></p>
-            </div>
-            
+
+                <div class="card loans">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>State Of Origin</h3>
+                    <p><?= htmlspecialchars($user['state'] ?? 'Not Set') ?></p>
+                </div>
+
             <?php endif; ?>
 
             <a href="redeem-code.php" style="text-decoration:none;color:inherit;">
