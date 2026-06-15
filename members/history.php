@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch user (optional safety)
+// Fetch user (safety check)
 $stmt = $pdo->prepare("SELECT id FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
@@ -19,7 +19,7 @@ if (!$user) {
     exit();
 }
 
-// Get all claims history
+// Get history
 $stmt = $pdo->prepare("
     SELECT *
     FROM state_claims
@@ -45,12 +45,16 @@ include 'includes/navbar.php';
 
             <?php if (count($history) > 0): ?>
 
+                <!-- ✅ SCROLLABLE WRAPPER -->
                 <div style="
+                    width: 100%;
                     overflow-x: auto;
-                    max-width: 100%;
+                    -webkit-overflow-scrolling: touch;
                     border-radius: 10px;
                 ">
-                    <table class="table table-striped table-hover" style="min-width: 800px;">
+
+                    <table class="table table-striped table-hover"
+                           style="min-width: 900px;">
 
                         <thead class="table-dark">
                             <tr>
@@ -69,7 +73,6 @@ include 'includes/navbar.php';
                                 <tr>
                                     <td><?= $index + 1 ?></td>
 
-                                    <!-- TYPE DETECTION -->
                                     <td>
                                         <?php if ($row['state'] === 'CODE REDEEM'): ?>
                                             <span class="badge bg-warning">Code</span>
@@ -85,7 +88,8 @@ include 'includes/navbar.php';
                                     <td>
                                         <?= htmlspecialchars($row['description'] ?? 'N/A') ?>
                                         <?php if (!empty($row['code'])): ?>
-                                            <br><small>Code: <?= htmlspecialchars($row['code']) ?></small>
+                                            <br>
+                                            <small>Code: <?= htmlspecialchars($row['code']) ?></small>
                                         <?php endif; ?>
                                     </td>
 
@@ -97,6 +101,7 @@ include 'includes/navbar.php';
                         </tbody>
 
                     </table>
+
                 </div>
 
             <?php else: ?>
