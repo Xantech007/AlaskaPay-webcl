@@ -329,6 +329,27 @@
             display: block;
         }
 
+        .dropdown-content a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        
+        .dropdown-content a:hover {
+            background: #f5f5f5;
+        }
+        
+        .dropdown-content a i {
+            width: 18px;
+            text-align: center;
+            color: #007bff;
+        }
+
 
         /* ================= RESPONSIVE DASHBOARD GRID OVERRIDE ================= */
         
@@ -370,64 +391,6 @@
             width: 100%;
             box-sizing: border-box;
         }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .dropbtn {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 10px 15px;
-            border-radius: 6px;
-            transition: background 0.3s ease;
-        }
-        
-        .dropbtn:hover {
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            min-width: 180px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            overflow: hidden;
-            z-index: 1000;
-        }
-        
-        .dropdown-content a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            text-decoration: none;
-            color: #333;
-            font-size: 14px;
-            transition: background 0.3s ease;
-        }
-        
-        .dropdown-content a:hover {
-            background: #f5f5f5;
-        }
-        
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-        
-        .dropdown-content a:last-child {
-            color: #dc3545;
-        }
-
         
     </style>
 </head>
