@@ -332,6 +332,17 @@
         .dropdown:hover .dropdown-content {
             display: block;
         }
+
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+            background: #fff;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
         
     </style>
 </head>
