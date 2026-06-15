@@ -102,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         $pdo->commit();
 
+                        $_SESSION['success_message'] = "Code redeemed successfully! USD " . number_format($codeData['amount'], 2) . " has been added to your balance.";
                         header("Location: dashboard.php");
                         exit();
 
