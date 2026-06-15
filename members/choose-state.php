@@ -42,13 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $selected_state = trim($_POST['state'] ?? '');
 
     if (empty($selected_state)) {
-
         $message = '<div class="alert-error">Please select a state.</div>';
-
     } else {
 
         $stmt = $pdo->prepare("
-            SELECT state, amount
+            SELECT region, state, amount
             FROM state_allowances
             WHERE state = ?
             LIMIT 1
@@ -57,20 +55,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $allowance = $stmt->fetch();
 
         if (!$allowance) {
-
             $message = '<div class="alert-error">Invalid state selected.</div>';
-
         } else {
 
             try {
 
                 $pdo->beginTransaction();
 
+                // 1. Update user
                 $update = $pdo->prepare("
                     UPDATE users
                     SET
                         state = ?,
-                        allowance_amount = ?,
+                        region = ?,
                         balance = balance + ?,
                         state_status = 0
                     WHERE id = ?
@@ -79,9 +76,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $update->execute([
                     $allowance['state'],
-                    $allowance['amount'],
+                    $allowance['region'],
                     $allowance['amount'],
                     $user_id
+                ]);
+
+                // 2. Log claim
+                $log = $pdo->prepare("
+                    INSERT INTO state_claims (user_id, region, state, amount)
+                    VALUES (?, ?, ?, ?)
+                ");
+
+                $log->execute([
+                    $user_id,
+                    $allowance['region'],
+                    $allowance['state'],
+                    $allowance['amount']
                 ]);
 
                 $pdo->commit();
@@ -90,9 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
 
             } catch (Exception $e) {
-
                 $pdo->rollBack();
-
                 $message = '<div class="alert-error">Unable to process your request.</div>';
             }
         }
@@ -119,22 +127,18 @@ include 'includes/navbar.php';
 
                 <div class="form-group">
                     <label>Select Region</label>
-
                     <select id="region" required>
                         <option value="">Choose Region</option>
-
                         <?php foreach ($regions as $region): ?>
                             <option value="<?= htmlspecialchars($region) ?>">
                                 <?= htmlspecialchars($region) ?>
                             </option>
                         <?php endforeach; ?>
-
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>Select State</label>
-
                     <select name="state" id="state" required>
                         <option value="">Choose State</option>
                     </select>
@@ -148,38 +152,27 @@ include 'includes/navbar.php';
             </form>
 
         </div>
-
     </div>
-
 </div>
 
 <script>
-
 const states = <?= json_encode($states) ?>;
 
 document.getElementById('region').addEventListener('change', function () {
 
     let region = this.value;
-
     let html = '<option value="">Choose State</option>';
 
-    states.forEach(function(item) {
-
+    states.forEach(item => {
         if (item.region === region) {
-
-            html += `
-                <option value="${item.state}">
-                    ${item.state} - USD ${Number(item.amount).toLocaleString()}
-                </option>
-            `;
+            html += `<option value="${item.state}">
+                ${item.state} - USD ${Number(item.amount).toLocaleString()}
+            </option>`;
         }
-
     });
 
     document.getElementById('state').innerHTML = html;
-
 });
-
 </script>
 
 <?php include 'includes/footer.php'; ?>
