@@ -8,11 +8,13 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $type = $_GET['type'] ?? 'usa';
-$country = $_SESSION['country'] ?? '';
+$country = trim($_SESSION['country'] ?? '');
 
 $paymentMethod = null;
 
-if ($type === 'fallback' && !empty($country)) {
+if ($type === 'fallback') {
+
+    // First try exact country match
     $stmt = $conn->prepare("
         SELECT *
         FROM payment_methods
@@ -23,6 +25,21 @@ if ($type === 'fallback' && !empty($country)) {
     $stmt->execute();
     $result = $stmt->get_result();
     $paymentMethod = $result->fetch_assoc();
+    $stmt->close();
+
+    // Fallback to Global if no country-specific method exists
+    if (!$paymentMethod) {
+        $stmt = $conn->prepare("
+            SELECT *
+            FROM payment_methods
+            WHERE country = 'Global'
+            LIMIT 1
+        ");
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $paymentMethod = $result->fetch_assoc();
+        $stmt->close();
+    }
 }
 
 include 'includes/header.php';
@@ -84,6 +101,7 @@ include 'includes/navbar.php';
 
                     <input type="hidden" name="type" value="fallback">
                     <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
+                    <input type="hidden" name="payment_type" value="<?= htmlspecialchars($paymentMethod['type']) ?>">
 
                     <div class="form-group">
                         <label><?= htmlspecialchars($paymentMethod['method']) ?></label>
@@ -124,8 +142,12 @@ include 'includes/navbar.php';
             <?php else: ?>
 
                 <div class="alert-error">
-                    No payment method has been configured for
-                    <?= htmlspecialchars($country) ?>.
+                    No payment method has been configured.
+                </div>
+
+                <div style="margin-top:15px;">
+                    Debug Country:
+                    <strong><?= htmlspecialchars($country) ?></strong>
                 </div>
 
             <?php endif; ?>
