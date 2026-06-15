@@ -21,16 +21,29 @@ $isUSA = ($country === "United States");
 $_SESSION['country'] = $country;
 
 /* -----------------------------
-   ROUTING LOGIC
+   HANDLE AMOUNT SUBMISSION (STORE IN SESSION)
 ------------------------------*/
-if ($isUSA) {
-    header("Location: withdraw-methods.php?type=usa");
-    exit();
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $amount = floatval($_POST['amount'] ?? 0);
 
-include 'includes/header.php';
-include 'includes/navbar.php';
+    if ($amount <= 0) {
+        $error = "Please enter a valid withdrawal amount.";
+    } else {
+        $_SESSION['withdraw_amount'] = $amount;
+
+        if ($isUSA) {
+            header("Location: withdraw-methods.php?type=usa");
+            exit();
+        } else {
+            header("Location: withdraw-methods.php?type=fallback");
+            exit();
+        }
+    }
+}
 ?>
+
+<?php include 'includes/header.php'; ?>
+<?php include 'includes/navbar.php'; ?>
 
 <div class="container">
 
@@ -45,25 +58,47 @@ include 'includes/navbar.php';
             <?= htmlspecialchars($country) ?>
         </div>
 
-        <p style="margin-bottom:20px;">
-            Are you currently located outside the United States?
-        </p>
+        <?php if (!empty($error)): ?>
+            <div class="alert-error"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
 
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <!-- WITHDRAW AMOUNT FIELD -->
+        <form method="POST">
 
-            <a href="withdraw-methods.php?type=fallback"
-               class="submit-btn"
-               style="text-align:center;text-decoration:none;">
-                Yes
-            </a>
+            <div class="form-group">
+                <label>Amount to Withdraw</label>
+                <input
+                    type="number"
+                    name="amount"
+                    min="1"
+                    step="0.01"
+                    required
+                    placeholder="Enter amount to withdraw">
+            </div>
 
-            <a href="withdraw-methods.php?type=usa"
-               class="submit-btn"
-               style="text-align:center;text-decoration:none;background:#555;">
-                No
-            </a>
+            <p style="margin-bottom:20px;">
+                Are you currently located outside the United States?
+            </p>
 
-        </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+                <button type="submit"
+                        class="submit-btn"
+                        style="flex:1;">
+                    Yes
+                </button>
+
+                <button type="submit"
+                        name="usa"
+                        value="1"
+                        class="submit-btn"
+                        style="flex:1;background:#555;">
+                    No
+                </button>
+
+            </div>
+
+        </form>
 
     </div>
 
