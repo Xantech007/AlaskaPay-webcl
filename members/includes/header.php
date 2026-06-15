@@ -334,10 +334,23 @@
         }
 
 
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            flex: 1;
+        }
+        
         .footer {
             text-align: center;
             padding: 15px;
-            margin-top: 30px;
             background: #fff;
             color: #666;
             font-size: 14px;
