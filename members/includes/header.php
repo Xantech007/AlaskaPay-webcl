@@ -34,7 +34,6 @@
 
         html, body {
             height: 100%;
-            overflow-x: hidden; /* ✅ prevents horizontal scroll */
         }
 
         body {
@@ -42,6 +41,8 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
             min-height: 100vh;
             color: var(--dark);
+
+            /* ✅ FIX: footer layout */
             display: flex;
             flex-direction: column;
         }
@@ -56,21 +57,32 @@
             overflow: hidden;
         }
 
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,20 L100,100 L0,80 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+
         header h1 {
             font-size: 2.8rem;
             font-weight: 700;
             margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
         }
 
         header p {
             font-size: 1.2rem;
             opacity: 0.9;
+            position: relative;
+            z-index: 1;
         }
 
         .nav-tabs {
             display: flex;
             justify-content: center;
-            align-items: center;
             background: white;
             padding: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -82,7 +94,7 @@
         }
 
         .nav-tabs button {
-            padding: 14px 22px;
+            padding: 14px 28px;
             background: transparent;
             border: none;
             font-size: 1rem;
@@ -91,7 +103,7 @@
             cursor: pointer;
             border-radius: 50px;
             transition: var(--transition);
-            min-width: 120px;
+            min-width: 140px;
         }
 
         .nav-tabs button.active,
@@ -105,6 +117,8 @@
             max-width: 1200px;
             margin: 40px auto;
             padding: 0 20px;
+
+            /* ✅ IMPORTANT: makes footer push work */
             flex: 1;
         }
 
@@ -122,11 +136,10 @@
             to { opacity:1; transform:translateY(0); }
         }
 
-        /* ================= CARDS GRID (IMPORTANT FIX) ================= */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
             margin-bottom: 40px;
         }
 
@@ -140,11 +153,13 @@
 
         .card:hover {
             transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,31,63,0.2);
         }
 
         .card i {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 15px;
+            opacity: 0.9;
         }
 
         .card.balance i { color: var(--accent); }
@@ -155,14 +170,15 @@
         .card h3 {
             font-size: 1.1rem;
             margin-bottom: 10px;
+            color: #555;
         }
 
         .card p {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 700;
+            color: var(--dark);
         }
 
-        /* ================= FORMS ================= */
         .loan-form {
             background: white;
             border-radius: 16px;
@@ -189,7 +205,15 @@
             padding: 16px;
             border: 2px solid #ddd;
             border-radius: 12px;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0,31,63,0.1);
         }
 
         .submit-btn {
@@ -199,72 +223,103 @@
             color: white;
             border: none;
             border-radius: 12px;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 8px 25px rgba(0,31,63,0.3);
         }
 
-        /* ================= ALERTS ================= */
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0,31,63,0.4);
+        }
+
         .alert-success,
         .alert-error {
             padding: 15px;
             border-radius: 12px;
             margin: 20px 0;
             text-align: center;
+            font-weight: 500;
         }
 
         .alert-success {
             background: #d4edda;
             color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
         .alert-error {
             background: #f8d7da;
             color: #721c24;
+            border: 1px solid #f5c6cb;
         }
 
-        /* ================= FOOTER ================= */
+        /* ================= FOOTER FIX ================= */
         .footer {
             text-align: center;
             padding: 15px;
             background: #fff;
             color: #666;
             font-size: 14px;
+            border-top: 1px solid #eee;
+
+            /* ✅ KEY FIX */
             margin-top: auto;
         }
 
-        /* ================= RESPONSIVE ================= */
-        @media (max-width: 1024px) {
-            .cards-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.2rem; }
+            .nav-tabs button { padding: 12px 20px; font-size: 0.95rem; min-width: 120px; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .loan-form { padding: 30px; }
         }
 
-        @media (max-width: 768px) {
-            header h1 { font-size: 2rem; }
-            header p { font-size: 1rem; }
+        /* dropdown + top nav (unchanged) */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
 
-            .nav-tabs {
-                justify-content: flex-start;
-                overflow-x: auto;
-                flex-wrap: nowrap;
-                padding: 10px;
-            }
+        .logo img {
+            height: 45px;
+        }
 
-            .nav-tabs button {
-                flex: 0 0 auto;
-                min-width: 120px;
-                padding: 12px 16px;
-                font-size: 0.9rem;
-            }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
 
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
+        .dropbtn {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
 
-            .loan-form {
-                padding: 25px;
-            }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            min-width: 180px;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
         }
     </style>
 </head>
