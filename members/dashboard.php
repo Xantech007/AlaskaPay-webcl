@@ -73,14 +73,6 @@ include 'includes/navbar.php';
 
             <?php endif; ?>
 
-            <a href="redeem-code.php" style="text-decoration:none;color:inherit;">
-                <div class="card pending" style="cursor:pointer;">
-                    <i class="fas fa-gift" style="color:#9b59b6;"></i>
-                    <h3>Redeem Monthly Allowance</h3>
-                    <p>Redeem Code</p>
-                </div>
-            </a>
-
             <a href="withdraw.php" style="text-decoration:none;color:inherit;">
                 <div class="card approved" style="cursor:pointer;">
                     <i class="fas fa-money-bill-transfer" style="color:#e67e22;"></i>
