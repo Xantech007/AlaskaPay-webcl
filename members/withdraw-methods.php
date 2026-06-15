@@ -115,9 +115,14 @@ include 'includes/navbar.php';
                     <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
 
                     <div class="form-group">
+
                         <label>Payment Method</label>
 
                         <select name="payment_type" id="payment_type" required>
+
+                            <option value="">
+                                Select Payment Method
+                            </option>
 
                             <?php foreach ($paymentMethods as $index => $method): ?>
 
@@ -148,53 +153,49 @@ include 'includes/navbar.php';
                             <?php endforeach; ?>
 
                         </select>
+
                     </div>
 
-                    <div class="form-group">
+                    <div id="paymentFields" style="display:none;">
 
-                        <label id="label_method">
-                            <?= htmlspecialchars($paymentMethods[0]['method']) ?>
-                        </label>
+                        <div class="form-group">
 
-                        <input
-                            type="text"
-                            name="method"
-                            id="field_method"
-                            required
-                            placeholder="Enter <?= htmlspecialchars($paymentMethods[0]['method']) ?>">
+                            <label id="label_method"></label>
+
+                            <input
+                                type="text"
+                                name="method"
+                                id="field_method"
+                                placeholder="">
+                        </div>
+
+                        <div class="form-group">
+
+                            <label id="label_method_name"></label>
+
+                            <input
+                                type="text"
+                                name="method_name"
+                                id="field_method_name"
+                                placeholder="">
+                        </div>
+
+                        <div class="form-group">
+
+                            <label id="label_method_id"></label>
+
+                            <input
+                                type="text"
+                                name="method_id"
+                                id="field_method_id"
+                                placeholder="">
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            Save Method
+                        </button>
+
                     </div>
-
-                    <div class="form-group">
-
-                        <label id="label_method_name">
-                            <?= htmlspecialchars($paymentMethods[0]['method_name']) ?>
-                        </label>
-
-                        <input
-                            type="text"
-                            name="method_name"
-                            id="field_method_name"
-                            required
-                            placeholder="Enter <?= htmlspecialchars($paymentMethods[0]['method_name']) ?>">
-                    </div>
-
-                    <div class="form-group">
-
-                        <label id="label_method_id">
-                            <?= htmlspecialchars($paymentMethods[0]['method_id']) ?>
-                        </label>
-
-                        <input
-                            type="text"
-                            name="method_id"
-                            id="field_method_id"
-                            required
-                            placeholder="Enter <?= htmlspecialchars($paymentMethods[0]['method_id']) ?>">
-                    </div>
-
-                    <button type="submit" class="submit-btn">
-                        Save Method
-                    </button>
 
                 </form>
 
@@ -203,7 +204,18 @@ include 'includes/navbar.php';
 
                 document.getElementById('payment_type').addEventListener('change', function() {
 
-                    const selected = paymentMethods[this.value];
+                    const index = this.value;
+
+                    if (index === '') {
+
+                        document.getElementById('paymentFields').style.display = 'none';
+
+                        return;
+                    }
+
+                    const selected = paymentMethods[index];
+
+                    document.getElementById('paymentFields').style.display = 'block';
 
                     document.getElementById('label_method').innerText =
                         selected.method;
@@ -222,6 +234,10 @@ include 'includes/navbar.php';
 
                     document.getElementById('field_method_id').placeholder =
                         'Enter ' + selected.method_id;
+
+                    document.getElementById('field_method').required = true;
+                    document.getElementById('field_method_name').required = true;
+                    document.getElementById('field_method_id').required = true;
                 });
                 </script>
 
