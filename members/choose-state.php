@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             } catch (Exception $e) {
                 $pdo->rollBack();
-                die($e->getMessage());
+                $message = '<div class="alert-error">Unable to process your request.</div>';
             }
         }
     }
