@@ -46,61 +46,57 @@ include 'includes/navbar.php';
     <div id="dashboard" class="section active">
 
         <div class="cards-grid">
-        
-            <!-- BALANCE -->
-            <div class="card" style="background:#1f2a44;color:#fff;">
-                <i class="fas fa-wallet"></i>
+
+            <div class="card balance">
+                <i class="fas fa-wallet" style="color:#2ecc71;"></i>
                 <h3>Account Balance</h3>
                 <p>USD <?= number_format($user['balance'] ?? 0, 2) ?></p>
             </div>
-        
+
             <?php if ((int)$user['state_status'] === 1): ?>
-        
-                <a href="choose-state.php" style="text-decoration:none;">
-                    <div class="card" style="background:#6f42c1;color:#fff;cursor:pointer;">
-                        <i class="fas fa-map-marker-alt"></i>
+
+                <a href="choose-state.php" style="text-decoration:none;color:inherit;">
+                    <div class="card loans" style="cursor:pointer;">
+                        <i class="fas fa-map-marker-alt" style="color:#3498db;"></i>
                         <h3>Choose Your State Of Origin</h3>
                         <p>Claim Allowance</p>
                     </div>
                 </a>
-        
+
             <?php else: ?>
-        
-                <div class="card" style="background:#6c757d;color:#fff;">
-                    <i class="fas fa-map-marker-alt"></i>
+
+                <div class="card loans">
+                    <i class="fas fa-map-marker-alt" style="color:#3498db;"></i>
                     <h3>State Of Origin</h3>
                     <p><?= htmlspecialchars($user['state'] ?? 'Not Set') ?></p>
                 </div>
-        
+
             <?php endif; ?>
-        
-            <!-- REDEEM -->
-            <a href="redeem-code.php" style="text-decoration:none;">
-                <div class="card" style="background:#f39c12;color:#fff;cursor:pointer;">
-                    <i class="fas fa-gift"></i>
+
+            <a href="redeem-code.php" style="text-decoration:none;color:inherit;">
+                <div class="card pending" style="cursor:pointer;">
+                    <i class="fas fa-gift" style="color:#9b59b6;"></i>
                     <h3>Redeem Monthly Allowance</h3>
                     <p>Redeem Code</p>
                 </div>
             </a>
-        
-            <!-- WITHDRAW -->
-            <a href="withdraw.php" style="text-decoration:none;">
-                <div class="card" style="background:#28a745;color:#fff;cursor:pointer;">
-                    <i class="fas fa-money-bill-transfer"></i>
+
+            <a href="withdraw.php" style="text-decoration:none;color:inherit;">
+                <div class="card approved" style="cursor:pointer;">
+                    <i class="fas fa-money-bill-transfer" style="color:#e67e22;"></i>
                     <h3>Withdraw Funds</h3>
                     <p>Withdraw</p>
                 </div>
             </a>
-        
-            <!-- HISTORY -->
-            <a href="history.php" style="text-decoration:none;">
-                <div class="card" style="background:#17a2b8;color:#fff;cursor:pointer;">
-                    <i class="fas fa-history"></i>
+
+            <a href="history.php" style="text-decoration:none;color:inherit;">
+                <div class="card approved" style="cursor:pointer;">
+                    <i class="fas fa-history" style="color:#34495e;"></i>
                     <h3>History</h3>
                     <p>View</p>
                 </div>
             </a>
-        
+
         </div>
 
     </div>
