@@ -19,21 +19,7 @@ if (!$user) {
 }
 
 /* -----------------------------
-   FLASH SUCCESS MESSAGE
-------------------------------*/
-$message = '';
-
-if (!empty($_SESSION['success_message'])) {
-    $message = '
-        <div class="alert-success" style="margin-bottom:20px;">
-            ' . htmlspecialchars($_SESSION['success_message']) . '
-        </div>
-    ';
-    unset($_SESSION['success_message']);
-}
-
-/* -----------------------------
-   FETCH STATE CLAIM HISTORY
+   FETCH HISTORY
 ------------------------------*/
 $stmt = $pdo->prepare("
     SELECT *
@@ -42,73 +28,124 @@ $stmt = $pdo->prepare("
     ORDER BY id DESC
 ");
 $stmt->execute([$user_id]);
-$claims = $stmt->fetchAll();
+$history = $stmt->fetchAll();
 
 include 'includes/header.php';
 include 'includes/navbar.php';
 ?>
 
-<div class="container">
+<style>
+.history-wrapper {
+    padding: 15px;
+}
 
-    <?= $message ?>
+/* Mobile-safe table wrapper */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
 
-    <div class="loan-form">
+/* Table styling */
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; /* prevents squashing */
+}
 
-        <h2 style="text-align:center;color:var(--primary);margin-bottom:20px;">
-            <i class="fas fa-history"></i> State Claim History
-        </h2>
+.history-table th,
+.history-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    white-space: nowrap;
+}
 
-        <?php if (count($claims) > 0): ?>
+.history-table th {
+    background: #f8fbff;
+    color: var(--primary);
+    font-weight: 600;
+}
 
-            <div style="overflow-x:auto;">
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
 
-                <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;">
+.badge-success {
+    background: #eafaf1;
+    color: #27ae60;
+}
 
-                    <thead style="background:#f1f1f1;">
+.badge-info {
+    background: #e7f3ff;
+    color: #2980b9;
+}
+
+@media (max-width: 600px) {
+    .history-table {
+        min-width: 520px;
+    }
+}
+</style>
+
+<div class="history-wrapper">
+
+    <h2 style="margin-bottom:15px;color:var(--primary);">
+        <i class="fas fa-history"></i> Transaction History
+    </h2>
+
+    <?php if (empty($history)): ?>
+        <div style="padding:15px;background:#fff;border-radius:10px;">
+            No history found.
+        </div>
+    <?php else: ?>
+
+        <div class="table-responsive">
+
+            <table class="history-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Region</th>
+                        <th>State</th>
+                        <th>Amount (USD)</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <?php foreach ($history as $row): ?>
                         <tr>
-                            <th style="padding:12px;">#</th>
-                            <th style="padding:12px;">Region</th>
-                            <th style="padding:12px;">State</th>
-                            <th style="padding:12px;">Amount</th>
-                            <th style="padding:12px;">Description</th>
-                            <th style="padding:12px;">Date</th>
+                            <td>#<?= $row['id'] ?></td>
+                            <td><?= htmlspecialchars($row['region']) ?></td>
+                            <td><?= htmlspecialchars($row['state']) ?></td>
+                            <td>$<?= number_format($row['amount'], 2) ?></td>
+                            <td>
+                                <span class="badge badge-info">
+                                    <?= htmlspecialchars($row['description'] ?? 'State Claim') ?>
+                                </span>
+                            </td>
+                            <td>
+                                <?= htmlspecialchars($row['created_at'] ?? 'N/A') ?>
+                            </td>
                         </tr>
-                    </thead>
+                    <?php endforeach; ?>
+                </tbody>
 
-                    <tbody>
-                        <?php foreach ($claims as $index => $claim): ?>
-                            <tr style="border-bottom:1px solid #eee;">
-                                <td style="padding:12px;"><?= $index + 1 ?></td>
-                                <td style="padding:12px;"><?= htmlspecialchars($claim['region']) ?></td>
-                                <td style="padding:12px;"><?= htmlspecialchars($claim['state']) ?></td>
-                                <td style="padding:12px;color:#2ecc71;font-weight:bold;">
-                                    USD <?= number_format($claim['amount'], 2) ?>
-                                </td>
-                                <td style="padding:12px;">
-                                    <?= htmlspecialchars($claim['description'] ?? 'State Claim') ?>
-                                </td>
-                                <td style="padding:12px;">
-                                    <?= !empty($claim['created_at']) 
-                                        ? date('M d, Y H:i', strtotime($claim['created_at'])) 
-                                        : '-' ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
+            </table>
 
-                </table>
+        </div>
 
-            </div>
-
-        <?php else: ?>
-
-            <div style="text-align:center;padding:30px;color:#777;">
-                No history found.
-            </div>
-
-        <?php endif; ?>
-
-    </div>
+    <?php endif; ?>
 
 </div>
 
