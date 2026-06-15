@@ -20,6 +20,7 @@ if (!$user) {
 
 $message = '';
 $codeData = null;
+$validCode = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -30,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = '<div class="alert-error">Please enter a code.</div>';
     } else {
 
+        // 1. Get code
         $stmt = $pdo->prepare("
             SELECT * FROM allowance_codes
             WHERE code = ?
@@ -40,65 +42,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!$codeData) {
             $message = '<div class="alert-error">Invalid code.</div>';
-        } elseif ((int)$codeData['is_used'] === 1) {
-            $message = '<div class="alert-error">This code has already been used.</div>';
         } else {
 
-            // Step 1: show preview first
-            if (!$confirm) {
-                $message = "<div style='background:#e7f3ff;padding:15px;border-radius:10px;margin-bottom:20px;'>
-                    <strong>Valid Code Found!</strong><br>
-                    Amount: USD " . number_format($codeData['amount'], 2) . "<br><br>
-                    Confirm to add to your balance.
-                </div>";
+            // 2. Check if user already used this code
+            $check = $pdo->prepare("
+                SELECT id FROM state_claims
+                WHERE user_id = ? AND code = ?
+                LIMIT 1
+            ");
+            $check->execute([$user_id, $code]);
+            $alreadyUsed = $check->fetch();
+
+            if ($alreadyUsed) {
+                $message = '<div class="alert-error">You have already redeemed this code.</div>';
             } else {
 
-                try {
+                $validCode = true;
 
-                    $pdo->beginTransaction();
+                // STEP 1: Preview
+                if (!$confirm) {
 
-                    // 1. Update balance
-                    $update = $pdo->prepare("
-                        UPDATE users
-                        SET balance = balance + ?
-                        WHERE id = ?
-                    ");
-                    $update->execute([$codeData['amount'], $user_id]);
+                    $message = "
+                        <div style='background:#e7f3ff;padding:15px;border-radius:10px;margin-bottom:20px;'>
+                            <strong>Valid Code Found!</strong><br>
+                            Amount: USD " . number_format($codeData['amount'], 2) . "<br><br>
+                            Click confirm to add to your balance.
+                        </div>
+                    ";
 
-                    // 2. Mark code as used
-                    $mark = $pdo->prepare("
-                        UPDATE allowance_codes
-                        SET is_used = 1,
-                            used_by = ?,
-                            used_at = NOW()
-                        WHERE id = ?
-                    ");
-                    $mark->execute([$user_id, $codeData['id']]);
+                } else {
 
-                    // 3. Log in state_claims
-                    $log = $pdo->prepare("
-                        INSERT INTO state_claims
-                        (user_id, region, state, amount, code, description)
-                        VALUES (?, ?, ?, ?, ?, ?)
-                    ");
+                    try {
 
-                    $log->execute([
-                        $user_id,
-                        'CODE',
-                        'CODE REDEEM',
-                        $codeData['amount'],
-                        $codeData['code'],
-                        'Redeemed Code'
-                    ]);
+                        $pdo->beginTransaction();
 
-                    $pdo->commit();
+                        // 1. Credit user
+                        $update = $pdo->prepare("
+                            UPDATE users
+                            SET balance = balance + ?
+                            WHERE id = ?
+                        ");
+                        $update->execute([$codeData['amount'], $user_id]);
 
-                    header("Location: dashboard.php");
-                    exit();
+                        // 2. Log redemption (IMPORTANT SOURCE OF TRUTH)
+                        $log = $pdo->prepare("
+                            INSERT INTO state_claims
+                            (user_id, region, state, amount, code, description)
+                            VALUES (?, ?, ?, ?, ?, ?)
+                        ");
 
-                } catch (Exception $e) {
-                    $pdo->rollBack();
-                    $message = '<div class="alert-error">Unable to redeem code.</div>';
+                        $log->execute([
+                            $user_id,
+                            'CODE',
+                            'CODE REDEEM',
+                            $codeData['amount'],
+                            $code,
+                            'Redeemed allowance code'
+                        ]);
+
+                        $pdo->commit();
+
+                        header("Location: dashboard.php");
+                        exit();
+
+                    } catch (Exception $e) {
+                        $pdo->rollBack();
+                        $message = '<div class="alert-error">Unable to redeem code. Try again.</div>';
+                    }
                 }
             }
         }
@@ -128,14 +138,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="text" name="code" required placeholder="Enter your code">
                 </div>
 
-                <?php if ($codeData && (int)$codeData['is_used'] === 0): ?>
+                <?php if ($validCode && $codeData && !$confirm): ?>
                     <input type="hidden" name="confirm" value="1">
                     <button type="submit" class="submit-btn">
-                        <i class="fas fa-gift"></i> Confirm Redeem USD <?= number_format($codeData['amount'], 2) ?>
+                        <i class="fas fa-gift"></i>
+                        Confirm Redeem USD <?= number_format($codeData['amount'], 2) ?>
                     </button>
                 <?php else: ?>
                     <button type="submit" class="submit-btn">
-                        <i class="fas fa-check-circle"></i> Validate Code
+                        <i class="fas fa-check-circle"></i>
+                        Validate Code
                     </button>
                 <?php endif; ?>
 
