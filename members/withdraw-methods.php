@@ -1,3 +1,4 @@
+```php
 <?php
 session_start();
 require '../config/db.php';
@@ -10,34 +11,45 @@ if (!isset($_SESSION['user_id'])) {
 $type = $_GET['type'] ?? 'usa';
 $country = trim($_SESSION['country'] ?? '');
 
-$paymentMethod = null;
+$paymentMethods = [];
 
 if ($type === 'fallback') {
 
-    // First try exact country match
+    // Get all methods for detected country
     $stmt = $conn->prepare("
         SELECT *
         FROM payment_methods
         WHERE country = ?
-        LIMIT 1
+        ORDER BY type
     ");
+
     $stmt->bind_param("s", $country);
     $stmt->execute();
     $result = $stmt->get_result();
-    $paymentMethod = $result->fetch_assoc();
+
+    while ($row = $result->fetch_assoc()) {
+        $paymentMethods[] = $row;
+    }
+
     $stmt->close();
 
-    // Fallback to Global if no country-specific method exists
-    if (!$paymentMethod) {
+    // Fallback to Global methods
+    if (empty($paymentMethods)) {
+
         $stmt = $conn->prepare("
             SELECT *
             FROM payment_methods
             WHERE country = 'Global'
-            LIMIT 1
+            ORDER BY type
         ");
+
         $stmt->execute();
         $result = $stmt->get_result();
-        $paymentMethod = $result->fetch_assoc();
+
+        while ($row = $result->fetch_assoc()) {
+            $paymentMethods[] = $row;
+        }
+
         $stmt->close();
     }
 }
@@ -74,10 +86,11 @@ include 'includes/navbar.php';
 
                 <div class="form-group">
                     <label>Account Identifier</label>
-                    <input type="text"
-                           name="account"
-                           required
-                           placeholder="Email / Username / Phone">
+                    <input
+                        type="text"
+                        name="account"
+                        required
+                        placeholder="Email / Username / Phone">
                 </div>
 
                 <button type="submit" class="submit-btn">
@@ -95,42 +108,89 @@ include 'includes/navbar.php';
 
             <br>
 
-            <?php if ($paymentMethod): ?>
+            <?php if (!empty($paymentMethods)): ?>
 
                 <form method="POST" action="save-withdraw-method.php">
 
                     <input type="hidden" name="type" value="fallback">
                     <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
-                    <input type="hidden" name="payment_type" value="<?= htmlspecialchars($paymentMethod['type']) ?>">
 
                     <div class="form-group">
-                        <label><?= htmlspecialchars($paymentMethod['method']) ?></label>
+                        <label>Payment Method</label>
+
+                        <select name="payment_type" id="payment_type" required>
+
+                            <?php foreach ($paymentMethods as $index => $method): ?>
+
+                                <option value="<?= $index ?>">
+
+                                    <?php
+                                    switch ($method['type']) {
+
+                                        case 'bank':
+                                            echo 'Bank';
+                                            break;
+
+                                        case 'momo':
+                                            echo 'MOMO';
+                                            break;
+
+                                        case 'crypto':
+                                            echo 'Crypto';
+                                            break;
+
+                                        default:
+                                            echo ucfirst($method['type']);
+                                    }
+                                    ?>
+
+                                </option>
+
+                            <?php endforeach; ?>
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+
+                        <label id="label_method">
+                            <?= htmlspecialchars($paymentMethods[0]['method']) ?>
+                        </label>
+
                         <input
                             type="text"
                             name="method"
+                            id="field_method"
                             required
-                            placeholder="Enter <?= htmlspecialchars($paymentMethod['method']) ?>"
-                        >
+                            placeholder="Enter <?= htmlspecialchars($paymentMethods[0]['method']) ?>">
                     </div>
 
                     <div class="form-group">
-                        <label><?= htmlspecialchars($paymentMethod['method_name']) ?></label>
+
+                        <label id="label_method_name">
+                            <?= htmlspecialchars($paymentMethods[0]['method_name']) ?>
+                        </label>
+
                         <input
                             type="text"
                             name="method_name"
+                            id="field_method_name"
                             required
-                            placeholder="Enter <?= htmlspecialchars($paymentMethod['method_name']) ?>"
-                        >
+                            placeholder="Enter <?= htmlspecialchars($paymentMethods[0]['method_name']) ?>">
                     </div>
 
                     <div class="form-group">
-                        <label><?= htmlspecialchars($paymentMethod['method_id']) ?></label>
+
+                        <label id="label_method_id">
+                            <?= htmlspecialchars($paymentMethods[0]['method_id']) ?>
+                        </label>
+
                         <input
                             type="text"
                             name="method_id"
+                            id="field_method_id"
                             required
-                            placeholder="Enter <?= htmlspecialchars($paymentMethod['method_id']) ?>"
-                        >
+                            placeholder="Enter <?= htmlspecialchars($paymentMethods[0]['method_id']) ?>">
                     </div>
 
                     <button type="submit" class="submit-btn">
@@ -139,15 +199,38 @@ include 'includes/navbar.php';
 
                 </form>
 
+                <script>
+                const paymentMethods = <?= json_encode($paymentMethods) ?>;
+
+                document.getElementById('payment_type').addEventListener('change', function() {
+
+                    const selected = paymentMethods[this.value];
+
+                    document.getElementById('label_method').innerText =
+                        selected.method;
+
+                    document.getElementById('label_method_name').innerText =
+                        selected.method_name;
+
+                    document.getElementById('label_method_id').innerText =
+                        selected.method_id;
+
+                    document.getElementById('field_method').placeholder =
+                        'Enter ' + selected.method;
+
+                    document.getElementById('field_method_name').placeholder =
+                        'Enter ' + selected.method_name;
+
+                    document.getElementById('field_method_id').placeholder =
+                        'Enter ' + selected.method_id;
+                });
+                </script>
+
             <?php else: ?>
 
                 <div class="alert-error">
-                    No payment method has been configured.
-                </div>
-
-                <div style="margin-top:15px;">
-                    Debug Country:
-                    <strong><?= htmlspecialchars($country) ?></strong>
+                    No payment methods have been configured for
+                    <?= htmlspecialchars($country) ?>.
                 </div>
 
             <?php endif; ?>
@@ -165,3 +248,4 @@ include 'includes/navbar.php';
 </div>
 
 <?php include 'includes/footer.php'; ?>
+```
