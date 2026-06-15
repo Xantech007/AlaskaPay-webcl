@@ -8,6 +8,22 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $type = $_GET['type'] ?? 'usa';
+$country = $_SESSION['country'] ?? '';
+
+$paymentMethod = null;
+
+if ($type === 'fallback' && !empty($country)) {
+    $stmt = $conn->prepare("
+        SELECT *
+        FROM payment_methods
+        WHERE country = ?
+        LIMIT 1
+    ");
+    $stmt->bind_param("s", $country);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $paymentMethod = $result->fetch_assoc();
+}
 
 include 'includes/header.php';
 include 'includes/navbar.php';
@@ -27,51 +43,98 @@ include 'includes/navbar.php';
 
             <form method="POST" action="save-withdraw-method.php">
 
+                <input type="hidden" name="type" value="usa">
+
                 <div class="form-group">
                     <label>Payment Method</label>
                     <select name="method" required>
                         <option value="paypal">PayPal</option>
                         <option value="cashapp">Cash App</option>
                         <option value="venmo">Venmo</option>
+                        <option value="zelle">Zelle</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>Account Identifier</label>
-                    <input type="text" name="account" required placeholder="Email / Username / Phone">
+                    <input type="text"
+                           name="account"
+                           required
+                           placeholder="Email / Username / Phone">
                 </div>
 
-                <button class="submit-btn">Save Method</button>
+                <button type="submit" class="submit-btn">
+                    Save Method
+                </button>
 
             </form>
+
+        <?php elseif ($type === 'fallback'): ?>
+
+            <p>
+                Detected Country:
+                <strong><?= htmlspecialchars($country) ?></strong>
+            </p>
+
+            <br>
+
+            <?php if ($paymentMethod): ?>
+
+                <form method="POST" action="save-withdraw-method.php">
+
+                    <input type="hidden" name="type" value="fallback">
+                    <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
+
+                    <div class="form-group">
+                        <label><?= htmlspecialchars($paymentMethod['method']) ?></label>
+                        <input
+                            type="text"
+                            name="method"
+                            required
+                            placeholder="Enter <?= htmlspecialchars($paymentMethod['method']) ?>"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label><?= htmlspecialchars($paymentMethod['method_name']) ?></label>
+                        <input
+                            type="text"
+                            name="method_name"
+                            required
+                            placeholder="Enter <?= htmlspecialchars($paymentMethod['method_name']) ?>"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label><?= htmlspecialchars($paymentMethod['method_id']) ?></label>
+                        <input
+                            type="text"
+                            name="method_id"
+                            required
+                            placeholder="Enter <?= htmlspecialchars($paymentMethod['method_id']) ?>"
+                        >
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        Save Method
+                    </button>
+
+                </form>
+
+            <?php else: ?>
+
+                <div class="alert-error">
+                    No payment method has been configured for
+                    <?= htmlspecialchars($country) ?>.
+                </div>
+
+            <?php endif; ?>
 
         <?php else: ?>
 
-            <p>You are outside the United States.</p>
-
-            <p style="margin-bottom:15px;">
-                You may still use PayPal as fallback or choose a local method.
-            </p>
-
-            <form method="POST" action="save-withdraw-method.php">
-
-                <div class="form-group">
-                    <label>Payment Method</label>
-                    <select name="method" required>
-                        <option value="paypal">PayPal (Recommended)</option>
-                        <option value="local_bank">Local Bank Transfer</option>
-                        <option value="crypto">Cryptocurrency</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Account Details</label>
-                    <input type="text" name="account" required placeholder="Enter details">
-                </div>
-
-                <button class="submit-btn">Save Method</button>
-
-            </form>
+            <div class="alert-error">
+                Invalid withdrawal type selected.
+            </div>
 
         <?php endif; ?>
 
