@@ -123,9 +123,10 @@ include 'includes/navbar.php';
                 </thead>
 
                 <tbody>
+                    <?php $i = 1; ?>
                     <?php foreach ($history as $row): ?>
                         <tr>
-                            <td>#<?= $row['id'] ?></td>
+                            <td>#<?= $i++ ?></td>
                             <td><?= htmlspecialchars($row['region']) ?></td>
                             <td><?= htmlspecialchars($row['state']) ?></td>
                             <td>$<?= number_format($row['amount'], 2) ?></td>
