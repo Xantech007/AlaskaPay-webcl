@@ -19,6 +19,8 @@ if (!$user) {
 }
 
 if ((int)$user['state_status'] !== 1) {
+    $_SESSION['success_message'] = "State selected successfully! USD " . number_format($allowance['amount'], 2) . " has been added to your balance.";
+    
     header('Location: dashboard.php');
     exit();
 }
