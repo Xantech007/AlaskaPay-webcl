@@ -13,7 +13,7 @@
                 <i class="fas fa-user"></i> Profile
             </a>
             <a href="#" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
+                <i class="fas fa-sign-out-alt" style="color:#e74c3c;"></i> Logout
             </a>
         </div>
     </div>
