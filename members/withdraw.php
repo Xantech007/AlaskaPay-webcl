@@ -148,10 +148,6 @@ include 'includes/navbar.php';
 
     </div>
 
-</div>
-
-
-<div class="container">
 
     <div class="loan-form">
 
