@@ -321,6 +321,49 @@
         .dropdown:hover .dropdown-content {
             display: block;
         }
+
+
+        /* ================= RESPONSIVE DASHBOARD GRID OVERRIDE ================= */
+        
+        /* Desktop (default already fine, but reinforced) */
+        .cards-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        /* Tablet */
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+        
+        /* Mobile */
+        @media (max-width: 600px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        
+            .card {
+                padding: 22px;
+            }
+        
+            .card p {
+                font-size: 1.8rem;
+            }
+        
+            .card i {
+                font-size: 2.2rem;
+            }
+        }
+        
+        /* Prevent overflow issues on small screens */
+        .card {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
     </style>
 </head>
 
