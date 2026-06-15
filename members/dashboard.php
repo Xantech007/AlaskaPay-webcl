@@ -34,7 +34,7 @@ include 'includes/navbar.php';
             <div class="card balance">
                 <i class="fas fa-wallet"></i>
                 <h3>Account Balance</h3>
-                <p>GHS <?= number_format($user['balance'] ?? 0, 2) ?></p>
+                <p>USD <?= number_format($user['balance'] ?? 0, 2) ?></p>
             </div>
 
             <div class="card loans">
