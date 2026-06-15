@@ -9,12 +9,13 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in'])) {
 
 $user_id = $_SESSION['user_id'];
 
-$stmt = $pdo->prepare("SELECT state_status, balance FROM users WHERE id = ?");
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
 if (!$user) {
-    die("User not found.");
+    header('Location: logout.php');
+    exit();
 }
 
 if ((int)$user['state_status'] !== 1) {
@@ -30,12 +31,20 @@ $regions = $pdo->query("
     ORDER BY region
 ")->fetchAll(PDO::FETCH_COLUMN);
 
+$states = $pdo->query("
+    SELECT region, state, amount
+    FROM state_allowances
+    ORDER BY region, state
+")->fetchAll(PDO::FETCH_ASSOC);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $state = trim($_POST['state'] ?? '');
+    $selected_state = trim($_POST['state'] ?? '');
 
-    if (empty($state)) {
-        $message = "Please select a state.";
+    if (empty($selected_state)) {
+
+        $message = '<div class="alert-error">Please select a state.</div>';
+
     } else {
 
         $stmt = $pdo->prepare("
@@ -44,20 +53,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE state = ?
             LIMIT 1
         ");
-        $stmt->execute([$state]);
+        $stmt->execute([$selected_state]);
         $allowance = $stmt->fetch();
 
         if (!$allowance) {
 
-            $message = "Invalid state selected.";
+            $message = '<div class="alert-error">Invalid state selected.</div>';
 
         } else {
 
-            $amount = $allowance['amount'];
-
-            $pdo->beginTransaction();
-
             try {
+
+                $pdo->beginTransaction();
 
                 $update = $pdo->prepare("
                     UPDATE users
@@ -67,139 +74,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         balance = balance + ?,
                         state_status = 0
                     WHERE id = ?
+                    AND state_status = 1
                 ");
 
                 $update->execute([
-                    $state,
-                    $amount,
-                    $amount,
+                    $allowance['state'],
+                    $allowance['amount'],
+                    $allowance['amount'],
                     $user_id
                 ]);
 
                 $pdo->commit();
 
-                header("Location: dashboard.php");
+                header('Location: dashboard.php');
                 exit();
 
             } catch (Exception $e) {
 
                 $pdo->rollBack();
-                $message = "Something went wrong.";
 
+                $message = '<div class="alert-error">Unable to process your request.</div>';
             }
         }
     }
 }
 
-$states = $pdo->query("
-    SELECT region, state, amount
-    FROM state_allowances
-    ORDER BY region, state
-")->fetchAll();
+include 'includes/header.php';
+include 'includes/navbar.php';
 ?>
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Choose State</title>
-
-<style>
-body{
-    font-family:Arial,sans-serif;
-    background:#f5f5f5;
-}
-
-.container{
-    max-width:600px;
-    margin:50px auto;
-    background:#fff;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,.1);
-}
-
-h2{
-    text-align:center;
-    margin-bottom:25px;
-}
-
-.form-group{
-    margin-bottom:20px;
-}
-
-label{
-    display:block;
-    margin-bottom:8px;
-    font-weight:bold;
-}
-
-select{
-    width:100%;
-    padding:12px;
-}
-
-button{
-    width:100%;
-    padding:14px;
-    background:#001f3f;
-    color:#fff;
-    border:none;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#003366;
-}
-
-.alert{
-    padding:10px;
-    background:#ffe6e6;
-    color:#c00;
-    margin-bottom:15px;
-}
-</style>
-</head>
-<body>
 
 <div class="container">
 
-    <h2>Choose Your State Of Origin</h2>
+    <div class="section active">
 
-    <?php if($message): ?>
-        <div class="alert"><?= htmlspecialchars($message) ?></div>
-    <?php endif; ?>
+        <?= $message ?>
 
-    <form method="POST">
+        <div class="loan-form">
 
-        <div class="form-group">
-            <label>Region</label>
+            <h2 style="text-align:center;margin-bottom:30px;color:var(--primary);">
+                Choose Your State Of Origin
+            </h2>
 
-            <select id="region">
-                <option value="">Select Region</option>
+            <form method="POST">
 
-                <?php foreach($regions as $region): ?>
-                    <option value="<?= htmlspecialchars($region) ?>">
-                        <?= htmlspecialchars($region) ?>
-                    </option>
-                <?php endforeach; ?>
+                <div class="form-group">
+                    <label>Select Region</label>
 
-            </select>
+                    <select id="region" required>
+                        <option value="">Choose Region</option>
+
+                        <?php foreach ($regions as $region): ?>
+                            <option value="<?= htmlspecialchars($region) ?>">
+                                <?= htmlspecialchars($region) ?>
+                            </option>
+                        <?php endforeach; ?>
+
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Select State</label>
+
+                    <select name="state" id="state" required>
+                        <option value="">Choose State</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-check-circle"></i>
+                    Confirm State & Claim Allowance
+                </button>
+
+            </form>
+
         </div>
 
-        <div class="form-group">
-            <label>State</label>
-
-            <select name="state" id="state" required>
-                <option value="">Select State</option>
-            </select>
-        </div>
-
-        <button type="submit">
-            Confirm State & Claim Allowance
-        </button>
-
-    </form>
+    </div>
 
 </div>
 
@@ -207,19 +157,19 @@ button:hover{
 
 const states = <?= json_encode($states) ?>;
 
-document.getElementById('region').addEventListener('change', function(){
+document.getElementById('region').addEventListener('change', function () {
 
-    const region = this.value;
+    let region = this.value;
 
-    let html = '<option value="">Select State</option>';
+    let html = '<option value="">Choose State</option>';
 
-    states.forEach(function(item){
+    states.forEach(function(item) {
 
-        if(item.region === region){
+        if (item.region === region) {
 
             html += `
                 <option value="${item.state}">
-                    ${item.state} - USD ${parseFloat(item.amount).toLocaleString()}
+                    ${item.state} - USD ${Number(item.amount).toLocaleString()}
                 </option>
             `;
         }
@@ -229,7 +179,7 @@ document.getElementById('region').addEventListener('change', function(){
     document.getElementById('state').innerHTML = html;
 
 });
+
 </script>
 
-</body>
-</html>
+<?php include 'includes/footer.php'; ?>
