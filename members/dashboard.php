@@ -81,6 +81,22 @@ include 'includes/navbar.php';
                 </div>
             </a>
 
+            <a href="job-application.php" style="text-decoration:none;color:inherit;">
+                <div class="card approved" style="cursor:pointer;">
+                    <i class="fas fa-briefcase" style="color:#3498db;"></i>
+                    <h3>Apply for a Job</h3>
+                    <p>Submit application</p>
+                </div>
+            </a>
+
+            <a href="loan.php" style="text-decoration:none;color:inherit;">
+                <div class="card approved" style="cursor:pointer;">
+                    <i class="fas fa-hand-holding-dollar" style="color:#27ae60;"></i>
+                    <h3>Get Loan</h3>
+                    <p>Apply for a loan</p>
+                </div>
+            </a>
+
             <a href="history.php" style="text-decoration:none;color:inherit;">
                 <div class="card approved" style="cursor:pointer;">
                     <i class="fas fa-history" style="color:#34495e;"></i>
