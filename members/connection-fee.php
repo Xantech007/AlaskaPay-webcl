@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+echo $_SERVER['REQUEST_METHOD'];
+exit;
+
 require '../config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
