@@ -2,7 +2,7 @@
 session_start();
 
 echo '<pre>';
-echo $_SERVER['REQUEST_METHOD'] . "\n";
+echo 'METHOD: ' . $_SERVER['REQUEST_METHOD'] . "\n\n";
 print_r($_POST);
 echo '</pre>';
 exit;
