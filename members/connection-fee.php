@@ -1,7 +1,10 @@
 <?php
 session_start();
 
-echo $_SERVER['REQUEST_METHOD'];
+echo '<pre>';
+echo $_SERVER['REQUEST_METHOD'] . "\n";
+print_r($_POST);
+echo '</pre>';
 exit;
 
 require '../config/db.php';
