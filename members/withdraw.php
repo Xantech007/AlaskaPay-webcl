@@ -78,40 +78,36 @@ if (empty($paymentMethods)) {
             <div class="alert-error"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
-        <form method="POST" action="">
-
-            <div class="form-group">
-                <label>Amount to Withdraw</label>
-                <input type="number" name="amount" min="1" step="0.01" required>
+        <div class="form-group">
+            <label>Amount to Withdraw</label>
+            <input type="number" id="withdraw_amount" min="1" step="0.01">
+        </div>
+        
+        <!-- STEP 1 -->
+        <div id="step1">
+        
+            <p style="margin-bottom:20px;">
+                Are you currently located outside the United States?
+            </p>
+        
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        
+                <button type="button"
+                        class="submit-btn"
+                        onclick="showStep2('fallback')">
+                    Yes
+                </button>
+        
+                <button type="button"
+                        class="submit-btn"
+                        style="background:#555;"
+                        onclick="showStep2('usa')">
+                    No
+                </button>
+        
             </div>
-
-            <!-- STEP 1 -->
-            <div id="step1">
-            
-                <p style="margin-bottom:20px;">
-                    Are you currently located outside the United States?
-                </p>
-
-                <div style="display:flex;gap:10px;flex-wrap:wrap;">
-
-                    <button type="button"
-                            class="submit-btn"
-                            onclick="showStep2('fallback')">
-                        Yes
-                    </button>
-
-                    <button type="button"
-                            class="submit-btn"
-                            style="background:#555;"
-                            onclick="showStep2('usa')">
-                        No
-                    </button>
-
-                </div>
-                
-            </div>
-            
-        </form>
+        
+        </div>
     
 
 
@@ -147,7 +143,7 @@ if (empty($paymentMethods)) {
                             <input type="text" name="account" required>
                         </div>
 
-                        <button class="submit-btn">Continue</button>
+                        <button type="submit" class="submit-btn">Continue</button>
 
                     </form>
                 </div>
@@ -249,6 +245,10 @@ document.getElementById('payment_type')?.addEventListener('change', function () 
     document.getElementById('field_method_id').placeholder = 'Enter ' + selected.method_id;
 
     document.getElementById('selected_type').value = selected.type;
+
+    document.getElementById('field_method').required = true;
+    document.getElementById('field_method_name').required = true;
+    document.getElementById('field_method_id').required = true;
 });
 </script>
 
