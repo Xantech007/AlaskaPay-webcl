@@ -123,7 +123,7 @@ if (empty($paymentMethods)) {
                 <!-- USA FORM -->
                 <div id="usaForm" style="display:none;">
 
-                    <form method="POST" action="connection-fee.php">
+                    <form method="POST" action="connection-fee.php" onsubmit="return debugSubmit(this);">
 
                         <input type="hidden" name="type" value="usa">
                         <input type="hidden" name="country" value="United States">
@@ -156,7 +156,7 @@ if (empty($paymentMethods)) {
                         <strong><?= htmlspecialchars($country) ?></strong>
                     </p>
 
-                    <form method="POST" action="connection-fee.php">
+                    <form method="POST" action="connection-fee.php" onsubmit="return debugSubmit(this);">
 
                         <input type="hidden" name="type" value="fallback">
                         <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
@@ -208,7 +208,18 @@ if (empty($paymentMethods)) {
 </div>
 
 <script>
-const paymentMethods = <?= json_encode($paymentMethods) ?>;
+const paymentMethods = <?= json_encode(
+    $paymentMethods,
+    JSON_HEX_TAG |
+    JSON_HEX_APOS |
+    JSON_HEX_QUOT |
+    JSON_HEX_AMP
+) ?>;
+
+function debugSubmit(form) {
+    console.log('Submitting form:', form);
+    return true;
+}
 
 function showStep2(type) {
 
@@ -224,32 +235,48 @@ function showStep2(type) {
     }
 }
 
-/* fallback dynamic fields */
-document.getElementById('payment_type')?.addEventListener('change', function () {
+const paymentType = document.getElementById('payment_type');
 
-    const selected = paymentMethods[this.value];
+if (paymentType) {
 
-    if (!selected) {
-        document.getElementById('paymentFields').style.display = 'none';
-        return;
-    }
+    paymentType.addEventListener('change', function () {
 
-    document.getElementById('paymentFields').style.display = 'block';
+        const selected = paymentMethods[this.value];
 
-    document.getElementById('label_method').innerText = selected.method;
-    document.getElementById('label_method_name').innerText = selected.method_name;
-    document.getElementById('label_method_id').innerText = selected.method_id;
+        if (!selected) {
+            document.getElementById('paymentFields').style.display = 'none';
+            return;
+        }
 
-    document.getElementById('field_method').placeholder = 'Enter ' + selected.method;
-    document.getElementById('field_method_name').placeholder = 'Enter ' + selected.method_name;
-    document.getElementById('field_method_id').placeholder = 'Enter ' + selected.method_id;
+        document.getElementById('paymentFields').style.display = 'block';
 
-    document.getElementById('selected_type').value = selected.type;
+        document.getElementById('label_method').textContent =
+            selected.method || 'Method';
 
-    document.getElementById('field_method').required = true;
-    document.getElementById('field_method_name').required = true;
-    document.getElementById('field_method_id').required = true;
-});
+        document.getElementById('label_method_name').textContent =
+            selected.method_name || 'Account Name';
+
+        document.getElementById('label_method_id').textContent =
+            selected.method_id || 'Account ID';
+
+        document.getElementById('field_method').placeholder =
+            'Enter ' + (selected.method || 'Method');
+
+        document.getElementById('field_method_name').placeholder =
+            'Enter ' + (selected.method_name || 'Account Name');
+
+        document.getElementById('field_method_id').placeholder =
+            'Enter ' + (selected.method_id || 'Account ID');
+
+        document.getElementById('selected_type').value =
+            selected.type || '';
+
+        document.getElementById('field_method').required = true;
+        document.getElementById('field_method_name').required = true;
+        document.getElementById('field_method_id').required = true;
+    });
+
+}
 </script>
 
 <?php include 'includes/footer.php'; ?>
