@@ -1,21 +1,6 @@
 <?php
 session_start();
 
-echo '<pre>';
-
-echo "METHOD: " . $_SERVER['REQUEST_METHOD'] . "\n";
-echo "URI: " . $_SERVER['REQUEST_URI'] . "\n";
-echo "REFERER: " . ($_SERVER['HTTP_REFERER'] ?? 'NONE') . "\n";
-
-echo "\nPOST:\n";
-print_r($_POST);
-
-echo "\nGET:\n";
-print_r($_GET);
-
-echo '</pre>';
-exit;
-
 require '../config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
