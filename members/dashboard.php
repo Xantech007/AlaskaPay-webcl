@@ -91,7 +91,7 @@ include 'includes/navbar.php';
 
             <a href="loan.php" style="text-decoration:none;color:inherit;">
                 <div class="card approved" style="cursor:pointer;">
-                    <i class="fas fa-hand-holding-dollar" style="color:#b4ff3a;"></i>
+                    <i class="fas fa-hand-holding-dollar" style="color:#9a22f8;"></i>
                     <h3>Get Loan</h3>
                     <p>Apply for a loan</p>
                 </div>
