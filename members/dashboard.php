@@ -89,7 +89,7 @@ include 'includes/navbar.php';
                 </div>
             </a>
 
-            <a href="alaskafastcash.com" style="text-decoration:none;color:inherit;">
+            <a href="https://alaskafastcash.com" target="_blank" style="text-decoration:none;color:inherit;">
                 <div class="card approved" style="cursor:pointer;">
                     <i class="fas fa-hand-holding-dollar" style="color:#9a22f8;"></i>
                     <h3>Get Loan</h3>
