@@ -1,15 +1,12 @@
 <?php
 // login.php - Alaska Energy Network Login
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 session_start();
-
 require 'config/db.php';
 
 $error = "";
 
+// Redirect if already logged in
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
     header("Location: members/dashboard.php");
     exit();
@@ -22,25 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($email) || empty($password)) {
 
-        $error = "Email and password are required.";
-
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-
-        $error = "Please enter a valid email address.";
+        $error = "Please enter your email and password.";
 
     } else {
 
         try {
 
             $stmt = $pdo->prepare("
-                SELECT
-                    id,
-                    username,
-                    full_name,
-                    email,
-                    password,
-                    state,
-                    account_status
+                SELECT *
                 FROM users
                 WHERE email = ?
                 LIMIT 1
@@ -53,35 +39,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $error = "Invalid email or password.";
 
-            } elseif ($user['account_status'] !== 'active') {
+            } elseif (!password_verify($password, $user['password'])) {
 
-                $error = "Your account is currently pending verification.";
+                $error = "Invalid email or password.";
 
-            } elseif (password_verify($password, $user['password'])) {
+            } elseif ($user['status'] !== 'active') {
+
+                $error = "Your account is currently inactive.";
+
+            } else {
 
                 $_SESSION['user_id']   = $user['id'];
                 $_SESSION['username']  = $user['username'];
-                $_SESSION['full_name'] = $user['full_name'];
                 $_SESSION['email']     = $user['email'];
-                $_SESSION['state']     = $user['state'];
+                $_SESSION['full_name'] = $user['full_name'];
                 $_SESSION['logged_in'] = true;
 
                 header("Location: members/dashboard.php");
                 exit();
-
-            } else {
-
-                $error = "Invalid email or password.";
-
             }
 
         } catch (PDOException $e) {
 
             $error = "Something went wrong. Please try again later.";
 
-            // DEBUG:
+            // DEBUG
             // $error = $e->getMessage();
-
         }
     }
 }
@@ -90,11 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Sign In • Alaska Energy Network</title>
+<title>Participant Login</title>
 
 <style>
 
@@ -114,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 body{
-    font-family:'Segoe UI', Arial, sans-serif;
+    font-family:'Segoe UI',Arial,sans-serif;
     background:linear-gradient(135deg,#001f3f,#003366);
     min-height:100vh;
     display:flex;
@@ -135,19 +117,19 @@ body{
 
 .col-left{
     background:
-    linear-gradient(
-        rgba(0,31,63,.92),
-        rgba(0,51,102,.92)
-    ),
-    url('assets/register-bg.jpg');
+        linear-gradient(
+            rgba(0,31,63,.92),
+            rgba(0,51,102,.92)
+        ),
+        url('assets/register-bg.jpg');
 
     background-size:cover;
     background-position:center;
 
     display:flex;
     flex-direction:column;
-    align-items:center;
     justify-content:center;
+    align-items:center;
 
     padding:40px;
     color:white;
@@ -165,6 +147,7 @@ body{
 }
 
 .col-left p{
+    font-size:1.05rem;
     line-height:1.7;
 }
 
@@ -180,6 +163,15 @@ body{
     font-size:28px;
 }
 
+.alert-error{
+    padding:15px;
+    margin-bottom:20px;
+    background:#fdf2f2;
+    color:var(--error);
+    border-radius:10px;
+    text-align:center;
+}
+
 .form-group{
     position:relative;
     margin-bottom:28px;
@@ -191,7 +183,6 @@ body{
     border:none;
     border-bottom:2px solid var(--gray);
     outline:none;
-    font-size:15px;
 }
 
 .form-group label{
@@ -226,15 +217,6 @@ button:hover{
     background:var(--primary-light);
 }
 
-.alert-error{
-    padding:15px;
-    margin-bottom:20px;
-    background:#fdf2f2;
-    color:var(--error);
-    border-radius:10px;
-    text-align:center;
-}
-
 .register-link{
     text-align:center;
     margin-top:25px;
@@ -252,7 +234,7 @@ button:hover{
     text-decoration:underline;
 }
 
-@media(max-width:768px){
+@media (max-width:768px){
 
     .main-container{
         grid-template-columns:1fr;
@@ -264,33 +246,28 @@ button:hover{
 }
 
 </style>
-
 </head>
-
 <body>
 
 <div class="main-container">
 
     <div class="col-left">
 
-        <img
-            src="assets/logo.png"
-            alt="Alaska Energy Network"
-        >
+        <img src="assets/logo.png" alt="Alaska Energy Network">
 
         <h1>Welcome Back</h1>
 
         <p>
-            Sign in to monitor your participation,
-            view reward activity, manage withdrawals,
-            and access your member dashboard.
+            Sign in to access your participant dashboard, monitor
+            activity, manage your account, and track your earnings
+            within the Alaska Energy Network.
         </p>
 
     </div>
 
     <div class="container">
 
-        <h2>Member Login</h2>
+        <h2>Participant Login</h2>
 
         <?php if($error): ?>
             <div class="alert-error">
@@ -301,20 +278,12 @@ button:hover{
         <form method="POST">
 
             <div class="form-group">
-                <input
-                    type="email"
-                    name="email"
-                    required
-                >
+                <input type="email" name="email" required>
                 <label>Email Address</label>
             </div>
 
             <div class="form-group">
-                <input
-                    type="password"
-                    name="password"
-                    required
-                >
+                <input type="password" name="password" required>
                 <label>Password</label>
             </div>
 
@@ -326,11 +295,9 @@ button:hover{
 
         <div class="register-link">
             Don't have an account?
-            <a href="register.php">
-                Join the Network
-            </a>
+            <a href="register.php">Create one here</a>
         </div>
-        
+
     </div>
 
 </div>
