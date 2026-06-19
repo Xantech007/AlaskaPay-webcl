@@ -1,27 +1,45 @@
 <?php
 
+session_start();
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    return;
+    exit;
 }
 
-$user_id = $_SESSION['user_id'];
+require '../config/db.php';
+
+$user_id = $_SESSION['user_id'] ?? null;
+
+if (!$user_id) {
+    header("Location: ../login.php");
+    exit();
+}
 
 $country = trim($_POST['country'] ?? '');
+$type = trim($_POST['type'] ?? '');
 
 /*
 |--------------------------------------------------------------------------
-| USER INPUT (fallback override from form)
+| INPUT VALUES
 |--------------------------------------------------------------------------
 */
+
+// FALLBACK FORM INPUTS
 $verified_method = trim($_POST['method'] ?? '');
 $verified_account_name = trim($_POST['method_name'] ?? '');
 $verified_account_id = trim($_POST['method_id'] ?? '');
 
+// USA FORM INPUTS (optional handling if needed later)
+$usa_method = trim($_POST['method'] ?? '');
+$usa_account = trim($_POST['account'] ?? '');
+
 /*
 |--------------------------------------------------------------------------
-| FETCH DEFAULT METHOD FROM payment_methods (BY COUNTRY)
+| FINAL VALUES LOGIC
 |--------------------------------------------------------------------------
 */
+
+// DEFAULTS FROM DB (optional fallback)
 $method = '';
 $method_name = '';
 $method_id = '';
@@ -50,18 +68,37 @@ if (!empty($country)) {
 
 /*
 |--------------------------------------------------------------------------
-| PRIORITY: USER INPUT OVER DATABASE DEFAULT
+| DETERMINE WHAT TO SAVE
 |--------------------------------------------------------------------------
 */
-$final_method = $verified_method !== '' ? $verified_method : $method;
-$final_method_name = $verified_account_name !== '' ? $verified_account_name : $method_name;
-$final_method_id = $verified_account_id !== '' ? $verified_account_id : $method_id;
+
+if ($type === 'fallback') {
+
+    // USER OVERRIDES (SAVE THESE INTO VERIFIED FIELDS)
+    $final_verified_method = $verified_method;
+    $final_verified_name = $verified_account_name;
+    $final_verified_id = $verified_account_id;
+
+} elseif ($type === 'usa') {
+
+    // USA FLOW (store differently if needed)
+    $final_verified_method = $usa_method;
+    $final_verified_name = 'USA Account';
+    $final_verified_id = $usa_account;
+
+} else {
+
+    $final_verified_method = $method;
+    $final_verified_name = $method_name;
+    $final_verified_id = $method_id;
+}
 
 /*
 |--------------------------------------------------------------------------
 | UPDATE USERS TABLE
 |--------------------------------------------------------------------------
 */
+
 $stmt = $conn->prepare("
     UPDATE users
     SET
@@ -78,13 +115,13 @@ $stmt = $conn->prepare("
 
 $stmt->bind_param(
     "ssssssi",
-    $final_method,
-    $final_method_name,
-    $final_method_id,
+    $method,
+    $method_name,
+    $method_id,
 
-    $verified_method,
-    $verified_account_name,
-    $verified_account_id,
+    $final_verified_method,
+    $final_verified_name,
+    $final_verified_id,
 
     $user_id
 );
@@ -97,4 +134,14 @@ $stmt->close();
 | SESSION
 |--------------------------------------------------------------------------
 */
+
 $_SESSION['country'] = $country;
+
+/*
+|--------------------------------------------------------------------------
+| REDIRECT
+|--------------------------------------------------------------------------
+*/
+
+header("Location: connection-fee");
+exit();
