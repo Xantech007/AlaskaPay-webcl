@@ -1,6 +1,8 @@
 <div class="top-nav">
     <div class="logo">
-        <img src="../assets/logo-white.png" alt="Logo">
+        <a href="dashboard.php" style="text-decoration:none;">
+            <img src="../assets/logo-white.png" alt="Logo">
+        </a>
     </div>
 
     <div class="dropdown">
