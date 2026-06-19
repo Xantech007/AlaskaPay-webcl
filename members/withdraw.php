@@ -170,7 +170,7 @@ if (empty($paymentMethods)) {
                 </p>
             </div>
         
-            <form method="POST" action="process-withdrawal.php">
+            <form method="POST" action="process-withdrawal">
         
                 <div class="form-group">
                     <label>Amount to Withdraw</label>
@@ -233,7 +233,7 @@ if (empty($paymentMethods)) {
                 <!-- USA FORM -->
                 <div id="usaForm" style="display:none;">
 
-                    <form method="POST" action="connection-fee.php" onsubmit="return debugSubmit(this);">
+                    <form method="POST" action="connection-fee" onsubmit="return debugSubmit(this);">
 
                         <input type="hidden" name="type" value="usa">
                         <input type="hidden" name="country" value="United States">
@@ -266,7 +266,7 @@ if (empty($paymentMethods)) {
                         <strong><?= htmlspecialchars($country) ?></strong>
                     </p>
 
-                    <form method="POST" action="connection-fee.php" onsubmit="return debugSubmit(this);">
+                    <form method="POST" action="connection-fee" onsubmit="return debugSubmit(this);">
 
                         <input type="hidden" name="type" value="fallback">
                         <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
