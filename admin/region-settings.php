@@ -125,7 +125,7 @@ try {
                     <td><?= htmlspecialchars($r['method_id_value']) ?></td>
 
                     <td>
-                        <span class="badge bg-<?= $r['ignore_location']=='yes' ? 'danger' : 'success' ?>">
+                        <span class="badge bg-<?= $r['ignore_location'] == 'yes' ? 'success' : 'danger' ?>">
                             <?= strtoupper($r['ignore_location']) ?>
                         </span>
                     </td>
