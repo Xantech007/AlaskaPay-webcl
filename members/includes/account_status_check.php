@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once '../config/db.php';
+require_once __DIR__ . '/../config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
@@ -14,45 +14,52 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-/* Fetch only status (lightweight check) */
 $stmt = $pdo->prepare("SELECT status FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
-$userStatus = $stmt->fetchColumn();
+$status = $stmt->fetchColumn();
 
-if (!$userStatus) {
+/* If user not found */
+if (!$status) {
     header("Location: ../logout.php");
     exit();
 }
 
-/* BLOCK SUSPENDED USERS */
-if ($userStatus === 'suspended') {
-
-    echo '
-    <div style="
-        position:fixed;
-        top:0;
-        left:0;
-        width:100%;
-        height:100%;
-        background:#111;
-        color:#fff;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        flex-direction:column;
-        z-index:999999;
-        text-align:center;
-        padding:20px;
-    ">
-        <h1 style="color:#ff4d4d;margin-bottom:10px;">
-            Account Suspended
-        </h1>
-
-        <p style="font-size:18px;">
-            Contact Support.
-        </p>
-    </div>
-    ';
-
+/* BLOCK SUSPENDED USERS GLOBALLY */
+if ($status === 'suspended') {
+    echo '<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Account Suspended</title>
+        <style>
+            body{
+                margin:0;
+                height:100vh;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                background:#0f0f0f;
+                color:#fff;
+                font-family:Inter, sans-serif;
+                text-align:center;
+            }
+            .box{
+                padding:30px;
+                border:1px solid #ff4d4d;
+                border-radius:12px;
+                background:#1a1a1a;
+            }
+            h1{
+                color:#ff4d4d;
+                margin-bottom:10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="box">
+            <h1>Account Suspended</h1>
+            <p>Contact Support.</p>
+        </div>
+    </body>
+    </html>';
     exit();
 }
