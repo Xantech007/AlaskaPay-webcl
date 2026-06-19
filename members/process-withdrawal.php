@@ -84,23 +84,13 @@ $conn->begin_transaction();
 
 try {
 
-    /*
-    | Create Withdrawal Request
-    |
-    | Example withdrawals table:
-    |
-    | id
-    | user_id
-    | amount
-    | method
-    | account_name
-    | account_id
-    | status
-    | created_at
-    */
-
     $status = 'pending';
 
+    /*
+    |--------------------------------------------------------------------------
+    | Insert Withdrawal Request
+    |--------------------------------------------------------------------------
+    */
     $stmt = $conn->prepare("
         INSERT INTO withdrawals (
             user_id,
@@ -111,9 +101,7 @@ try {
             status,
             created_at
         )
-        VALUES (
-            ?, ?, ?, ?, ?, ?, NOW()
-        )
+        VALUES (?, ?, ?, ?, ?, ?, NOW())
     ");
 
     $stmt->bind_param(
@@ -134,7 +122,6 @@ try {
     | Deduct Balance
     |--------------------------------------------------------------------------
     */
-
     $stmt = $conn->prepare("
         UPDATE users
         SET balance = balance - ?
@@ -147,8 +134,16 @@ try {
 
     $conn->commit();
 
+    /*
+    |--------------------------------------------------------------------------
+    | SUCCESS → DASHBOARD
+    |--------------------------------------------------------------------------
+    */
     $_SESSION['success_message'] =
-        "Withdrawal request submitted successfully.";
+        "Withdrawal request submitted successfully and is now pending review.";
+
+    header("Location: dashboard.php");
+    exit();
 
 } catch (Exception $e) {
 
@@ -156,7 +151,7 @@ try {
 
     $_SESSION['error'] =
         "Unable to process withdrawal. Please try again.";
-}
 
-header("Location: dashboard.php");
-exit();
+    header("Location: withdraw.php");
+    exit();
+}
