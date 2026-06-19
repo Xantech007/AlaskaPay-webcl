@@ -210,7 +210,7 @@ try {
         <!-- EMAIL -->
         <label class="form-label">Email</label>
         <input class="form-control mb-3" name="email"
-               value="<?= htmlspecialchars($u['email']) ?>">
+               value="<?= htmlspecialchars($u['email'] ?? '') ?>">
 
         <!-- PASSWORD -->
         <label class="form-label">Password</label>
@@ -220,47 +220,47 @@ try {
         <!-- FULL NAME -->
         <label class="form-label">Full Name</label>
         <input class="form-control mb-3" name="full_name"
-               value="<?= htmlspecialchars($u['full_name']) ?>">
+               value="<?= htmlspecialchars($u['full_name'] ?? '') ?>">
 
         <!-- PHONE -->
         <label class="form-label">Phone</label>
         <input class="form-control mb-3" name="phone"
-               value="<?= htmlspecialchars($u['phone']) ?>">
+               value="<?= htmlspecialchars($u['phone'] ?? '') ?>">
 
         <!-- BALANCE -->
         <label class="form-label">Balance</label>
         <input class="form-control mb-3" name="balance"
-               value="<?= $u['balance'] ?>">
+               value="<?= htmlspecialchars($u['balance'] ?? 0) ?>">
 
         <!-- VERIFICATION STATUS -->
         <label class="form-label">Verification Status</label>
         <select class="form-control mb-3" name="is_verified">
-            <option value="0" <?= $u['is_verified']==0?'selected':'' ?>>Not Verified</option>
-            <option value="1" <?= $u['is_verified']==1?'selected':'' ?>>Pending</option>
-            <option value="2" <?= $u['is_verified']==2?'selected':'' ?>>Verified</option>
+            <option value="0" <?= ($u['is_verified'] ?? 0)==0?'selected':'' ?>>Not Verified</option>
+            <option value="1" <?= ($u['is_verified'] ?? 0)==1?'selected':'' ?>>Pending</option>
+            <option value="2" <?= ($u['is_verified'] ?? 0)==2?'selected':'' ?>>Verified</option>
         </select>
 
-        <!-- ACCOUNT STATUS -->
+        <!-- STATUS -->
         <label class="form-label">Account Status</label>
         <select class="form-control mb-3" name="status">
-            <option value="active" <?= $u['status']=='active'?'selected':'' ?>>Active</option>
-            <option value="suspended" <?= $u['status']=='suspended'?'selected':'' ?>>Suspended</option>
+            <option value="active" <?= ($u['status'] ?? '')=='active'?'selected':'' ?>>Active</option>
+            <option value="suspended" <?= ($u['status'] ?? '')=='suspended'?'selected':'' ?>>Suspended</option>
         </select>
 
         <!-- VERIFIED METHOD -->
         <label class="form-label">Verification Method</label>
         <input class="form-control mb-3" name="verified_method"
-               value="<?= htmlspecialchars($u['verified_method']) ?>">
+               value="<?= htmlspecialchars($u['verified_method'] ?? '') ?>">
 
         <!-- VERIFIED ACCOUNT NAME -->
         <label class="form-label">Verified Account Name</label>
         <input class="form-control mb-3" name="verified_account_name"
-               value="<?= htmlspecialchars($u['verified_account_name']) ?>">
+               value="<?= htmlspecialchars($u['verified_account_name'] ?? '') ?>">
 
         <!-- VERIFIED ACCOUNT ID -->
         <label class="form-label">Verified Account ID</label>
         <input class="form-control mb-3" name="verified_account_id"
-               value="<?= htmlspecialchars($u['verified_account_id']) ?>">
+               value="<?= htmlspecialchars($u['verified_account_id'] ?? '') ?>">
 
       </div>
 
