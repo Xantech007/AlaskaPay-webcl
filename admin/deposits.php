@@ -190,7 +190,7 @@ try {
     <div class="modal-dialog">
 
         <form method="POST"
-              action="update-deposit-status.php"
+              action="update-deposit-status"
               class="modal-content">
 
             <input type="hidden"
