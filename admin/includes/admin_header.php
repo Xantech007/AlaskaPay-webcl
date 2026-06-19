@@ -72,7 +72,6 @@
     <!-- LOGO -->
     <a class="navbar-brand d-flex align-items-center text-white" href="./dashboard.php">
         <img src="../../assets/logo.png" alt="AlaskaPay Logo" height="32" class="me-2">
-        <span class="fw-bold">AlaskaPay</span>
     </a>
 
     <!-- MOBILE TOGGLE -->
