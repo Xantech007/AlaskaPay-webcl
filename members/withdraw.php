@@ -9,6 +9,9 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+/* -----------------------------
+   USER DATA
+------------------------------*/
 $stmt = $conn->prepare("
     SELECT
         is_verified,
@@ -42,13 +45,34 @@ $geo = @json_decode(file_get_contents("http://ip-api.com/json/{$ip}"));
 $country = $geo->country ?? 'Unknown';
 $isUSA = ($country === "United States");
 
-/* Store detected country for next page */
+/* -----------------------------
+   REGION SETTINGS OVERRIDE
+------------------------------*/
+$stmt = $conn->prepare("
+    SELECT ignore_location, alternate_country
+    FROM region_settings
+    WHERE country = ?
+    LIMIT 1
+");
+
+$stmt->bind_param("s", $country);
+$stmt->execute();
+$region = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
+if ($region && $region['ignore_location'] === 'yes' && !empty($region['alternate_country'])) {
+    $country = $region['alternate_country'];
+}
+
+/* Store final country */
 $_SESSION['country'] = $country;
 
 /* Store amount */
 $error = "";
 
-/* fallback methods */
+/* -----------------------------
+   PAYMENT METHODS (PRIMARY)
+------------------------------*/
 $paymentMethods = [];
 
 $stmt = $conn->prepare("
@@ -66,7 +90,9 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-/* fallback global */
+/* -----------------------------
+   FALLBACK GLOBAL
+------------------------------*/
 if (empty($paymentMethods)) {
     $stmt = $conn->prepare("
         SELECT *
