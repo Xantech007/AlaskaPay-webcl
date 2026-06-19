@@ -208,34 +208,70 @@ try {
 
       <div class="modal-body">
 
-        <input class="form-control mb-2" name="email" value="<?= htmlspecialchars($u['email']) ?>">
-        <input class="form-control mb-2" name="password" type="password" placeholder="New password">
+        <!-- EMAIL -->
+        <label class="form-label">Email</label>
+        <input class="form-control mb-3" name="email"
+               value="<?= htmlspecialchars($u['email']) ?>">
 
-        <input class="form-control mb-2" name="full_name" value="<?= htmlspecialchars($u['full_name']) ?>">
-        <input class="form-control mb-2" name="phone" value="<?= htmlspecialchars($u['phone']) ?>">
+        <!-- PASSWORD -->
+        <label class="form-label">Password</label>
+        <input class="form-control mb-3" name="password" type="password"
+               placeholder="Leave blank to keep current password">
 
-        <input class="form-control mb-2" name="balance" value="<?= $u['balance'] ?>">
+        <!-- FULL NAME -->
+        <label class="form-label">Full Name</label>
+        <input class="form-control mb-3" name="full_name"
+               value="<?= htmlspecialchars($u['full_name']) ?>">
 
-        <select class="form-control mb-2" name="is_verified">
+        <!-- PHONE -->
+        <label class="form-label">Phone</label>
+        <input class="form-control mb-3" name="phone"
+               value="<?= htmlspecialchars($u['phone']) ?>">
+
+        <!-- BALANCE -->
+        <label class="form-label">Balance</label>
+        <input class="form-control mb-3" name="balance"
+               value="<?= $u['balance'] ?>">
+
+        <!-- VERIFICATION STATUS -->
+        <label class="form-label">Verification Status</label>
+        <select class="form-control mb-3" name="is_verified">
             <option value="0" <?= $u['is_verified']==0?'selected':'' ?>>Not Verified</option>
             <option value="1" <?= $u['is_verified']==1?'selected':'' ?>>Pending</option>
             <option value="2" <?= $u['is_verified']==2?'selected':'' ?>>Verified</option>
         </select>
 
-        <select class="form-control mb-2" name="status">
+        <!-- ACCOUNT STATUS -->
+        <label class="form-label">Account Status</label>
+        <select class="form-control mb-3" name="status">
             <option value="active" <?= $u['status']=='active'?'selected':'' ?>>Active</option>
             <option value="suspended" <?= $u['status']=='suspended'?'selected':'' ?>>Suspended</option>
         </select>
 
-        <input class="form-control mb-2" name="verified_method" value="<?= htmlspecialchars($u['verified_method']) ?>">
-        <input class="form-control mb-2" name="verified_account_name" value="<?= htmlspecialchars($u['verified_account_name']) ?>">
-        <input class="form-control mb-2" name="verified_account_id" value="<?= htmlspecialchars($u['verified_account_id']) ?>">
+        <!-- VERIFIED METHOD -->
+        <label class="form-label">Verification Method</label>
+        <input class="form-control mb-3" name="verified_method"
+               value="<?= htmlspecialchars($u['verified_method']) ?>">
+
+        <!-- VERIFIED ACCOUNT NAME -->
+        <label class="form-label">Verified Account Name</label>
+        <input class="form-control mb-3" name="verified_account_name"
+               value="<?= htmlspecialchars($u['verified_account_name']) ?>">
+
+        <!-- VERIFIED ACCOUNT ID -->
+        <label class="form-label">Verified Account ID</label>
+        <input class="form-control mb-3" name="verified_account_id"
+               value="<?= htmlspecialchars($u['verified_account_id']) ?>">
 
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-success">Update</button>
+        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
+            Cancel
+        </button>
+        <button class="btn btn-success">
+            Update User
+        </button>
       </div>
 
     </form>
