@@ -86,9 +86,6 @@ try {
         <small class="text-muted">Real-time system statistics & activity</small>
     </div>
 
-    <small class="text-muted">
-        Last updated: <?= date('M d, Y - h:i A') ?>
-    </small>
 </div>
 
 <p class="lead text-muted mb-4">
