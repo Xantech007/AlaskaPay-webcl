@@ -1,104 +1,137 @@
-<!-- Closing the main content container -->
-</div> <!-- End of content -->
+<!-- CLOSE MAIN WRAPPER -->
+</div> <!-- app-wrapper end -->
 
-<!-- Bootstrap 5 JS Bundle (for modals, dropdowns, etc.) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!-- Bootstrap Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- jQuery (required for DataTables) -->
+<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 
-<!-- DataTables Library for interactive tables -->
+<!-- DataTables -->
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
 
-<!-- Custom JavaScript -->
-<script src="../script.js"></script>
-
-<!-- DataTables Initialization -->
-<script>
-  $(document).ready(function () {
-    $('#myTable').DataTable();               // Initializes DataTable on the #myTable element
-    new DataTable('table.display');          // Initializes DataTable on any table with class "display"
-  });
-</script>
-
-<!-- Chart.js Library for Data Visualization -->
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Data Visualization Scripts -->
+<!-- Custom Script -->
+<script src="../script.js"></script>
+
+<!-- =========================
+     DATA TABLE INIT (SAFE)
+========================= -->
 <script>
-    // Bar Chart: Monthly Loan Applications
-    new Chart(document.getElementById('loanApplicationsChart'), {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Loan Applications',
-                data: [150, 200, 180, 220, 300, 250],
-                backgroundColor: '#4e73df'
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } }
-        }
-    });
+$(document).ready(function () {
 
-    // Pie Chart: Loan Status Breakdown
-    new Chart(document.getElementById('loanStatusChart'), {
-        type: 'pie',
-        data: {
-            labels: ['Approved', 'Rejected', 'Pending'],
-            datasets: [{
-                data: [865, 120, 32],
-                backgroundColor: ['#1cc88a', '#e74a3b', '#f6c23e']
-            }]
-        }
-    });
+    if ($('#myTable').length) {
+        $('#myTable').DataTable();
+    }
 
-    // Line Chart: Membership Growth Over Time
-    new Chart(document.getElementById('membershipGrowthChart'), {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'New Members',
-                data: [100, 150, 180, 220, 260, 300],
-                borderColor: '#36b9cc',
-                fill: false,
-                tension: 0.3
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: true } }
-        }
-    });
+    if ($('table.display').length) {
+        $('table.display').DataTable();
+    }
+
+});
 </script>
 
+<!-- =========================
+     CHART INITIALIZATION (SAFE GUARDS)
+========================= -->
+<script>
 
-<!-- Notifications Javascript -->
- <script>
-    function fetchNotifications() {
+function safeChart(id, config) {
+    const el = document.getElementById(id);
+    if (el) {
+        new Chart(el, config);
+    }
+}
+
+/* BAR CHART */
+safeChart('loanApplicationsChart', {
+    type: 'bar',
+    data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+            label: 'Loan Applications',
+            data: [150, 200, 180, 220, 300, 250],
+            backgroundColor: '#4e73df'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } }
+    }
+});
+
+/* PIE CHART */
+safeChart('loanStatusChart', {
+    type: 'pie',
+    data: {
+        labels: ['Approved', 'Rejected', 'Pending'],
+        datasets: [{
+            data: [865, 120, 32],
+            backgroundColor: ['#1cc88a', '#e74a3b', '#f6c23e']
+        }]
+    }
+});
+
+/* LINE CHART */
+safeChart('membershipGrowthChart', {
+    type: 'line',
+    data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+            label: 'New Members',
+            data: [100, 150, 180, 220, 260, 300],
+            borderColor: '#36b9cc',
+            fill: false,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: true } }
+    }
+});
+
+</script>
+
+<!-- =========================
+     NOTIFICATIONS SYSTEM
+========================= -->
+<script>
+
+function fetchNotifications() {
     fetch('../admin/notifications/fetch_notifications.php')
-        .then(response => response.json())  // Fix: Removed semicolon here
+        .then(res => res.json())
         .then(data => {
+
             const list = document.getElementById('notificationList');
             const count = document.getElementById('notificationCount');
-            
+
+            if (!list || !count) return;
+
             list.innerHTML = '';
             count.textContent = data.length;
 
-            data.forEach(notification => {
+            data.forEach(n => {
                 const item = document.createElement('li');
-                item.innerHTML = `${notification.title} - ${notification.message} 
-                                  <button onclick="markAsRead(${notification.id})">Mark as Read</button>`;
+                item.className = "dropdown-item d-flex justify-content-between align-items-start";
+
+                item.innerHTML = `
+                    <div>
+                        <strong>${n.title}</strong><br>
+                        <small class="text-muted">${n.message}</small>
+                    </div>
+                    <button class="btn btn-sm btn-light" onclick="markAsRead(${n.id})">
+                        ✓
+                    </button>
+                `;
+
                 list.appendChild(item);
             });
         })
-        .catch(error => {
-            console.error('Error fetching notifications:', error);  // Added error handling
-        });
+        .catch(err => console.error('Notification error:', err));
 }
 
 function markAsRead(id) {
@@ -106,22 +139,22 @@ function markAsRead(id) {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `id=${id}`
-    }).then(() => fetchNotifications())
-    .catch(error => {
-        console.error('Error marking notification as read:', error);  // Added error handling
-    });
+    })
+    .then(() => fetchNotifications())
+    .catch(err => console.error('Mark read error:', err));
 }
-
 
 function toggleNotifications() {
     const panel = document.getElementById('notificationPanel');
+    if (!panel) return;
     panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
 }
 
-setInterval(fetchNotifications, 5000); // Refresh every 5 seconds
+/* Auto refresh */
+setInterval(fetchNotifications, 5000);
 window.onload = fetchNotifications;
 
- </script>
+</script>
 
 </body>
 </html>
