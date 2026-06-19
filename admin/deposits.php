@@ -132,7 +132,7 @@ try {
                     <!-- PROOF -->
                     <td>
                         <a href="../<?= htmlspecialchars($d['proof_file']) ?>" target="_blank">
-                            <img src="../<?= htmlspecialchars($d['proof_file']) ?>"
+                            <img src="../members/<?= htmlspecialchars($d['proof_file']) ?>"
                                  style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
                         </a>
                     </td>
