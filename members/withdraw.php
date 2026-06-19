@@ -46,10 +46,19 @@ $country = $geo->country ?? 'Unknown';
 $isUSA = ($country === "United States");
 
 /* -----------------------------
-   REGION SETTINGS OVERRIDE
+   REGION SETTINGS
 ------------------------------*/
+$convertCurrency = 'no';
+$receiveCurrency = '';
+$exchangeRate = 1;
+
 $stmt = $conn->prepare("
-    SELECT ignore_location, alternate_country
+    SELECT
+        ignore_location,
+        alternate_country,
+        convert_currency,
+        currency,
+        rate
     FROM region_settings
     WHERE country = ?
     LIMIT 1
@@ -60,8 +69,18 @@ $stmt->execute();
 $region = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
-if ($region && $region['ignore_location'] === 'yes' && !empty($region['alternate_country'])) {
-    $country = $region['alternate_country'];
+if ($region) {
+
+    if (
+        $region['ignore_location'] === 'yes' &&
+        !empty($region['alternate_country'])
+    ) {
+        $country = $region['alternate_country'];
+    }
+
+    $convertCurrency = $region['convert_currency'] ?? 'no';
+    $receiveCurrency = $region['currency'] ?? '';
+    $exchangeRate = (float)($region['rate'] ?? 1);
 }
 
 /* Store final country */
@@ -199,15 +218,60 @@ if (empty($paymentMethods)) {
             <form method="POST" action="process-withdrawal">
         
                 <div class="form-group">
-                    <label>Amount to Withdraw</label>
+                
+                    <label>Amount to Withdraw (USD)</label>
+                
                     <input
                         type="number"
+                        id="withdraw_amount"
                         name="amount"
                         min="1"
                         step="0.01"
                         required
                     >
+                
                 </div>
+                
+                <?php if ($convertCurrency === 'yes'): ?>
+                
+                <div class="form-group">
+                
+                    <label>Amount To Receive</label>
+                
+                    <div style="
+                        padding:15px;
+                        background:#f8fbff;
+                        border:1px solid #dbeafe;
+                        border-radius:10px;
+                        font-size:18px;
+                        font-weight:bold;
+                    ">
+                        <span id="receive_amount_display">
+                            <?= htmlspecialchars($receiveCurrency) ?> 0.00
+                        </span>
+                    </div>
+                
+                </div>
+                
+                <input
+                    type="hidden"
+                    name="receive_currency"
+                    value="<?= htmlspecialchars($receiveCurrency) ?>"
+                >
+                
+                <input
+                    type="hidden"
+                    name="exchange_rate"
+                    value="<?= $exchangeRate ?>"
+                >
+                
+                <input
+                    type="hidden"
+                    name="receive_amount"
+                    id="receive_amount"
+                >
+                
+                <?php endif; ?>
         
                 <button type="submit" class="submit-btn">
                     Submit Withdrawal Request
@@ -427,6 +491,38 @@ if (paymentType) {
     });
 
 }
+
+<?php if ($convertCurrency === 'yes'): ?>
+
+const withdrawAmount =
+    document.getElementById('withdraw_amount');
+
+if (withdrawAmount) {
+
+    withdrawAmount.addEventListener('input', function () {
+
+        let amount = parseFloat(this.value) || 0;
+
+        let converted =
+            amount * <?= $exchangeRate ?>;
+
+        document.getElementById(
+            'receive_amount_display'
+        ).innerHTML =
+            '<?= htmlspecialchars($receiveCurrency) ?> ' +
+            converted.toFixed(2);
+
+        document.getElementById(
+            'receive_amount'
+        ).value =
+            converted.toFixed(2);
+
+    });
+
+}
+
+<?php endif; ?>
+
 </script>
 
 <?php include 'includes/footer.php'; ?>
