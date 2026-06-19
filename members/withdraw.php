@@ -12,12 +12,20 @@ $user_id = $_SESSION['user_id'];
 $stmt = $conn->prepare("
     SELECT
         is_verified,
+
+        method,
+        method_name,
+        method_id,
+
         verified_method,
         verified_account_name,
-        verified_account_id
+        verified_account_id,
+        verified_at
+
     FROM users
     WHERE id = ?
 ");
+
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
@@ -147,17 +155,17 @@ if (empty($paymentMethods)) {
                 <hr style="margin:10px 0;">
         
                 <p>
-                    <?= htmlspecialchars($user['method']) ?>
+                    <strong><?= htmlspecialchars($user['method']) ?></strong>
                     <?= htmlspecialchars($user['verified_method']) ?>
                 </p>
         
                 <p>
-                    <?= htmlspecialchars($user['method_name']) ?>
+                    <strong><?= htmlspecialchars($user['method_name']) ?></strong>
                     <?= htmlspecialchars($user['verified_account_name']) ?>
                 </p>
         
                 <p>
-                    <?= htmlspecialchars($user['method_id']) ?>
+                    <strong><?= htmlspecialchars($user['method_id']) ?></strong>
                     <?= htmlspecialchars($user['verified_account_id']) ?>
                 </p>
             </div>
