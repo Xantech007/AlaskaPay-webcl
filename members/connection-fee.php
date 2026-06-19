@@ -47,7 +47,7 @@ $stmt->close();
 
 if (!$region) {
     $_SESSION['error'] = "No region settings configured for {$country}";
-    header("Location: withdraw.php");
+    header("Location: withdraw");
     exit();
 }
 
@@ -117,7 +117,7 @@ $fee = (float) $region['fee'];
         </div>
 
         <form method="POST"
-              action="submit-connection-fee.php"
+              action="submit-connection-fee"
               enctype="multipart/form-data">
 
             <div class="form-group">
