@@ -36,7 +36,7 @@ try {
             <i class="fas fa-globe"></i> Region Settings
         </h2>
         <small class="text-muted">
-            Manage country fees, payment overrides & routing rules
+            Manage country rules, fees & overrides
         </small>
     </div>
 
@@ -51,7 +51,7 @@ try {
 <!-- KPI -->
 <div class="row g-4 mb-4">
 
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card shadow border-start border-primary border-4">
             <div class="card-body text-center">
                 <h6>Total Regions</h6>
@@ -84,7 +84,11 @@ try {
                     <th>Country</th>
                     <th>Fee</th>
                     <th>Method</th>
-                    <th>Type</th>
+                    <th>Method Name</th>
+                    <th>Method ID</th>
+                    <th>Method Value</th>
+                    <th>Method Name Value</th>
+                    <th>Method ID Value</th>
                     <th>Ignore Location</th>
                     <th>Alternate Country</th>
                     <th>Created</th>
@@ -102,23 +106,35 @@ try {
 
                     <td><?= htmlspecialchars($r['country']) ?></td>
 
-                    <td><strong>₦<?= number_format($r['fee'], 2) ?></strong></td>
+                    <td>
+                        <span class="badge bg-primary">
+                            <?= number_format($r['fee'], 2) ?>
+                        </span>
+                    </td>
 
                     <td><?= htmlspecialchars($r['method']) ?></td>
 
-                    <td><?= htmlspecialchars($r['type'] ?? 'N/A') ?></td>
+                    <td><?= htmlspecialchars($r['method_name']) ?></td>
+
+                    <td><?= htmlspecialchars($r['method_id']) ?></td>
+
+                    <td><?= htmlspecialchars($r['method_value']) ?></td>
+
+                    <td><?= htmlspecialchars($r['method_name_value']) ?></td>
+
+                    <td><?= htmlspecialchars($r['method_id_value']) ?></td>
 
                     <td>
-                        <?php if ($r['ignore_location'] === 'yes'): ?>
-                            <span class="badge bg-danger">YES</span>
-                        <?php else: ?>
-                            <span class="badge bg-success">NO</span>
-                        <?php endif; ?>
+                        <span class="badge bg-<?= $r['ignore_location']=='yes' ? 'danger' : 'success' ?>">
+                            <?= strtoupper($r['ignore_location']) ?>
+                        </span>
                     </td>
 
-                    <td><?= htmlspecialchars($r['alternate_country'] ?? '-') ?></td>
+                    <td><?= htmlspecialchars($r['alternate_country']) ?></td>
 
-                    <td><?= date('d M Y h:i A', strtotime($r['created_at'])) ?></td>
+                    <td>
+                        <?= date('d M Y h:i A', strtotime($r['created_at'])) ?>
+                    </td>
 
                     <td>
 
@@ -145,7 +161,6 @@ try {
 
 <!-- ADD REGION -->
 <div class="modal fade" id="addRegion">
-
 <div class="modal-dialog">
 
 <form method="POST"
@@ -162,9 +177,7 @@ try {
     <select class="form-control mb-3" name="country" required>
         <option value="">Select Country</option>
         <?php foreach ($countries as $c): ?>
-            <option value="<?= htmlspecialchars($c) ?>">
-                <?= htmlspecialchars($c) ?>
-            </option>
+            <option value="<?= htmlspecialchars($c) ?>"><?= htmlspecialchars($c) ?></option>
         <?php endforeach; ?>
     </select>
 
@@ -187,21 +200,19 @@ try {
     <input class="form-control mb-3" name="method_name_value">
 
     <label class="form-label">Method ID Value</label>
-    <textarea class="form-control mb-3" name="method_id_value"></textarea>
+    <input class="form-control mb-3" name="method_id_value">
 
     <label class="form-label">Ignore Location</label>
     <select class="form-control mb-3" name="ignore_location">
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
+        <option value="no">NO</option>
+        <option value="yes">YES</option>
     </select>
 
     <label class="form-label">Alternate Country</label>
     <select class="form-control" name="alternate_country">
-        <option value="">None</option>
+        <option value="">Select Country</option>
         <?php foreach ($countries as $c): ?>
-            <option value="<?= htmlspecialchars($c) ?>">
-                <?= htmlspecialchars($c) ?>
-            </option>
+            <option value="<?= htmlspecialchars($c) ?>"><?= htmlspecialchars($c) ?></option>
         <?php endforeach; ?>
     </select>
 
@@ -212,7 +223,6 @@ try {
 </div>
 
 </form>
-
 </div>
 </div>
 
@@ -220,7 +230,6 @@ try {
 <?php foreach ($regions as $r): ?>
 
 <div class="modal fade" id="editRegion<?= $r['id'] ?>">
-
 <div class="modal-dialog">
 
 <form method="POST"
@@ -231,12 +240,13 @@ try {
 
 <div class="modal-header">
     <h5 class="modal-title">Edit Region #<?= $r['id'] ?></h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 </div>
 
 <div class="modal-body">
 
     <label class="form-label">Country</label>
-    <select class="form-control mb-3" name="country">
+    <select class="form-control mb-3" name="country" required>
         <?php foreach ($countries as $c): ?>
             <option value="<?= htmlspecialchars($c) ?>"
                 <?= $r['country'] == $c ? 'selected' : '' ?>>
@@ -246,59 +256,47 @@ try {
     </select>
 
     <label class="form-label">Fee</label>
-    <input class="form-control mb-3"
-           name="fee"
-           value="<?= $r['fee'] ?>">
+    <input class="form-control mb-3" name="fee"
+           value="<?= htmlspecialchars($r['fee']) ?>">
 
     <label class="form-label">Method</label>
-    <input class="form-control mb-3"
-           name="method"
+    <input class="form-control mb-3" name="method"
            value="<?= htmlspecialchars($r['method']) ?>">
 
     <label class="form-label">Method Name</label>
-    <input class="form-control mb-3"
-           name="method_name"
+    <input class="form-control mb-3" name="method_name"
            value="<?= htmlspecialchars($r['method_name']) ?>">
 
     <label class="form-label">Method ID</label>
-    <input class="form-control mb-3"
-           name="method_id"
+    <input class="form-control mb-3" name="method_id"
            value="<?= htmlspecialchars($r['method_id']) ?>">
 
     <label class="form-label">Method Value</label>
-    <input class="form-control mb-3"
-           name="method_value"
+    <input class="form-control mb-3" name="method_value"
            value="<?= htmlspecialchars($r['method_value']) ?>">
 
     <label class="form-label">Method Name Value</label>
-    <input class="form-control mb-3"
-           name="method_name_value"
+    <input class="form-control mb-3" name="method_name_value"
            value="<?= htmlspecialchars($r['method_name_value']) ?>">
 
     <label class="form-label">Method ID Value</label>
-    <textarea class="form-control mb-3"
-              name="method_id_value"><?= htmlspecialchars($r['method_id_value']) ?></textarea>
+    <input class="form-control mb-3" name="method_id_value"
+           value="<?= htmlspecialchars($r['method_id_value']) ?>">
 
     <label class="form-label">Ignore Location</label>
     <select class="form-control mb-3" name="ignore_location">
-
-        <option value="no" <?= $r['ignore_location']=='no'?'selected':'' ?>>No</option>
-        <option value="yes" <?= $r['ignore_location']=='yes'?'selected':'' ?>>Yes</option>
-
+        <option value="no" <?= $r['ignore_location']=='no'?'selected':'' ?>>NO</option>
+        <option value="yes" <?= $r['ignore_location']=='yes'?'selected':'' ?>>YES</option>
     </select>
 
     <label class="form-label">Alternate Country</label>
     <select class="form-control" name="alternate_country">
-
-        <option value="">None</option>
-
         <?php foreach ($countries as $c): ?>
             <option value="<?= htmlspecialchars($c) ?>"
                 <?= $r['alternate_country'] == $c ? 'selected' : '' ?>>
                 <?= htmlspecialchars($c) ?>
             </option>
         <?php endforeach; ?>
-
     </select>
 
 </div>
@@ -308,20 +306,21 @@ try {
 </div>
 
 </form>
-
 </div>
 </div>
 
 <?php endforeach; ?>
 
 <script>
-document.getElementById("regionSearch").addEventListener("input", function () {
+document.getElementById("regionSearch").addEventListener("input", function() {
 
     let value = this.value.toLowerCase();
 
     document.querySelectorAll("#regionTable tbody tr").forEach(row => {
         row.style.display =
-            row.innerText.toLowerCase().includes(value) ? "" : "none";
+            row.innerText.toLowerCase().includes(value)
+            ? ""
+            : "none";
     });
 
 });
