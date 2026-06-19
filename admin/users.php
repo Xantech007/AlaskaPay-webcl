@@ -32,7 +32,6 @@ try {
             username,
             email,
             password,
-            verified,
             full_name,
             phone,
             balance,
