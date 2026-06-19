@@ -34,20 +34,6 @@ if (!empty($_SESSION['success_message'])) {
     unset($_SESSION['success_message']);
 }
 
-<?php if (!empty($_SESSION['success'])): ?>
-    <div class="alert-success">
-        <?= htmlspecialchars($_SESSION['success']) ?>
-    </div>
-    <?php unset($_SESSION['success']); ?>
-<?php endif; ?>
-
-<?php if (!empty($_SESSION['error'])): ?>
-    <div class="alert-error">
-        <?= htmlspecialchars($_SESSION['error']) ?>
-    </div>
-    <?php unset($_SESSION['error']); ?>
-<?php endif; ?>
-
 include 'includes/header.php';
 include 'includes/navbar.php';
 ?>
