@@ -60,7 +60,7 @@ if (!isset($_FILES['receipt']) || $_FILES['receipt']['error'] !== 0) {
     exit();
 }
 
-$uploadDir = "../uploads/deposits/";
+$uploadDir = "uploads/deposits/";
 
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true);
