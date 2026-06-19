@@ -4,11 +4,6 @@
 session_start();
 require '../config/db.php';
 
-include 'add-user.php';
-include 'edit-user.php';
-include 'delete-user.php';
-
-
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
     exit();
@@ -16,6 +11,20 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 $pageTitle = "Manage Users";
 include './includes/admin_header.php';
+
+<?php if (isset($_SESSION['success'])): ?>
+    <div class="alert alert-success alert-dismissible fade show">
+        <?= $_SESSION['success']; unset($_SESSION['success']); ?>
+        <button class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['error'])): ?>
+    <div class="alert alert-danger alert-dismissible fade show">
+        <?= $_SESSION['error']; unset($_SESSION['error']); ?>
+        <button class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
 
 try {
 
@@ -44,35 +53,27 @@ try {
 ?>
 
 <div class="main p-4">
-    
-<?php if (isset($_SESSION['success'])): ?>
-    <div class="alert alert-success alert-dismissible fade show">
-        <?= $_SESSION['success']; unset($_SESSION['success']); ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-<?php endif; ?>
-
-<?php if (isset($_SESSION['error'])): ?>
-    <div class="alert alert-danger alert-dismissible fade show">
-        <?= $_SESSION['error']; unset($_SESSION['error']); ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-<?php endif; ?>
 
     <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
+    
         <div>
-            <h2 class="fw-bold text-primary">
+            <h2 class="fw-bold text-primary mb-0">
                 <i class="fas fa-users"></i> Users Management
             </h2>
             <small class="text-muted">Manage all registered users</small>
         </div>
     
-        <div>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                <i class="fas fa-plus"></i> Add New User
+        <div class="d-flex align-items-center gap-3">
+            <small class="text-muted">
+                Last updated: <?= date('M d, Y - h:i A') ?>
+            </small>
+    
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                <i class="fas fa-user-plus"></i> Add New User
             </button>
         </div>
+    
     </div>
 
     <!-- KPI CARDS -->
@@ -132,7 +133,7 @@ try {
         <div class="card-body p-0 table-responsive">
 
             <table class="table table-hover table-striped mb-0" id="usersTable">
-
+            
                 <thead class="table-primary">
                     <tr>
                         <th>ID</th>
@@ -147,26 +148,26 @@ try {
                         <th>Actions</th>
                     </tr>
                 </thead>
-
+            
                 <tbody>
                 <?php foreach ($users as $u): ?>
                     <tr>
-
+            
                         <td><?= htmlspecialchars($u['id']) ?></td>
-
+            
                         <td>
                             <strong><?= htmlspecialchars($u['full_name'] ?? 'N/A') ?></strong><br>
-                            <small class="text-muted">@<?= htmlspecialchars($u['username']) ?></small>
+                            <small class="text-muted">@<?= htmlspecialchars($u['username'] ?? '-') ?></small>
                         </td>
-
+            
                         <td><?= htmlspecialchars($u['email']) ?></td>
-
+            
                         <td><?= htmlspecialchars($u['phone'] ?? '-') ?></td>
-
+            
                         <td>
                             <strong>₦<?= number_format($u['balance'], 2) ?></strong>
                         </td>
-
+            
                         <td>
                             <?php if ($u['status'] === 'active'): ?>
                                 <span class="badge bg-success">Active</span>
@@ -174,44 +175,141 @@ try {
                                 <span class="badge bg-danger">Suspended</span>
                             <?php endif; ?>
                         </td>
-
+            
                         <td>
-                            <?php if ($u['is_verified']): ?>
+                            <?php if ((int)$u['is_verified'] === 2): ?>
                                 <span class="badge bg-primary">Verified</span>
+                            <?php elseif ((int)$u['is_verified'] === 1): ?>
+                                <span class="badge bg-warning text-dark">Pending</span>
                             <?php else: ?>
-                                <span class="badge bg-warning text-dark">Unverified</span>
+                                <span class="badge bg-secondary">Not Verified</span>
                             <?php endif; ?>
                         </td>
-
+            
                         <td>
                             <?= htmlspecialchars($u['country'] ?? '-') ?>
                             <small class="text-muted d-block"><?= htmlspecialchars($u['state'] ?? '-') ?></small>
                         </td>
-
+            
                         <td>
                             <?= date('M d, Y', strtotime($u['created_at'])) ?>
                         </td>
-
+            
                         <td>
-                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editUserModal<?= $u['id'] ?>">
+                            <button class="btn btn-sm btn-warning"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editUser<?= $u['id'] ?>">
                                 Edit
                             </button>
-                        
-                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal<?= $u['id'] ?>">
+            
+                            <a href="delete-user.php?id=<?= $u['id'] ?>"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Delete this user?')">
                                 Delete
-                            </button>
+                            </a>
                         </td>
-
+            
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
-
+            
             </table>
+
+            <?php foreach ($users as $u): ?>
+            
+            <div class="modal fade" id="editUser<?= $u['id'] ?>" tabindex="-1">
+              <div class="modal-dialog">
+                <form method="POST" action="edit-user.php" class="modal-content">
+            
+                  <input type="hidden" name="id" value="<?= $u['id'] ?>">
+            
+                  <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+            
+                  <div class="modal-body">
+            
+                    <input type="email" name="email" class="form-control mb-2"
+                           value="<?= htmlspecialchars($u['email']) ?>" required>
+            
+                    <input type="password" name="password" class="form-control mb-2"
+                           placeholder="New password (leave blank to keep)">
+            
+                    <input type="text" name="full_name" class="form-control mb-2"
+                           value="<?= htmlspecialchars($u['full_name']) ?>">
+            
+                    <input type="text" name="phone" class="form-control mb-2"
+                           value="<?= htmlspecialchars($u['phone']) ?>">
+            
+                    <input type="number" name="balance" class="form-control mb-2"
+                           value="<?= $u['balance'] ?>">
+            
+                    <select name="is_verified" class="form-control mb-2">
+                        <option value="0" <?= $u['is_verified']==0?'selected':'' ?>>Not Verified</option>
+                        <option value="1" <?= $u['is_verified']==1?'selected':'' ?>>Pending</option>
+                        <option value="2" <?= $u['is_verified']==2?'selected':'' ?>>Verified</option>
+                    </select>
+            
+                    <input type="text" name="status" class="form-control mb-2"
+                           value="<?= htmlspecialchars($u['status']) ?>">
+            
+                    <input type="text" name="verified_method" class="form-control mb-2"
+                           value="<?= htmlspecialchars($u['verified_method'] ?? '') ?>">
+            
+                    <input type="text" name="verified_account_name" class="form-control mb-2"
+                           value="<?= htmlspecialchars($u['verified_account_name'] ?? '') ?>">
+            
+                    <input type="text" name="verified_account_id" class="form-control mb-2"
+                           value="<?= htmlspecialchars($u['verified_account_id'] ?? '') ?>">
+            
+                  </div>
+            
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-success">Update</button>
+                  </div>
+            
+                </form>
+              </div>
+            </div>
+            
+            <?php endforeach; ?>
 
         </div>
 
     </div>
 
+</div>
+
+<div class="modal fade" id="addUserModal">
+  <div class="modal-dialog">
+    <form method="POST" action="add-user.php" class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Add New User</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
+
+        <input type="password" name="password" class="form-control mb-2" placeholder="Password" required>
+
+        <input type="text" name="full_name" class="form-control mb-2" placeholder="Full Name" required>
+
+        <input type="text" name="phone" class="form-control mb-2" placeholder="Phone">
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-primary">Create User</button>
+      </div>
+
+    </form>
+  </div>
 </div>
 
 <!-- SIMPLE SEARCH FILTER -->
@@ -227,6 +325,5 @@ document.getElementById("userSearch").addEventListener("keyup", function () {
     });
 });
 </script>
-
 
 <?php include './includes/admin_footer.php'; ?>
