@@ -103,7 +103,8 @@ try {
                 <tr>
                     <th>ID</th>
                     <th>User ID</th>
-                    <th>Amount</th>
+                    <th>Amount (USD)</th>
+                    <th>Amount (Received)</th>
                     <th>Method</th>
                     <th>Account Name</th>
                     <th>Account ID</th>
@@ -124,7 +125,18 @@ try {
                     <td><?= $w['user_id'] ?></td>
 
                     <td>
-                        <strong>₦<?= number_format($w['amount'], 2) ?></strong>
+                        <strong>$<?= number_format($w['amount'], 2) ?></strong>
+                    </td>
+                    
+                    <td>
+                        <?php if (!empty($w['receive_currency'])): ?>
+                            <strong>
+                                <?= htmlspecialchars($w['receive_currency']) ?>
+                                <?= number_format($w['receive_amount'], 2) ?>
+                            </strong>
+                        <?php else: ?>
+                            —
+                        <?php endif; ?>
                     </td>
 
                     <td><?= htmlspecialchars($w['method']) ?></td>
@@ -203,9 +215,18 @@ try {
 
                 <p><strong>User ID:</strong> <?= $w['user_id'] ?></p>
 
-                <p><strong>Amount:</strong>
-                    ₦<?= number_format($w['amount'],2) ?>
+                <p>
+                    <strong>Amount (USD):</strong>
+                    $<?= number_format($w['amount'], 2) ?>
                 </p>
+                
+                <?php if (!empty($w['receive_currency'])): ?>
+                <p>
+                    <strong>Amount (<?= htmlspecialchars($w['receive_currency']) ?>):</strong>
+                    <?= htmlspecialchars($w['receive_currency']) ?>
+                    <?= number_format($w['receive_amount'], 2) ?>
+                </p>
+                <?php endif; ?>
 
                 <p><strong>Method:</strong>
                     <?= htmlspecialchars($w['method']) ?>
