@@ -21,44 +21,88 @@ try {
     }
 
     // =========================
-    // CHECK IF DEPOSIT EXISTS
+    // GET DEPOSIT
     // =========================
-    $checkDeposit = $pdo->prepare("
-        SELECT id
+    $stmt = $pdo->prepare("
+        SELECT id, user_id
         FROM deposits
         WHERE id = ?
     ");
 
-    $checkDeposit->execute([$id]);
+    $stmt->execute([$id]);
 
-    if (!$checkDeposit->fetch()) {
+    $deposit = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$deposit) {
         throw new Exception("Deposit not found");
     }
 
     // =========================
-    // UPDATE STATUS
+    // MAP STATUS TO VERIFIED
     // =========================
-    $stmt = $pdo->prepare("
+    switch ($status) {
+        case 'approved':
+            $is_verified = 2;
+            break;
+
+        case 'pending':
+            $is_verified = 1;
+            break;
+
+        case 'rejected':
+        default:
+            $is_verified = 0;
+            break;
+    }
+
+    // =========================
+    // BEGIN TRANSACTION
+    // =========================
+    $pdo->beginTransaction();
+
+    // UPDATE DEPOSIT STATUS
+    $updateDeposit = $pdo->prepare("
         UPDATE deposits
         SET status = ?
         WHERE id = ?
     ");
 
-    $stmt->execute([
+    $updateDeposit->execute([
         $status,
         $id
     ]);
+
+    // UPDATE USER VERIFICATION STATUS
+    $updateUser = $pdo->prepare("
+        UPDATE users
+        SET is_verified = ?
+        WHERE id = ?
+    ");
+
+    $updateUser->execute([
+        $is_verified,
+        $deposit['user_id']
+    ]);
+
+    $pdo->commit();
 
     $_SESSION['success'] = "Deposit status updated successfully";
 
 } catch (PDOException $e) {
 
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+
     $_SESSION['error'] = "Database error occurred. Please try again.";
 
 } catch (Exception $e) {
 
-    $_SESSION['error'] = $e->getMessage();
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
 
+    $_SESSION['error'] = $e->getMessage();
 }
 
 header("Location: deposits");
