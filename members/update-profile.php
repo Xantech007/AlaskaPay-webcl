@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: profile.php');
+    header('Location: profile');
     exit();
 }
 
@@ -30,13 +30,13 @@ $confirm_password = $_POST['confirm_password'] ?? '';
 
 if (empty($email)) {
     $_SESSION['error_message'] = "Email address is required.";
-    header("Location: profile.php");
+    header("Location: profile");
     exit();
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $_SESSION['error_message'] = "Invalid email address.";
-    header("Location: profile.php");
+    header("Location: profile");
     exit();
 }
 
@@ -56,7 +56,7 @@ $stmt->execute([$email, $user_id]);
 
 if ($stmt->fetch()) {
     $_SESSION['error_message'] = "Email address already exists.";
-    header("Location: profile.php");
+    header("Location: profile");
     exit();
 }
 
@@ -69,13 +69,13 @@ if (!empty($password)) {
 
     if (strlen($password) < 6) {
         $_SESSION['error_message'] = "Password must be at least 6 characters.";
-        header("Location: profile.php");
+        header("Location: profile");
         exit();
     }
 
     if ($password !== $confirm_password) {
         $_SESSION['error_message'] = "Passwords do not match.";
-        header("Location: profile.php");
+        header("Location: profile");
         exit();
     }
 
@@ -134,5 +134,5 @@ if ($success) {
         "Unable to update profile.";
 }
 
-header("Location: profile.php");
+header("Location: profile");
 exit();
