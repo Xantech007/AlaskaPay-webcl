@@ -70,6 +70,11 @@ try {
                     <th>Method</th>
                     <th>Method Name</th>
                     <th>Method ID</th>
+            
+                    <th>Method Value</th>
+                    <th>Method Name Value</th>
+                    <th>Method ID Value</th>
+            
                     <th>Ignore Location</th>
                     <th>Alternate Country</th>
                     <th>Created</th>
@@ -84,36 +89,32 @@ try {
                 <tr>
 
                     <td><?= $r['id'] ?></td>
-
+                    
                     <td><?= htmlspecialchars($r['country']) ?></td>
-
+                    
                     <td>
                         <span class="badge bg-success">
                             <?= number_format($r['fee'],2) ?>
                         </span>
                     </td>
-
+                    
                     <td><?= htmlspecialchars($r['method']) ?></td>
                     <td><?= htmlspecialchars($r['method_name']) ?></td>
                     <td><?= htmlspecialchars($r['method_id']) ?></td>
-
+                    
+                    <td><?= htmlspecialchars($r['method_value']) ?></td>
+                    <td><?= htmlspecialchars($r['method_name_value']) ?></td>
+                    <td><?= nl2br(htmlspecialchars($r['method_id_value'])) ?></td>
+                    
                     <td>
-                        <?php if ($r['ignore_location'] === 'yes'): ?>
-                            <span class="badge bg-danger">YES</span>
-                        <?php else: ?>
-                            <span class="badge bg-secondary">NO</span>
-                        <?php endif; ?>
+                        <?= $r['ignore_location'] === 'yes'
+                            ? '<span class="badge bg-danger">YES</span>'
+                            : '<span class="badge bg-secondary">NO</span>' ?>
                     </td>
-
-                    <td>
-                        <?= htmlspecialchars($r['alternate_country']) ?>
-                    </td>
-
-                    <td>
-                        <?= date('d M Y h:i A', strtotime($r['created_at'])) ?>
-                    </td>
-
-                    <td>
+                    
+                    <td><?= htmlspecialchars($r['alternate_country']) ?></td>
+                    
+                    <td><?= date('d M Y h:i A', strtotime($r['created_at'])) ?></td>
 
                         <button class="btn btn-sm btn-warning"
                                 data-bs-toggle="modal"
