@@ -1,6 +1,4 @@
 <?php
-// admin/deposits.php - Deposits Management (2026)
-
 session_start();
 require '../config/db.php';
 
@@ -9,27 +7,34 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-$pageTitle = "Deposits Management";
+$pageTitle = "Manage Deposits";
 include './includes/admin_header.php';
 
 try {
 
-    // =========================
-    // KPI STATS
-    // =========================
+    // ================= STATS =================
     $totalDeposits = $pdo->query("SELECT COUNT(*) FROM deposits")->fetchColumn();
     $pendingDeposits = $pdo->query("SELECT COUNT(*) FROM deposits WHERE status = 'pending'")->fetchColumn();
     $approvedDeposits = $pdo->query("SELECT COUNT(*) FROM deposits WHERE status = 'approved'")->fetchColumn();
     $rejectedDeposits = $pdo->query("SELECT COUNT(*) FROM deposits WHERE status = 'rejected'")->fetchColumn();
 
-    // =========================
-    // DEPOSITS LIST
-    // =========================
+    // ================= UPDATE STATUS =================
+    if (isset($_POST['update_status'])) {
+        $id = $_POST['id'];
+        $status = $_POST['status'];
+
+        $stmt = $pdo->prepare("UPDATE deposits SET status = ? WHERE id = ?");
+        $stmt->execute([$status, $id]);
+
+        header("Location: deposits.php");
+        exit();
+    }
+
+    // ================= DEPOSITS =================
     $deposits = $pdo->query("
-        SELECT d.*, u.full_name
-        FROM deposits d
-        LEFT JOIN users u ON u.id = d.user_id
-        ORDER BY d.created_at DESC
+        SELECT *
+        FROM deposits
+        ORDER BY created_at DESC
         LIMIT 300
     ")->fetchAll();
 
@@ -38,182 +43,176 @@ try {
 }
 ?>
 
-<style>
-.proof-img {
-    width: 55px;
-    height: 55px;
-    object-fit: cover;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.proof-img:hover {
-    transform: scale(1.1);
-}
-
-.table td, .table th {
-    vertical-align: middle;
-}
-</style>
-
 <div class="main p-4">
 
-    <!-- HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold text-primary">
-                <i class="fas fa-wallet"></i> Deposits Management
-            </h2>
-            <small class="text-muted">Approve or review all user deposits</small>
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-primary mb-0">
+            <i class="fas fa-wallet"></i> Deposits Management
+        </h2>
+        <small class="text-muted">Review and manage all user deposits</small>
+    </div>
+</div>
+
+<!-- KPI -->
+<div class="row g-4 mb-4">
+
+    <div class="col-md-3">
+        <div class="card shadow-lg border-start border-primary border-4">
+            <div class="card-body text-center">
+                <h6>Total Deposits</h6>
+                <h3><?= number_format($totalDeposits) ?></h3>
+            </div>
         </div>
-        <small class="text-muted">Last updated: <?= date('M d, Y - h:i A') ?></small>
     </div>
 
-    <!-- KPI -->
-    <div class="row g-4 mb-4">
-
-        <div class="col-md-3">
-            <div class="card shadow-lg border-start border-primary border-4">
-                <div class="card-body text-center">
-                    <i class="fas fa-coins fa-2x text-primary mb-2"></i>
-                    <h6>Total Deposits</h6>
-                    <h3><?= number_format($totalDeposits) ?></h3>
-                </div>
+    <div class="col-md-3">
+        <div class="card shadow-lg border-start border-warning border-4">
+            <div class="card-body text-center">
+                <h6>Pending</h6>
+                <h3><?= number_format($pendingDeposits) ?></h3>
             </div>
         </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-lg border-start border-warning border-4">
-                <div class="card-body text-center">
-                    <i class="fas fa-clock fa-2x text-warning mb-2"></i>
-                    <h6>Pending</h6>
-                    <h3><?= number_format($pendingDeposits) ?></h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-lg border-start border-success border-4">
-                <div class="card-body text-center">
-                    <i class="fas fa-check fa-2x text-success mb-2"></i>
-                    <h6>Approved</h6>
-                    <h3><?= number_format($approvedDeposits) ?></h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-lg border-start border-danger border-4">
-                <div class="card-body text-center">
-                    <i class="fas fa-times fa-2x text-danger mb-2"></i>
-                    <h6>Rejected</h6>
-                    <h3><?= number_format($rejectedDeposits) ?></h3>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- TABLE -->
-    <div class="card shadow-lg">
-
-        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0"><i class="fas fa-list"></i> All Deposits</h5>
-            <input type="text" id="depositSearch" class="form-control form-control-sm w-25" placeholder="Search deposits...">
+    <div class="col-md-3">
+        <div class="card shadow-lg border-start border-success border-4">
+            <div class="card-body text-center">
+                <h6>Approved</h6>
+                <h3><?= number_format($approvedDeposits) ?></h3>
+            </div>
         </div>
+    </div>
 
-        <div class="card-body p-0 table-responsive">
-
-            <table class="table table-hover table-striped mb-0" id="depositsTable">
-
-                <thead class="table-primary">
-                    <tr>
-                        <th>ID</th>
-                        <th>User</th>
-                        <th>Email</th>
-                        <th>Amount</th>
-                        <th>Proof</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                <?php foreach ($deposits as $d): ?>
-                    <tr>
-
-                        <td><?= $d['id'] ?></td>
-
-                        <td>
-                            <strong><?= htmlspecialchars($d['full_name'] ?? 'Unknown') ?></strong>
-                            <small class="text-muted d-block">ID: <?= $d['user_id'] ?></small>
-                        </td>
-
-                        <td><?= htmlspecialchars($d['email']) ?></td>
-
-                        <td>
-                            <strong>₦<?= number_format($d['amount'], 2) ?></strong>
-                        </td>
-
-                        <td>
-                            <a href="../<?= $d['proof_file'] ?>" target="_blank">
-                                <img src="../<?= $d['proof_file'] ?>" class="proof-img">
-                            </a>
-                        </td>
-
-                        <td>
-                            <?php if ($d['status'] === 'approved'): ?>
-                                <span class="badge bg-success">Approved</span>
-                            <?php elseif ($d['status'] === 'pending'): ?>
-                                <span class="badge bg-warning text-dark">Pending</span>
-                            <?php else: ?>
-                                <span class="badge bg-danger">Rejected</span>
-                            <?php endif; ?>
-                        </td>
-
-                        <td>
-                            <?= date('M d, Y', strtotime($d['created_at'])) ?>
-                        </td>
-
-                        <td>
-
-                            <!-- Approve -->
-                            <a href="deposit_action.php?id=<?= $d['id'] ?>&action=approve"
-                               class="btn btn-sm btn-success">
-                                Approve
-                            </a>
-
-                            <!-- Reject -->
-                            <a href="deposit_action.php?id=<?= $d['id'] ?>&action=reject"
-                               class="btn btn-sm btn-danger">
-                                Reject
-                            </a>
-
-                        </td>
-
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-
-            </table>
-
+    <div class="col-md-3">
+        <div class="card shadow-lg border-start border-danger border-4">
+            <div class="card-body text-center">
+                <h6>Rejected</h6>
+                <h3><?= number_format($rejectedDeposits) ?></h3>
+            </div>
         </div>
     </div>
 
 </div>
 
-<!-- SEARCH SCRIPT -->
-<script>
-document.getElementById("depositSearch").addEventListener("keyup", function () {
-    let value = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#depositsTable tbody tr");
+<!-- TABLE -->
+<div class="card shadow-lg">
+    <div class="card-header bg-dark text-white d-flex justify-content-between">
+        <h5 class="mb-0">All Deposits</h5>
+        <input type="text" id="depositSearch" class="form-control form-control-sm w-25" placeholder="Search...">
+    </div>
 
-    rows.forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(value)
-            ? ""
-            : "none";
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-hover mb-0" id="depositsTable">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Amount</th>
+                    <th>Proof</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            <?php foreach ($deposits as $d): ?>
+                <tr>
+                    <td><?= $d['id'] ?></td>
+
+                    <td>User #<?= $d['user_id'] ?></td>
+
+                    <td><?= htmlspecialchars($d['email']) ?></td>
+
+                    <td>₦<?= number_format($d['amount'], 2) ?></td>
+
+                    <!-- PROOF -->
+                    <td>
+                        <a href="../<?= htmlspecialchars($d['proof_file']) ?>" target="_blank">
+                            <img src="../<?= htmlspecialchars($d['proof_file']) ?>"
+                                 style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
+                        </a>
+                    </td>
+
+                    <!-- STATUS -->
+                    <td>
+                        <span class="badge bg-<?=
+                            $d['status']=='approved' ? 'success' :
+                            ($d['status']=='rejected' ? 'danger' : 'warning')
+                        ?>">
+                            <?= ucfirst($d['status']) ?>
+                        </span>
+                    </td>
+
+                    <!-- DATE + TIME -->
+                    <td>
+                        <?= date('M d, Y H:i A', strtotime($d['created_at'])) ?>
+                    </td>
+
+                    <!-- ACTION -->
+                    <td>
+                        <button class="btn btn-sm btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#status<?= $d['id'] ?>">
+                            Update
+                        </button>
+                    </td>
+                </tr>
+
+                <!-- STATUS MODAL -->
+                <div class="modal fade" id="status<?= $d['id'] ?>" tabindex="-1">
+                  <div class="modal-dialog">
+                    <form method="POST" class="modal-content">
+
+                        <input type="hidden" name="id" value="<?= $d['id'] ?>">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Update Deposit Status</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-control">
+                                <option value="pending" <?= $d['status']=='pending'?'selected':'' ?>>Pending</option>
+                                <option value="approved" <?= $d['status']=='approved'?'selected':'' ?>>Approved</option>
+                                <option value="rejected" <?= $d['status']=='rejected'?'selected':'' ?>>Rejected</option>
+                            </select>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+
+                            <button class="btn btn-success" name="update_status">
+                                Save Changes
+                            </button>
+                        </div>
+
+                    </form>
+                  </div>
+                </div>
+
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</div>
+
+<!-- SEARCH -->
+<script>
+document.getElementById("depositSearch").addEventListener("input", function () {
+    let val = this.value.toLowerCase();
+    document.querySelectorAll("#depositsTable tbody tr").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(val) ? "" : "none";
     });
 });
 </script>
