@@ -102,7 +102,6 @@ $stmt = $conn->prepare("
 $stmt->bind_param(
     "idsssssss",
     $user_id,
-    $data['amount'],
     $data['country'],
     $data['selected_type'],
     $data['withdraw_method'],
