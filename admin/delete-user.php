@@ -15,5 +15,5 @@ try {
     $_SESSION['error'] = "Delete failed: " . $e->getMessage();
 }
 
-header("Location: users.php");
+header("Location: users");
 exit();
