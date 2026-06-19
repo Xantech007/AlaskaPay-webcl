@@ -137,8 +137,18 @@ try {
                     </td>
 
                     <td>
-                        <span class="badge bg-secondary">
-                            <?= $u['is_verified'] == 2 ? 'Verified' : 'Not Verified' ?>
+                        <?php
+                            $verifyBadge =
+                                $u['is_verified'] == 2 ? 'success' :
+                                ($u['is_verified'] == 1 ? 'warning text-dark' : 'danger');
+                    
+                            $verifyLabel =
+                                $u['is_verified'] == 2 ? 'Verified' :
+                                ($u['is_verified'] == 1 ? 'Pending' : 'Not Verified');
+                        ?>
+                    
+                        <span class="badge bg-<?= $verifyBadge ?>">
+                            <?= $verifyLabel ?>
                         </span>
                     </td>
 
