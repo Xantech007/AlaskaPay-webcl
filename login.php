@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             } elseif ($user['status'] !== 'active') {
 
-                $error = "Your account is currently inactive.";
+                $error = "Your account is currently Suspended. Contact Support";
 
             } else {
 
