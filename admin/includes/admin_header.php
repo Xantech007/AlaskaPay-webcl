@@ -159,7 +159,7 @@
             margin-right: 10px;
         }
 
-        .btn {
+        .settings-container .btn {
             display: inline-block;
             padding: 10px 20px;
             background-color: #4CAF50;
