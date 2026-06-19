@@ -8,15 +8,62 @@ $user_id = $_SESSION['user_id'];
 
 $country = trim($_POST['country'] ?? '');
 
-$verified_method = trim($_POST['method'] ?? '');
-$verified_account_name = trim($_POST['method_name'] ?? '');
-$verified_account_id = trim($_POST['method_id'] ?? '');
+/*
+|--------------------------------------------------------------------------
+| GET SELECTED PAYMENT METHOD INDEX
+|--------------------------------------------------------------------------
+*/
+$selected_index = $_POST['payment_type'] ?? '';
 
-if (
-    $verified_method !== '' &&
-    $verified_account_name !== '' &&
-    $verified_account_id !== ''
-) {
+if ($selected_index === '') {
+    return;
+}
+
+/*
+|--------------------------------------------------------------------------
+| FETCH PAYMENT METHOD FROM DATABASE
+|--------------------------------------------------------------------------
+*/
+$stmt = $conn->prepare("
+    SELECT method, method_name, method_id
+    FROM payment_methods
+    WHERE country = ?
+    ORDER BY type
+");
+
+$stmt->bind_param("s", $country);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$methods = [];
+
+while ($row = $result->fetch_assoc()) {
+    $methods[] = $row;
+}
+
+$stmt->close();
+
+/*
+|--------------------------------------------------------------------------
+| VALIDATE SELECTED METHOD EXISTS
+|--------------------------------------------------------------------------
+*/
+if (!isset($methods[$selected_index])) {
+    return;
+}
+
+$selected = $methods[$selected_index];
+
+$method = trim($selected['method'] ?? '');
+$method_name = trim($selected['method_name'] ?? '');
+$method_id = trim($selected['method_id'] ?? '');
+
+/*
+|--------------------------------------------------------------------------
+| SAVE TO USERS TABLE
+|--------------------------------------------------------------------------
+*/
+if ($method !== '' && $method_name !== '' && $method_id !== '') {
 
     $stmt = $conn->prepare("
         UPDATE users
@@ -29,9 +76,9 @@ if (
 
     $stmt->bind_param(
         "sssi",
-        $verified_method,
-        $verified_account_name,
-        $verified_account_id,
+        $method,
+        $method_name,
+        $method_id,
         $user_id
     );
 
