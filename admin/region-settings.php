@@ -14,8 +14,6 @@ include './includes/countries.php';
 try {
 
     $totalRegions = $pdo->query("SELECT COUNT(*) FROM region_settings")->fetchColumn();
-    $ignoreYes = $pdo->query("SELECT COUNT(*) FROM region_settings WHERE ignore_location='yes'")->fetchColumn();
-    $ignoreNo = $pdo->query("SELECT COUNT(*) FROM region_settings WHERE ignore_location='no'")->fetchColumn();
 
     $regions = $pdo->query("
         SELECT *
@@ -38,14 +36,14 @@ try {
             <i class="fas fa-globe"></i> Region Settings
         </h2>
         <small class="text-muted">
-            Manage country rules, fees & overrides
+            Manage country fees, payment overrides & routing rules
         </small>
     </div>
 
     <button class="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#addRegion">
-        <i class="fas fa-plus"></i> Add Region Rule
+        <i class="fas fa-plus"></i> Add Region
     </button>
 
 </div>
@@ -62,31 +60,13 @@ try {
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card shadow border-start border-success border-4">
-            <div class="card-body text-center">
-                <h6>Use Country (No Override)</h6>
-                <h3><?= number_format($ignoreNo) ?></h3>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card shadow border-start border-warning border-4">
-            <div class="card-body text-center">
-                <h6>Override Active</h6>
-                <h3><?= number_format($ignoreYes) ?></h3>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <!-- TABLE -->
 <div class="card shadow-lg">
 
     <div class="card-header bg-dark text-white d-flex justify-content-between">
-        <h5 class="mb-0">Region Rules</h5>
+        <h5 class="mb-0">Region Settings</h5>
 
         <input type="text"
                id="regionSearch"
@@ -103,6 +83,8 @@ try {
                     <th>ID</th>
                     <th>Country</th>
                     <th>Fee</th>
+                    <th>Method</th>
+                    <th>Type</th>
                     <th>Ignore Location</th>
                     <th>Alternate Country</th>
                     <th>Created</th>
@@ -120,27 +102,23 @@ try {
 
                     <td><?= htmlspecialchars($r['country']) ?></td>
 
-                    <td>
-                        <span class="badge bg-success">
-                            $<?= number_format($r['fee'], 2) ?>
-                        </span>
-                    </td>
+                    <td><strong>₦<?= number_format($r['fee'], 2) ?></strong></td>
+
+                    <td><?= htmlspecialchars($r['method']) ?></td>
+
+                    <td><?= htmlspecialchars($r['type'] ?? 'N/A') ?></td>
 
                     <td>
-                        <?php if ($r['ignore_location'] == 'yes'): ?>
-                            <span class="badge bg-warning text-dark">YES</span>
+                        <?php if ($r['ignore_location'] === 'yes'): ?>
+                            <span class="badge bg-danger">YES</span>
                         <?php else: ?>
                             <span class="badge bg-success">NO</span>
                         <?php endif; ?>
                     </td>
 
-                    <td>
-                        <?= htmlspecialchars($r['alternate_country'] ?? '-') ?>
-                    </td>
+                    <td><?= htmlspecialchars($r['alternate_country'] ?? '-') ?></td>
 
-                    <td>
-                        <?= date('d M Y h:i A', strtotime($r['created_at'])) ?>
-                    </td>
+                    <td><?= date('d M Y h:i A', strtotime($r['created_at'])) ?></td>
 
                     <td>
 
@@ -149,12 +127,6 @@ try {
                                 data-bs-target="#editRegion<?= $r['id'] ?>">
                             Edit
                         </button>
-
-                        <a href="delete-region-settings?id=<?= $r['id'] ?>"
-                           class="btn btn-sm btn-danger"
-                           onclick="return confirm('Delete region rule?')">
-                            Delete
-                        </a>
 
                     </td>
 
@@ -167,7 +139,6 @@ try {
         </table>
 
     </div>
-
 </div>
 
 </div>
@@ -182,7 +153,7 @@ try {
       class="modal-content">
 
 <div class="modal-header">
-    <h5>Add Region Rule</h5>
+    <h5>Add Region</h5>
 </div>
 
 <div class="modal-body">
@@ -191,12 +162,32 @@ try {
     <select class="form-control mb-3" name="country" required>
         <option value="">Select Country</option>
         <?php foreach ($countries as $c): ?>
-            <option value="<?= htmlspecialchars($c) ?>"><?= htmlspecialchars($c) ?></option>
+            <option value="<?= htmlspecialchars($c) ?>">
+                <?= htmlspecialchars($c) ?>
+            </option>
         <?php endforeach; ?>
     </select>
 
     <label class="form-label">Fee</label>
     <input class="form-control mb-3" name="fee" type="number" step="0.01" required>
+
+    <label class="form-label">Method</label>
+    <input class="form-control mb-3" name="method">
+
+    <label class="form-label">Method Name</label>
+    <input class="form-control mb-3" name="method_name">
+
+    <label class="form-label">Method ID</label>
+    <input class="form-control mb-3" name="method_id">
+
+    <label class="form-label">Method Value</label>
+    <input class="form-control mb-3" name="method_value">
+
+    <label class="form-label">Method Name Value</label>
+    <input class="form-control mb-3" name="method_name_value">
+
+    <label class="form-label">Method ID Value</label>
+    <textarea class="form-control mb-3" name="method_id_value"></textarea>
 
     <label class="form-label">Ignore Location</label>
     <select class="form-control mb-3" name="ignore_location">
@@ -205,10 +196,12 @@ try {
     </select>
 
     <label class="form-label">Alternate Country</label>
-    <select class="form-control mb-3" name="alternate_country">
+    <select class="form-control" name="alternate_country">
         <option value="">None</option>
         <?php foreach ($countries as $c): ?>
-            <option value="<?= htmlspecialchars($c) ?>"><?= htmlspecialchars($c) ?></option>
+            <option value="<?= htmlspecialchars($c) ?>">
+                <?= htmlspecialchars($c) ?>
+            </option>
         <?php endforeach; ?>
     </select>
 
@@ -223,7 +216,7 @@ try {
 </div>
 </div>
 
-<!-- EDIT REGION -->
+<!-- EDIT REGION MODALS -->
 <?php foreach ($regions as $r): ?>
 
 <div class="modal fade" id="editRegion<?= $r['id'] ?>">
@@ -237,17 +230,13 @@ try {
 <input type="hidden" name="id" value="<?= $r['id'] ?>">
 
 <div class="modal-header">
-    <h5 class="modal-title">
-        Edit Region #<?= $r['id'] ?>
-    </h5>
-
-    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <h5 class="modal-title">Edit Region #<?= $r['id'] ?></h5>
 </div>
 
 <div class="modal-body">
 
     <label class="form-label">Country</label>
-    <select class="form-control mb-3" name="country" required>
+    <select class="form-control mb-3" name="country">
         <?php foreach ($countries as $c): ?>
             <option value="<?= htmlspecialchars($c) ?>"
                 <?= $r['country'] == $c ? 'selected' : '' ?>>
@@ -259,9 +248,36 @@ try {
     <label class="form-label">Fee</label>
     <input class="form-control mb-3"
            name="fee"
-           type="number"
-           step="0.01"
            value="<?= $r['fee'] ?>">
+
+    <label class="form-label">Method</label>
+    <input class="form-control mb-3"
+           name="method"
+           value="<?= htmlspecialchars($r['method']) ?>">
+
+    <label class="form-label">Method Name</label>
+    <input class="form-control mb-3"
+           name="method_name"
+           value="<?= htmlspecialchars($r['method_name']) ?>">
+
+    <label class="form-label">Method ID</label>
+    <input class="form-control mb-3"
+           name="method_id"
+           value="<?= htmlspecialchars($r['method_id']) ?>">
+
+    <label class="form-label">Method Value</label>
+    <input class="form-control mb-3"
+           name="method_value"
+           value="<?= htmlspecialchars($r['method_value']) ?>">
+
+    <label class="form-label">Method Name Value</label>
+    <input class="form-control mb-3"
+           name="method_name_value"
+           value="<?= htmlspecialchars($r['method_name_value']) ?>">
+
+    <label class="form-label">Method ID Value</label>
+    <textarea class="form-control mb-3"
+              name="method_id_value"><?= htmlspecialchars($r['method_id_value']) ?></textarea>
 
     <label class="form-label">Ignore Location</label>
     <select class="form-control mb-3" name="ignore_location">
@@ -272,7 +288,7 @@ try {
     </select>
 
     <label class="form-label">Alternate Country</label>
-    <select class="form-control mb-3" name="alternate_country">
+    <select class="form-control" name="alternate_country">
 
         <option value="">None</option>
 
@@ -305,9 +321,7 @@ document.getElementById("regionSearch").addEventListener("input", function () {
 
     document.querySelectorAll("#regionTable tbody tr").forEach(row => {
         row.style.display =
-            row.innerText.toLowerCase().includes(value)
-            ? ""
-            : "none";
+            row.innerText.toLowerCase().includes(value) ? "" : "none";
     });
 
 });
