@@ -30,19 +30,9 @@ $withdraw_method_id = $_POST['method_id'] ?? '';
 $account = $_POST['account'] ?? '';
 
 /* --------------------------------
-   FIX: GET WITHDRAW AMOUNT (IMPORTANT)
----------------------------------*/
-$amount = $_SESSION['withdraw_amount'] ?? null;
-
-if (!$amount || $amount <= 0) {
-    die("Invalid withdrawal amount. Please go back and enter a valid amount.");
-}
-
-/* --------------------------------
-   STORE FINAL WITHDRAW DATA
+   STORE FINAL WITHDRAW DATA (NO AMOUNT HERE)
 ---------------------------------*/
 $_SESSION['withdraw_data'] = [
-    'amount' => $amount,
     'country' => $country,
     'type' => $type,
     'selected_type' => $selected_type,
@@ -70,7 +60,9 @@ $region = $result->fetch_assoc();
 $stmt->close();
 
 if (!$region) {
-    die("No region settings configured for {$country}");
+    $_SESSION['error'] = "No region settings configured for {$country}";
+    header("Location: withdraw.php");
+    exit();
 }
 
 $fee = (float) $region['fee'];
@@ -106,11 +98,6 @@ $fee = (float) $region['fee'];
             </p>
 
             <hr style="margin:15px 0;">
-
-            <p>
-                <strong>Withdrawal Amount:</strong>
-                <?= number_format($amount, 2) ?>
-            </p>
 
             <p>
                 <strong>Country:</strong>
