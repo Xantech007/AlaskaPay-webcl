@@ -158,5 +158,5 @@ try {
         "Unable to process withdrawal. Please try again.";
 }
 
-header("Location: withdraw.php");
+header("Location: dashboard.php");
 exit();
