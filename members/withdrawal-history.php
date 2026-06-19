@@ -25,7 +25,7 @@ $stmt = $pdo->prepare("
     SELECT *
     FROM withdrawals
     WHERE user_id = ?
-    ORDER BY id DESC
+    ORDER BY id ASC
 ");
 $stmt->execute([$user_id]);
 $history = $stmt->fetchAll();
