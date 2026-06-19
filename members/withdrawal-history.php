@@ -120,7 +120,7 @@ include 'includes/navbar.php';
                     <tr>
                         <th>ID</th>
                         <th>Amount (USD)</th>
-                        <th>Amount (Local Currency)</th>
+                        <th>Actual Amount</th>
 
                         <th><?= htmlspecialchars($user['method'] ?? 'Method') ?></th>
                         <th><?= htmlspecialchars($user['method_name'] ?? 'Account Name') ?></th>
