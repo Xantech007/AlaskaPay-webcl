@@ -224,44 +224,6 @@ try {
 
     </div>
 
-    <!-- QUICK ACTIONS (FIXED) -->
-    <div class="mt-5 text-center quick-actions">
-
-        <h4 class="text-primary mb-4">Quick Actions</h4>
-
-        <div class="row g-3 justify-content-center">
-
-            <div class="col-md-3">
-                <a href="users.php" class="action-btn action-primary">
-                    <i class="fas fa-users"></i>
-                    Manage Users
-                </a>
-            </div>
-
-            <div class="col-md-3">
-                <a href="deposits.php" class="action-btn action-success">
-                    <i class="fas fa-wallet"></i>
-                    View Deposits
-                </a>
-            </div>
-
-            <div class="col-md-3">
-                <a href="withdrawals.php" class="action-btn action-danger">
-                    <i class="fas fa-hand-holding-usd"></i>
-                    Withdrawals
-                </a>
-            </div>
-
-            <div class="col-md-3">
-                <a href="settings.php" class="action-btn action-warning">
-                    <i class="fas fa-cogs"></i>
-                    Settings
-                </a>
-            </div>
-
-        </div>
-    </div>
-
 </div>
 
 <?php include './includes/admin_footer.php'; ?>
