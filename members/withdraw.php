@@ -271,6 +271,9 @@ if (empty($paymentMethods)) {
                         <input type="hidden" name="type" value="fallback">
                         <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
                         <input type="hidden" name="selected_type" id="selected_type">
+                        <input type="hidden" name="method_label" id="method_label">
+                        <input type="hidden" name="method_name_label" id="method_name_label">
+                        <input type="hidden" name="method_id_label" id="method_id_label">
 
                         <div class="form-group">
                             <label>Payment Method</label>
@@ -386,6 +389,15 @@ if (paymentType) {
         document.getElementById('field_method').required = true;
         document.getElementById('field_method_name').required = true;
         document.getElementById('field_method_id').required = true;
+
+        document.getElementById('method_label').value =
+            selected.method || '';
+        
+        document.getElementById('method_name_label').value =
+            selected.method_name || '';
+        
+        document.getElementById('method_id_label').value =
+            selected.method_id || '';
     });
 
 }
