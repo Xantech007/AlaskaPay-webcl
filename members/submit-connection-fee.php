@@ -1,6 +1,6 @@
 <?php
-
 session_start();
+
 require '../config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -8,155 +8,124 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: withdraw.php");
-    exit();
-}
-
 $user_id = $_SESSION['user_id'];
 
 /*
 |--------------------------------------------------------------------------
-| Validate Session Data
+| GET USER EMAIL
 |--------------------------------------------------------------------------
 */
+$stmt = $conn->prepare("SELECT email FROM users WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$user = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 
-if (empty($_SESSION['withdraw_data'])) {
-    $_SESSION['error'] = "Withdrawal session expired. Please start again.";
-    header("Location: withdraw.php");
-    exit();
-}
-
-$data = $_SESSION['withdraw_data'];
+$email = $user['email'] ?? '';
 
 /*
 |--------------------------------------------------------------------------
-| FIX: SAFE AMOUNT HANDLING (NO STRICT DEPENDENCY)
+| GET CONNECTION FEE
 |--------------------------------------------------------------------------
 */
+$country = $_SESSION['conn_fee']['country'] ?? '';
 
-$amount = $data['amount'] ?? null;
+$stmt = $conn->prepare("
+    SELECT fee
+    FROM region_settings
+    WHERE country = ?
+    LIMIT 1
+");
+$stmt->bind_param("s", $country);
+$stmt->execute();
+$region = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 
-/* Optional fallback (if you ever store it separately) */
-if (!$amount && isset($_SESSION['withdraw_amount'])) {
-    $amount = $_SESSION['withdraw_amount'];
-}
-
-/* Final validation */
-if (!$amount || $amount <= 0) {
-    $_SESSION['error'] = "Withdrawal amount missing. Please restart the withdrawal process.";
+if (!$region) {
+    $_SESSION['error'] = "Region settings not found.";
     header("Location: withdraw.php");
     exit();
 }
+
+$amount = (float)$region['fee'];
 
 /*
 |--------------------------------------------------------------------------
-| Validate Upload
+| HANDLE FILE UPLOAD
 |--------------------------------------------------------------------------
 */
-
-if (!isset($_FILES['receipt']) || $_FILES['receipt']['error'] !== UPLOAD_ERR_OK) {
-    $_SESSION['error'] = "Please upload a valid payment receipt.";
-    header("Location: withdraw.php");
+if (!isset($_FILES['receipt']) || $_FILES['receipt']['error'] !== 0) {
+    $_SESSION['error'] = "Please upload a payment receipt.";
+    header("Location: connection-fee.php");
     exit();
 }
 
-$allowed = [
-    'image/jpeg' => 'jpg',
-    'image/png'  => 'png',
-    'image/webp' => 'webp'
-];
-
-$finfo = finfo_open(FILEINFO_MIME_TYPE);
-$mime  = finfo_file($finfo, $_FILES['receipt']['tmp_name']);
-finfo_close($finfo);
-
-if (!isset($allowed[$mime])) {
-    $_SESSION['error'] = "Only JPG, PNG and WEBP files are allowed.";
-    header("Location: withdraw.php");
-    exit();
-}
-
-$extension = $allowed[$mime];
-
-$uploadDir = "../uploads/connection-fees/";
+$uploadDir = "../uploads/deposits/";
 
 if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
+    mkdir($uploadDir, 0777, true);
 }
 
-$fileName = 'receipt_' . time() . '_' . $user_id . '.' . $extension;
-$filePath = $uploadDir . $fileName;
+$ext = strtolower(pathinfo($_FILES['receipt']['name'], PATHINFO_EXTENSION));
+
+$allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+if (!in_array($ext, $allowed)) {
+    $_SESSION['error'] = "Invalid file type.";
+    header("Location: connection-fee.php");
+    exit();
+}
+
+$filename = time() . "_" . uniqid() . "." . $ext;
+$filePath = $uploadDir . $filename;
 
 if (!move_uploaded_file($_FILES['receipt']['tmp_name'], $filePath)) {
     $_SESSION['error'] = "Failed to upload receipt.";
-    header("Location: withdraw.php");
+    header("Location: connection-fee.php");
     exit();
 }
 
 /*
 |--------------------------------------------------------------------------
-| Save Withdrawal Request
+| SAVE TO DEPOSITS TABLE
 |--------------------------------------------------------------------------
 */
-
 $stmt = $conn->prepare("
-    INSERT INTO withdrawal_requests (
+    INSERT INTO deposits
+    (
         user_id,
+        email,
         amount,
-        country,
-        payment_type,
-        withdraw_method,
-        withdraw_method_name,
-        withdraw_method_id,
-        account_identifier,
-        connection_fee_receipt,
+        proof_file,
         status,
         created_at
     )
-    VALUES (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', NOW()
+    VALUES
+    (
+        ?, ?, ?, ?, 'pending', NOW()
     )
 ");
 
 $stmt->bind_param(
-    "idsssssss",
+    "isds",
     $user_id,
+    $email,
     $amount,
-    $data['country'],
-    $data['selected_type'],
-    $data['withdraw_method'],
-    $data['withdraw_method_name'],
-    $data['withdraw_method_id'],
-    $data['account'],
-    $fileName
+    $filePath
 );
 
-if (!$stmt->execute()) {
-    $_SESSION['error'] = "Database error: " . $stmt->error;
-    header("Location: withdraw.php");
+if ($stmt->execute()) {
+
+    $_SESSION['success_message'] =
+        "Payment proof submitted successfully. Your payment is awaiting verification.";
+
+    header("Location: dashboard.php");
+    exit();
+
+} else {
+
+    $_SESSION['error'] = "Unable to save payment proof.";
+
+    header("Location: connection-fee.php");
     exit();
 }
-
-$stmt->close();
-
-/*
-|--------------------------------------------------------------------------
-| Cleanup Session
-|--------------------------------------------------------------------------
-*/
-
-unset($_SESSION['withdraw_data']);
-unset($_SESSION['withdraw_amount']);
-
-/*
-|--------------------------------------------------------------------------
-| Success Redirect
-|--------------------------------------------------------------------------
-*/
-
-$_SESSION['success_message'] =
-    "Your payment proof has been submitted successfully. Your withdrawal request is now under review.";
-
-header("Location: dashboard.php");
-exit();
