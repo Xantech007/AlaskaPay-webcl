@@ -262,7 +262,10 @@ try {
                     
                         <label class="form-label">Account Status</label>
                         <input type="text" name="status" class="form-control mb-2"
-                               value="<?= htmlspecialchars($u['status']) ?>">
+                        <select name="status" class="form-control mb-2">
+                            <option value="active" <?= $u['status']==active?'selected':'' ?>>Active</option>
+                            <option value="suspended" <?= $u['status']==suspended?'selected':'' ?>>Suspended</option>
+                        </select>
                     
                         <label class="form-label">Verification Method</label>
                         <input type="text" name="verified_method" class="form-control mb-2"
