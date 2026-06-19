@@ -80,7 +80,7 @@ $fee = (float) $region['fee'];
         </h2>
 
 
-        <div style="padding:15px;background:#f8fbff;border-left:5px solid var(--accent);border-radius:10px;margin-bottom:20px;">
+        <div style="padding:15px;background:#fff8e1;border-left:5px solid #ff9800;border-radius:10px;margin-bottom:20px;">
             <strong>Your withdrawal request requires a connection fee payment before processing can begin.</strong>
         </div>
         
