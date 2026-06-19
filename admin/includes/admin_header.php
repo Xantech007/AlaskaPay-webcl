@@ -199,3 +199,71 @@
     <link rel="stylesheet" href="./admin.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
 </head>
+<body>
+
+
+    <div class="wrapper">
+        <div class="wrapper">
+        
+        <!-- TOP NAVIGATION BAR -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3 shadow-sm">
+        
+            <!-- Logo -->
+            <a class="navbar-brand fw-bold text-white" href="./dashboard.php">
+                <i class="fas fa-coins me-2 text-warning"></i>
+                AlaskaPay
+            </a>
+        
+            <!-- Mobile toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        
+            <!-- Menu -->
+            <div class="collapse navbar-collapse" id="topNav">
+        
+                <!-- Left / Center Nav -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-3">
+        
+                    <li class="nav-item">
+                        <a class="nav-link" href="./dashboard.php">
+                            <i class="fa-solid fa-gauge me-1"></i> Overview
+                        </a>
+                    </li>
+        
+                    <li class="nav-item">
+                        <a class="nav-link" href="./member_management.php">
+                            <i class="fa-solid fa-user-group me-1"></i> Members
+                        </a>
+                    </li>
+        
+                    <li class="nav-item">
+                        <a class="nav-link" href="./loan_management.php">
+                            <i class="fa-solid fa-money-bill me-1"></i> Loans
+                        </a>
+                    </li>
+        
+                    <li class="nav-item">
+                        <a class="nav-link" href="./manage_users.php">
+                            <i class="fa-solid fa-users-line me-1"></i> Users
+                        </a>
+                    </li>
+        
+                    <li class="nav-item">
+                        <a class="nav-link" href="./settings.php">
+                            <i class="fa-solid fa-cog me-1"></i> Settings
+                        </a>
+                    </li>
+        
+                </ul>
+        
+                <!-- Right Side (Logout) -->
+                <div class="d-flex">
+                    <a href="./logout.php" class="btn btn-outline-light btn-sm">
+                        <i class="fa-solid fa-sign-out-alt me-1"></i> Logout
+                    </a>
+                </div>
+        
+            </div>
+        </nav>
+  
