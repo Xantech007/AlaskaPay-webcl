@@ -70,9 +70,9 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm px-3">
 
     <!-- LOGO -->
-    <a class="navbar-brand text-white" href="./dashboard.php">
-        <i class="fas fa-coins text-warning me-2"></i>
-        AlaskaPay
+    <a class="navbar-brand d-flex align-items-center text-white" href="./dashboard.php">
+        <img src="../../assets/logo.png" alt="AlaskaPay Logo" height="32" class="me-2">
+        <span class="fw-bold">AlaskaPay</span>
     </a>
 
     <!-- MOBILE TOGGLE -->
