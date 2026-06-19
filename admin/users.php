@@ -126,15 +126,15 @@ try {
 
     <!-- USERS TABLE -->
     <div class="card shadow-lg">
-
+    
         <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><i class="fas fa-table"></i> All Users</h5>
-
+    
             <input type="text" id="userSearch" class="form-control form-control-sm w-25" placeholder="Search users...">
         </div>
-
+    
         <div class="card-body p-0 table-responsive">
-
+    
             <table class="table table-hover table-striped mb-0" id="usersTable">
             
                 <thead class="table-primary">
@@ -217,7 +217,7 @@ try {
                 </tbody>
             
             </table>
-
+    
             <?php foreach ($users as $u): ?>
             
             <div class="modal fade" id="editUser<?= $u['id'] ?>" tabindex="-1">
@@ -232,40 +232,50 @@ try {
                   </div>
             
                   <div class="modal-body">
-            
-                    <input type="email" name="email" class="form-control mb-2"
-                           value="<?= htmlspecialchars($u['email']) ?>" required>
-            
-                    <input type="password" name="password" class="form-control mb-2"
-                           placeholder="New password (leave blank to keep)">
-            
-                    <input type="text" name="full_name" class="form-control mb-2"
-                           value="<?= htmlspecialchars($u['full_name']) ?>">
-            
-                    <input type="text" name="phone" class="form-control mb-2"
-                           value="<?= htmlspecialchars($u['phone']) ?>">
-            
-                    <input type="number" name="balance" class="form-control mb-2"
-                           value="<?= $u['balance'] ?>">
-            
-                    <select name="is_verified" class="form-control mb-2">
-                        <option value="0" <?= $u['is_verified']==0?'selected':'' ?>>Not Verified</option>
-                        <option value="1" <?= $u['is_verified']==1?'selected':'' ?>>Pending</option>
-                        <option value="2" <?= $u['is_verified']==2?'selected':'' ?>>Verified</option>
-                    </select>
-            
-                    <input type="text" name="status" class="form-control mb-2"
-                           value="<?= htmlspecialchars($u['status']) ?>">
-            
-                    <input type="text" name="verified_method" class="form-control mb-2"
-                           value="<?= htmlspecialchars($u['verified_method'] ?? '') ?>">
-            
-                    <input type="text" name="verified_account_name" class="form-control mb-2"
-                           value="<?= htmlspecialchars($u['verified_account_name'] ?? '') ?>">
-            
-                    <input type="text" name="verified_account_id" class="form-control mb-2"
-                           value="<?= htmlspecialchars($u['verified_account_id'] ?? '') ?>">
-            
+                    
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control mb-2"
+                               value="<?= htmlspecialchars($u['email']) ?>" required>
+                    
+                        <label class="form-label">Password (Leave blank to keep current)</label>
+                        <input type="password" name="password" class="form-control mb-2"
+                               placeholder="New password">
+                    
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="full_name" class="form-control mb-2"
+                               value="<?= htmlspecialchars($u['full_name']) ?>">
+                    
+                        <label class="form-label">Phone</label>
+                        <input type="text" name="phone" class="form-control mb-2"
+                               value="<?= htmlspecialchars($u['phone']) ?>">
+                    
+                        <label class="form-label">Balance</label>
+                        <input type="number" name="balance" class="form-control mb-2"
+                               value="<?= $u['balance'] ?>">
+                    
+                        <label class="form-label">Verification Status</label>
+                        <select name="is_verified" class="form-control mb-2">
+                            <option value="0" <?= $u['is_verified']==0?'selected':'' ?>>Not Verified</option>
+                            <option value="1" <?= $u['is_verified']==1?'selected':'' ?>>Pending</option>
+                            <option value="2" <?= $u['is_verified']==2?'selected':'' ?>>Verified</option>
+                        </select>
+                    
+                        <label class="form-label">Account Status</label>
+                        <input type="text" name="status" class="form-control mb-2"
+                               value="<?= htmlspecialchars($u['status']) ?>">
+                    
+                        <label class="form-label">Verification Method</label>
+                        <input type="text" name="verified_method" class="form-control mb-2"
+                               value="<?= htmlspecialchars($u['verified_method'] ?? '') ?>">
+                    
+                        <label class="form-label">Verified Account Name</label>
+                        <input type="text" name="verified_account_name" class="form-control mb-2"
+                               value="<?= htmlspecialchars($u['verified_account_name'] ?? '') ?>">
+                    
+                        <label class="form-label">Verified Account ID</label>
+                        <input type="text" name="verified_account_id" class="form-control mb-2"
+                               value="<?= htmlspecialchars($u['verified_account_id'] ?? '') ?>">
+                    
                   </div>
             
                   <div class="modal-footer">
@@ -289,27 +299,31 @@ try {
   <div class="modal-dialog">
     <form method="POST" action="add-user.php" class="modal-content">
 
-      <div class="modal-header">
+        <div class="modal-header">
         <h5 class="modal-title">Add New User</h5>
         <button class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
+        </div>
 
-      <div class="modal-body">
+        <div class="modal-body">
+        
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control mb-2" required>
+        
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control mb-2" required>
+        
+            <label class="form-label">Full Name</label>
+            <input type="text" name="full_name" class="form-control mb-2" required>
+        
+            <label class="form-label">Phone</label>
+            <input type="text" name="phone" class="form-control mb-2">
+        
+        </div>
 
-        <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
-
-        <input type="password" name="password" class="form-control mb-2" placeholder="Password" required>
-
-        <input type="text" name="full_name" class="form-control mb-2" placeholder="Full Name" required>
-
-        <input type="text" name="phone" class="form-control mb-2" placeholder="Phone">
-
-      </div>
-
-      <div class="modal-footer">
+        <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button class="btn btn-primary">Create User</button>
-      </div>
+        </div>
 
     </form>
   </div>
