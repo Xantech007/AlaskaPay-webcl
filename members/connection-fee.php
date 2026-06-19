@@ -8,6 +8,8 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+require 'withdraw-backend.php';
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: withdraw.php");
     exit();
