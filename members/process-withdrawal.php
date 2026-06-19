@@ -1,10 +1,5 @@
 <?php
 session_start();
-
-echo '<pre>';
-print_r($_POST);
-exit;
-
 require '../config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -12,9 +7,59 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+$user_id = (int)$_SESSION['user_id'];
 
-$amount = (float)($_POST['amount'] ?? 0);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header("Location: withdraw.php");
+    exit();
+}
+
+/*
+|--------------------------------------------------------------------------
+| Get User
+|--------------------------------------------------------------------------
+*/
+$stmt = $conn->prepare("
+    SELECT
+        balance,
+        is_verified,
+        verified_method,
+        verified_account_name,
+        verified_account_id
+    FROM users
+    WHERE id = ?
+    LIMIT 1
+");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$user = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
+if (!$user) {
+    $_SESSION['error'] = "User not found.";
+    header("Location: withdraw.php");
+    exit();
+}
+
+/*
+|--------------------------------------------------------------------------
+| Verification Check
+|--------------------------------------------------------------------------
+*/
+if ((int)$user['is_verified'] !== 2) {
+    $_SESSION['error'] = "Your payment method is not approved yet.";
+    header("Location: withdraw.php");
+    exit();
+}
+
+/*
+|--------------------------------------------------------------------------
+| Validate Amount
+|--------------------------------------------------------------------------
+*/
+$amount = isset($_POST['amount'])
+    ? (float)$_POST['amount']
+    : 0;
 
 if ($amount <= 0) {
     $_SESSION['error'] = "Invalid withdrawal amount.";
@@ -22,51 +67,96 @@ if ($amount <= 0) {
     exit();
 }
 
-$stmt = $conn->prepare("
-    SELECT
-        is_verified,
-        verified_method,
-        verified_account_name,
-        verified_account_id
-    FROM users
-    WHERE id = ?
-");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$user = $stmt->get_result()->fetch_assoc();
-$stmt->close();
+$currentBalance = (float)$user['balance'];
 
-if (!$user || $user['is_verified'] != 2) {
-    $_SESSION['error'] = "Your payment method is not verified.";
+if ($amount > $currentBalance) {
+    $_SESSION['error'] = "Insufficient balance.";
     header("Location: withdraw.php");
     exit();
 }
 
-$stmt = $conn->prepare("
-    INSERT INTO withdrawals (
-        user_id,
-        amount,
-        payment_method,
-        account_name,
-        account_id,
-        status
-    )
-    VALUES (?, ?, ?, ?, ?, 'pending')
-");
+/*
+|--------------------------------------------------------------------------
+| Transaction
+|--------------------------------------------------------------------------
+*/
+$conn->begin_transaction();
 
-$stmt->bind_param(
-    "idsss",
-    $user_id,
-    $amount,
-    $user['verified_method'],
-    $user['verified_account_name'],
-    $user['verified_account_id']
-);
+try {
 
-$stmt->execute();
-$stmt->close();
+    /*
+    | Create Withdrawal Request
+    |
+    | Example withdrawals table:
+    |
+    | id
+    | user_id
+    | amount
+    | method
+    | account_name
+    | account_id
+    | status
+    | created_at
+    */
 
-$_SESSION['success'] = "Withdrawal request submitted successfully and is awaiting approval.";
+    $status = 'pending';
+
+    $stmt = $conn->prepare("
+        INSERT INTO withdrawals (
+            user_id,
+            amount,
+            method,
+            account_name,
+            account_id,
+            status,
+            created_at
+        )
+        VALUES (
+            ?, ?, ?, ?, ?, ?, NOW()
+        )
+    ");
+
+    $stmt->bind_param(
+        "idssss",
+        $user_id,
+        $amount,
+        $user['verified_method'],
+        $user['verified_account_name'],
+        $user['verified_account_id'],
+        $status
+    );
+
+    $stmt->execute();
+    $stmt->close();
+
+    /*
+    |--------------------------------------------------------------------------
+    | Deduct Balance
+    |--------------------------------------------------------------------------
+    */
+
+    $stmt = $conn->prepare("
+        UPDATE users
+        SET balance = balance - ?
+        WHERE id = ?
+    ");
+
+    $stmt->bind_param("di", $amount, $user_id);
+    $stmt->execute();
+    $stmt->close();
+
+    $conn->commit();
+
+    $_SESSION['success'] =
+        "Withdrawal request submitted successfully.";
+
+} catch (Exception $e) {
+
+    $conn->rollback();
+
+    $_SESSION['error'] =
+        "Unable to process withdrawal. Please try again.";
+}
 
 header("Location: withdraw.php");
 exit();
