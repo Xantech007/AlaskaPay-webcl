@@ -44,7 +44,6 @@ try {
     </div>
 
     <div class="d-flex align-items-center gap-3">
-        <small class="text-muted">Last updated: <?= date('M d, Y - h:i A') ?></small>
 
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
             <i class="fas fa-user-plus"></i> Add New User
