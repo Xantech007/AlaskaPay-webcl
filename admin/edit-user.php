@@ -128,5 +128,5 @@ try {
     $_SESSION['error'] = $e->getMessage();
 }
 
-header("Location: users.php");
+header("Location: users");
 exit();
