@@ -1,162 +1,30 @@
 <?php
-// admin/users.php - Modern Users Management (2026)
-
 session_start();
+require '../config/db.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
 
-require '../config/db.php';
-
-if (isset($_POST['add_user'])) {
-
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-    $full_name = trim($_POST['full_name']);
-    $phone = trim($_POST['phone']);
-
-    // basic validation
-    if (empty($email) || empty($password) || empty($full_name)) {
-        die("Required fields missing");
-    }
-
-    // prevent duplicate email
-    $check = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-    $check->execute([$email]);
-
-    if ($check->fetch()) {
-        die("Email already exists");
-    }
-
-    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-
-    $stmt = $pdo->prepare("
-        INSERT INTO users
-        (email, password, full_name, phone, status, balance, is_verified)
-        VALUES
-        (?, ?, ?, ?, 'active', 0, 0)
-    ");
-
-    $stmt->execute([
-        $email,
-        $passwordHash,
-        $full_name,
-        $phone
-    ]);
-
-    header("Location: users.php");
-    exit();
-}
-
-if (isset($_POST['update_user'])) {
-
-    $userId = (int)$_POST['user_id'];
-
-    if (!empty($_POST['password'])) {
-
-        $hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
-
-        $sql = "
-        UPDATE users SET
-            email=?,
-            password=?,
-            full_name=?,
-            phone=?,
-            balance=?,
-            is_verified=?,
-            status=?,
-            verified_method=?,
-            verified_account_name=?,
-            verified_account_id=?
-        WHERE id=?";
-
-        $stmt = $pdo->prepare($sql);
-
-        $stmt->execute([
-            $_POST['email'],
-            $hash,
-            $_POST['full_name'],
-            $_POST['phone'],
-            $_POST['balance'],
-            $_POST['is_verified'],
-            $_POST['status'],
-            $_POST['verified_method'],
-            $_POST['verified_account_name'],
-            $_POST['verified_account_id'],
-            $userId
-        ]);
-
-    } else {
-
-        $sql = "
-        UPDATE users SET
-            email=?,
-            full_name=?,
-            phone=?,
-            balance=?,
-            is_verified=?,
-            status=?,
-            verified_method=?,
-            verified_account_name=?,
-            verified_account_id=?
-        WHERE id=?";
-
-        $stmt = $pdo->prepare($sql);
-
-        $stmt->execute([
-            $_POST['email'],
-            $_POST['full_name'],
-            $_POST['phone'],
-            $_POST['balance'],
-            $_POST['is_verified'],
-            $_POST['status'],
-            $_POST['verified_method'],
-            $_POST['verified_account_name'],
-            $_POST['verified_account_id'],
-            $userId
-        ]);
-    }
-
-    header("Location: users.php");
-    exit();
-}
-
-
 $pageTitle = "Manage Users";
 include './includes/admin_header.php';
 
 try {
 
-    // =========================
-    // USER STATISTICS
-    // =========================
     $totalUsers = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
     $verifiedUsers = $pdo->query("SELECT COUNT(*) FROM users WHERE is_verified = 2")->fetchColumn();
     $unverifiedUsers = $pdo->query("SELECT COUNT(*) FROM users WHERE is_verified = 0")->fetchColumn();
     $activeUsers = $pdo->query("SELECT COUNT(*) FROM users WHERE status = 'active'")->fetchColumn();
     $suspendedUsers = $pdo->query("SELECT COUNT(*) FROM users WHERE status = 'suspended'")->fetchColumn();
 
-    // =========================
-    // USERS LIST
-    // =========================
     $users = $pdo->query("
-        SELECT
-            id,
-            email,
-            full_name,
-            phone,
-            balance,
-            is_verified,
-            status,
-            verified_method,
-            verified_account_name,
-            verified_account_id,
-            created_at
+        SELECT id, email, full_name, phone, balance, is_verified, status,
+               verified_method, verified_account_name, verified_account_id, created_at
         FROM users
         ORDER BY created_at DESC
-    ")->fetchAll(PDO::FETCH_ASSOC);
+        LIMIT 200
+    ")->fetchAll();
 
 } catch (Exception $e) {
     die("Database error: " . $e->getMessage());
@@ -165,372 +33,174 @@ try {
 
 <div class="main p-4">
 
-    <!-- HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold text-primary">
-                <i class="fas fa-users"></i> Users Management
-            </h2>
-            <small class="text-muted">Manage all registered users</small>
-        </div>
-    
-        <div>
-            <button
-                class="btn btn-success"
-                data-bs-toggle="modal"
-                data-bs-target="#addUserModal">
-                <i class="fas fa-plus"></i> Add New User
-            </button>
-        </div>
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="fw-bold text-primary">Users Management</h2>
     </div>
 
-    <!-- KPI CARDS -->
-    <div class="row g-4 mb-4">
-
-        <div class="col-md-3">
-            <div class="card shadow-lg border-start border-primary border-4">
-                <div class="card-body text-center">
-                    <i class="fas fa-users fa-2x text-primary mb-2"></i>
-                    <h6 class="text-muted">Total Users</h6>
-                    <h3 class="fw-bold"><?= number_format($totalUsers) ?></h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-lg border-start border-success border-4">
-                <div class="card-body text-center">
-                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
-                    <h6 class="text-muted">Verified</h6>
-                    <h3 class="fw-bold"><?= number_format($verifiedUsers) ?></h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-lg border-start border-warning border-4">
-                <div class="card-body text-center">
-                    <i class="fas fa-clock fa-2x text-warning mb-2"></i>
-                    <h6 class="text-muted">Unverified</h6>
-                    <h3 class="fw-bold"><?= number_format($unverifiedUsers) ?></h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-lg border-start border-danger border-4">
-                <div class="card-body text-center">
-                    <i class="fas fa-user-slash fa-2x text-danger mb-2"></i>
-                    <h6 class="text-muted">Suspended</h6>
-                    <h3 class="fw-bold"><?= number_format($suspendedUsers) ?></h3>
-                </div>
-            </div>
-        </div>
-
-    </div>
+    <!-- 🔥 ADD NEW USER BUTTON -->
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+        + Add New User
+    </button>
+</div>
 
 <!-- USERS TABLE -->
 <div class="card shadow-lg">
 
-    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">
-            <i class="fas fa-table"></i> All Users
-        </h5>
-
-        <input type="text"
-               id="userSearch"
-               class="form-control form-control-sm w-25"
-               placeholder="Search users...">
+    <div class="card-header bg-dark text-white d-flex justify-content-between">
+        <h5 class="mb-0">All Users</h5>
+        <input type="text" id="userSearch" class="form-control form-control-sm w-25" placeholder="Search...">
     </div>
 
     <div class="card-body p-0 table-responsive">
 
-        <table class="table table-hover table-striped mb-0" id="usersTable">
-
+        <table class="table table-striped" id="usersTable">
             <thead class="table-primary">
                 <tr>
-                    <th>ID</th>
                     <th>Email</th>
                     <th>Full Name</th>
                     <th>Phone</th>
                     <th>Balance</th>
                     <th>Verified</th>
                     <th>Status</th>
-                    <th>Method</th>
+                    <th>Verified Method</th>
                     <th>Account Name</th>
                     <th>Account ID</th>
-                    <th>Actions</th>
+                    <th>Action</th>
                 </tr>
             </thead>
 
             <tbody>
-
             <?php foreach ($users as $u): ?>
-
                 <tr>
-
-                    <td><?= $u['id'] ?></td>
-
                     <td><?= htmlspecialchars($u['email']) ?></td>
-
                     <td><?= htmlspecialchars($u['full_name']) ?></td>
-
-                    <td><?= htmlspecialchars($u['phone'] ?? '-') ?></td>
-
-                    <td>$<?= number_format($u['balance'], 2) ?></td>
+                    <td><?= htmlspecialchars($u['phone']) ?></td>
+                    <td>₦<?= number_format($u['balance'], 2) ?></td>
 
                     <td>
-                        <?php
-                        switch ((int)$u['is_verified']) {
-                            case 2:
-                                echo '<span class="badge bg-success">Verified</span>';
-                                break;
-                            case 1:
-                                echo '<span class="badge bg-warning text-dark">Pending</span>';
-                                break;
-                            default:
-                                echo '<span class="badge bg-secondary">Not Verified</span>';
-                        }
-                        ?>
+                        <?php if ($u['is_verified'] == 2): ?>
+                            <span class="badge bg-success">Verified</span>
+                        <?php elseif ($u['is_verified'] == 1): ?>
+                            <span class="badge bg-warning">Pending</span>
+                        <?php else: ?>
+                            <span class="badge bg-secondary">Not Verified</span>
+                        <?php endif; ?>
                     </td>
 
-                    <td>
-                        <span class="badge bg-<?= $u['status'] === 'active' ? 'success' : 'danger' ?>">
-                            <?= ucfirst($u['status']) ?>
-                        </span>
-                    </td>
-
+                    <td><?= $u['status'] ?></td>
                     <td><?= htmlspecialchars($u['verified_method'] ?? '-') ?></td>
-
                     <td><?= htmlspecialchars($u['verified_account_name'] ?? '-') ?></td>
-
                     <td><?= htmlspecialchars($u['verified_account_id'] ?? '-') ?></td>
 
                     <td>
-                        <button
-                            type="button"
-                            class="btn btn-sm btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#editUser<?= $u['id'] ?>">
+                        <button class="btn btn-sm btn-info"
+                            onclick="editUser(<?= htmlspecialchars(json_encode($u)) ?>)">
                             Edit
                         </button>
                     </td>
-
                 </tr>
-
             <?php endforeach; ?>
-
             </tbody>
 
         </table>
 
     </div>
-
+</div>
 </div>
 
-<!-- EDIT USER MODALS -->
-<?php foreach ($users as $u): ?>
+<!-- ================= ADD USER MODAL ================= -->
+<div class="modal fade" id="addUserModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-<div class="modal fade" id="editUser<?= $u['id'] ?>" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+      <form action="users_backend.php" method="POST">
+        <div class="modal-header">
+          <h5>Add User</h5>
+        </div>
 
-            <form method="POST">
+        <div class="modal-body">
 
-                <input type="hidden" name="user_id" value="<?= $u['id'] ?>">
+            <input type="hidden" name="action" value="add_user">
 
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        Edit User #<?= $u['id'] ?>
-                    </h5>
-
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="row">
-
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email"
-                                   class="form-control"
-                                   name="email"
-                                   value="<?= htmlspecialchars($u['email']) ?>">
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">New Password</label>
-                            <input type="password"
-                                   class="form-control"
-                                   name="password">
-                            <small class="text-muted">
-                                Leave blank to keep current password
-                            </small>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input type="text"
-                                   class="form-control"
-                                   name="full_name"
-                                   value="<?= htmlspecialchars($u['full_name']) ?>">
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Phone</label>
-                            <input type="text"
-                                   class="form-control"
-                                   name="phone"
-                                   value="<?= htmlspecialchars($u['phone']) ?>">
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Balance</label>
-                            <input type="number"
-                                   step="0.01"
-                                   class="form-control"
-                                   name="balance"
-                                   value="<?= $u['balance'] ?>">
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Verification</label>
-                            <select class="form-select" name="is_verified">
-                                <option value="0" <?= $u['is_verified'] == 0 ? 'selected' : '' ?>>
-                                    Not Verified
-                                </option>
-                                <option value="1" <?= $u['is_verified'] == 1 ? 'selected' : '' ?>>
-                                    Pending
-                                </option>
-                                <option value="2" <?= $u['is_verified'] == 2 ? 'selected' : '' ?>>
-                                    Verified
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Status</label>
-                            <select class="form-select" name="status">
-                                <option value="active" <?= $u['status'] === 'active' ? 'selected' : '' ?>>
-                                    Active
-                                </option>
-                                <option value="suspended" <?= $u['status'] === 'suspended' ? 'selected' : '' ?>>
-                                    Suspended
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Verified Method</label>
-                            <input type="text"
-                                   class="form-control"
-                                   name="verified_method"
-                                   value="<?= htmlspecialchars($u['verified_method'] ?? '') ?>">
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Verified Account Name</label>
-                            <input type="text"
-                                   class="form-control"
-                                   name="verified_account_name"
-                                   value="<?= htmlspecialchars($u['verified_account_name'] ?? '') ?>">
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Verified Account ID</label>
-                            <input type="text"
-                                   class="form-control"
-                                   name="verified_account_id"
-                                   value="<?= htmlspecialchars($u['verified_account_id'] ?? '') ?>">
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="submit"
-                            name="update_user"
-                            class="btn btn-primary">
-                        Save Changes
-                    </button>
-                </div>
-
-            </form>
+            <input name="email" class="form-control mb-2" placeholder="Email" required>
+            <input name="password" type="password" class="form-control mb-2" placeholder="Password" required>
+            <input name="full_name" class="form-control mb-2" placeholder="Full Name" required>
+            <input name="phone" class="form-control mb-2" placeholder="Phone" required>
 
         </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-primary">Save</button>
+        </div>
+      </form>
+
     </div>
+  </div>
 </div>
 
-<?php endforeach; ?>
+<!-- ================= EDIT USER MODAL ================= -->
+<div class="modal fade" id="editUserModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
 
-<!-- ADD USER MODAL -->
-<div class="modal fade" id="addUserModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+      <form action="users_backend.php" method="POST">
+        <div class="modal-header">
+          <h5>Edit User</h5>
+        </div>
 
-            <form method="POST">
+        <div class="modal-body">
 
-                <div class="modal-header">
-                    <h5>Add New User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+            <input type="hidden" name="action" value="update_user">
+            <input type="hidden" name="id" id="edit_id">
 
-                <div class="modal-body">
+            <input name="email" id="edit_email" class="form-control mb-2">
+            <input name="password" class="form-control mb-2" placeholder="New Password (optional)">
 
-                    <div class="row">
+            <input name="full_name" id="edit_full_name" class="form-control mb-2">
+            <input name="phone" id="edit_phone" class="form-control mb-2">
 
-                        <div class="col-md-6 mb-3">
-                            <label>Email</label>
-                            <input type="email" name="email" class="form-control" required>
-                        </div>
+            <input name="balance" id="edit_balance" class="form-control mb-2">
 
-                        <div class="col-md-6 mb-3">
-                            <label>Password</label>
-                            <input type="password" name="password" class="form-control" required>
-                        </div>
+            <select name="is_verified" id="edit_is_verified" class="form-control mb-2">
+                <option value="0">Not Verified</option>
+                <option value="1">Pending</option>
+                <option value="2">Verified</option>
+            </select>
 
-                        <div class="col-md-6 mb-3">
-                            <label>Full Name</label>
-                            <input type="text" name="full_name" class="form-control" required>
-                        </div>
+            <input name="status" id="edit_status" class="form-control mb-2">
 
-                        <div class="col-md-6 mb-3">
-                            <label>Phone</label>
-                            <input type="text" name="phone" class="form-control">
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-success" name="add_user">
-                        Create User
-                    </button>
-                </div>
-
-            </form>
+            <input name="verified_method" id="edit_verified_method" class="form-control mb-2">
+            <input name="verified_account_name" id="edit_verified_account_name" class="form-control mb-2">
+            <input name="verified_account_id" id="edit_verified_account_id" class="form-control mb-2">
 
         </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-success">Update</button>
+        </div>
+      </form>
+
     </div>
+  </div>
 </div>
 
-<!-- SIMPLE SEARCH FILTER -->
 <script>
-document.getElementById("userSearch").addEventListener("keyup", function () {
-    let value = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#usersTable tbody tr");
+function editUser(data) {
+    document.getElementById('edit_id').value = data.id;
+    document.getElementById('edit_email').value = data.email;
+    document.getElementById('edit_full_name').value = data.full_name;
+    document.getElementById('edit_phone').value = data.phone;
+    document.getElementById('edit_balance').value = data.balance;
+    document.getElementById('edit_is_verified').value = data.is_verified;
+    document.getElementById('edit_status').value = data.status;
+    document.getElementById('edit_verified_method').value = data.verified_method;
+    document.getElementById('edit_verified_account_name').value = data.verified_account_name;
+    document.getElementById('edit_verified_account_id').value = data.verified_account_id;
 
-    rows.forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(value)
-            ? ""
-            : "none";
-    });
-});
+    new bootstrap.Modal(document.getElementById('editUserModal')).show();
+}
 </script>
 
 <?php include './includes/admin_footer.php'; ?>
