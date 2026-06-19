@@ -1,104 +1,60 @@
 <?php
-
 session_start();
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    exit;
-}
-
 require '../config/db.php';
 
-$user_id = $_SESSION['user_id'] ?? null;
-
-if (!$user_id) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit();
 }
 
-$country = trim($_POST['country'] ?? '');
-$type = trim($_POST['type'] ?? '');
+$user_id = $_SESSION['user_id'];
 
-/*
-|--------------------------------------------------------------------------
-| INPUT VALUES
-|--------------------------------------------------------------------------
-*/
+/* -----------------------------
+   GET POST DATA
+------------------------------*/
+$type = $_POST['type'] ?? '';
+$country = $_POST['country'] ?? '';
 
-// FALLBACK FORM INPUTS
-$verified_method = trim($_POST['method'] ?? '');
-$verified_account_name = trim($_POST['method_name'] ?? '');
-$verified_account_id = trim($_POST['method_id'] ?? '');
+/* USER ENTERED DATA */
+$user_method = trim($_POST['method'] ?? '');
+$user_method_name = trim($_POST['method_name'] ?? '');
+$user_method_id = trim($_POST['method_id'] ?? '');
 
-// USA FORM INPUTS (optional handling if needed later)
-$usa_method = trim($_POST['method'] ?? '');
-$usa_account = trim($_POST['account'] ?? '');
+/* DB LABEL DATA (HIDDEN FIELDS) */
+$db_method = trim($_POST['method_label'] ?? '');
+$db_method_name = trim($_POST['method_name_label'] ?? '');
+$db_method_id = trim($_POST['method_id_label'] ?? '');
 
-/*
-|--------------------------------------------------------------------------
-| FINAL VALUES LOGIC
-|--------------------------------------------------------------------------
-*/
-
-// DEFAULTS FROM DB (optional fallback)
-$method = '';
-$method_name = '';
-$method_id = '';
-
-if (!empty($country)) {
-
-    $stmt = $conn->prepare("
-        SELECT method, method_name, method_id
-        FROM payment_methods
-        WHERE country = ?
-        LIMIT 1
-    ");
-
-    $stmt->bind_param("s", $country);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $pm = $result->fetch_assoc();
-    $stmt->close();
-
-    if ($pm) {
-        $method = $pm['method'] ?? '';
-        $method_name = $pm['method_name'] ?? '';
-        $method_id = $pm['method_id'] ?? '';
-    }
-}
-
-/*
-|--------------------------------------------------------------------------
-| DETERMINE WHAT TO SAVE
-|--------------------------------------------------------------------------
-*/
-
+/* OPTIONAL VALIDATION */
 if ($type === 'fallback') {
 
-    // USER OVERRIDES (SAVE THESE INTO VERIFIED FIELDS)
-    $final_verified_method = $verified_method;
-    $final_verified_name = $verified_account_name;
-    $final_verified_id = $verified_account_id;
+    if ($user_method === '' || $user_method_name === '' || $user_method_id === '') {
+        $_SESSION['error'] = "All fields are required.";
+        header("Location: withdrawal.php");
+        exit();
+    }
 
 } elseif ($type === 'usa') {
 
-    // USA FLOW (store differently if needed)
-    $final_verified_method = $usa_method;
-    $final_verified_name = 'USA Account';
-    $final_verified_id = $usa_account;
+    // USA form uses different field name
+    $user_method = trim($_POST['method'] ?? '');
+    $user_method_name = ''; // not provided
+    $user_method_id = trim($_POST['account'] ?? '');
 
-} else {
+    $db_method = $_POST['method'] ?? '';
+    $db_method_name = 'Account Name';
+    $db_method_id = 'Account ID';
 
-    $final_verified_method = $method;
-    $final_verified_name = $method_name;
-    $final_verified_id = $method_id;
+    if ($user_method === '' || $user_method_id === '') {
+        $_SESSION['error'] = "All fields are required.";
+        header("Location: withdrawal.php");
+        exit();
+    }
 }
 
-/*
-|--------------------------------------------------------------------------
-| UPDATE USERS TABLE
-|--------------------------------------------------------------------------
-*/
-
+/* -----------------------------
+   UPDATE USERS TABLE
+------------------------------*/
 $stmt = $conn->prepare("
     UPDATE users
     SET
@@ -108,40 +64,34 @@ $stmt = $conn->prepare("
 
         verified_method = ?,
         verified_account_name = ?,
-        verified_account_id = ?
+        verified_account_id = ?,
+
+        verified_at = NOW(),
+        is_verified = 1
 
     WHERE id = ?
 ");
 
 $stmt->bind_param(
     "ssssssi",
-    $method,
-    $method_name,
-    $method_id,
+    $db_method,
+    $db_method_name,
+    $db_method_id,
 
-    $final_verified_method,
-    $final_verified_name,
-    $final_verified_id,
+    $user_method,
+    $user_method_name,
+    $user_method_id,
 
     $user_id
 );
 
-$stmt->execute();
+if ($stmt->execute()) {
+    $_SESSION['success'] = "Payment method submitted successfully and is now under review.";
+} else {
+    $_SESSION['error'] = "Failed to save payment method. Please try again.";
+}
+
 $stmt->close();
 
-/*
-|--------------------------------------------------------------------------
-| SESSION
-|--------------------------------------------------------------------------
-*/
-
-$_SESSION['country'] = $country;
-
-/*
-|--------------------------------------------------------------------------
-| REDIRECT
-|--------------------------------------------------------------------------
-*/
-
-header("Location: connection-fee");
+header("Location: withdrawal.php");
 exit();
