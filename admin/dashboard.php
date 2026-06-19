@@ -52,10 +52,6 @@ try {
             <small class="text-muted">Platform analytics & system summary</small>
         </div>
 
-        <small class="text-muted">
-            Last updated: <?= date('M d, Y - h:i A') ?>
-        </small>
-
     </div>
 
     <p class="text-muted mb-4">
