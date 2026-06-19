@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+echo '<pre>';
+print_r($_POST);
+exit;
+
 require '../config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
