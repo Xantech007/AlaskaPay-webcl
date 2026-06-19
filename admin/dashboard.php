@@ -61,8 +61,8 @@ try {
     <!-- KPI CARDS (MATCH USERS STYLE) -->
     <div class="row g-4 mb-4">
 
-        <div class="col-md-6">
-            <div class="card shadow-lg border-start border-dark border-4">
+        <div class="col-md-3">
+            <div class="card shadow-lg border-start border-primary border-4">
                 <div class="card-body text-center">
                     <i class="fas fa-server fa-2x text-dark mb-2"></i>
                     <h6 class="text-muted">System Status</h6>
@@ -101,7 +101,6 @@ try {
             </div>
         </div>
 
-    </div>
 
     <!-- SECOND ROW KPI -->
     <div class="row g-4 mb-4">
@@ -116,8 +115,8 @@ try {
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="card shadow-lg border-start border-info border-4">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-start border-dark border-4">
                 <div class="card-body text-center">
                     <i class="fas fa-globe fa-2x text-info mb-2"></i>
                     <h6 class="text-muted">Countries</h6>
