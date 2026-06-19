@@ -150,4 +150,20 @@ include 'includes/navbar.php';
 
 </div>
 
+<div style="margin-top:20px;text-align:center;">
+    <a href="withdrawal-history.php"
+       style="
+            display:inline-block;
+            padding:12px 24px;
+            background:var(--primary);
+            color:#fff;
+            text-decoration:none;
+            border-radius:8px;
+            font-weight:600;
+       ">
+        <i class="fas fa-money-bill-wave"></i>
+        View Withdrawal History
+    </a>
+</div>
+
 <?php include 'includes/footer.php'; ?>
