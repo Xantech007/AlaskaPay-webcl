@@ -1,269 +1,130 @@
 <?php
-// Start session and check if admin is logged in.
-// session_start();
-// if (!isset($_SESSION['user_id'])) {
-//     header("Location: login.php");
-//     exit();
-// }
-
-// $is_admin = $_SESSION['role'] === 'admin';
+// admin_header.php - Top Navigation Admin Layout (2026)
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><?php echo isset($pageTitle) ? $pageTitle : 'Admin & Staff'; ?></title>
+    <title><?php echo isset($pageTitle) ? $pageTitle : 'Admin Dashboard'; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- member application -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- end of it -->
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 
     <style>
-      /* Basic Reset */
-      /* body { margin:0; font-family: Arial, sans-serif; background-color: #f4f4f4; } */
-      
-      /* Sidebar styles */
-      /* .sidebar {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 250px;
-          height: 100vh;
-          background: #003366;
-          color: #fff;
-          padding: 20px;
-          box-sizing: border-box;
-      } */
-      /* .sidebar h2 { text-align: center; margin-bottom: 30px; }
-      .sidebar ul { list-style: none; padding: 0; }
-      .sidebar ul li { margin-bottom: 15px; }
-      .sidebar ul li a { color: #fff; text-decoration: none; }
-      .sidebar ul li a:hover { text-decoration: underline; }
-       */
-      /* Main content */
-      /* .main { margin-left: 270px; padding: 20px; }
-      @media (max-width: 768px) {
-          .sidebar { width: 200px; }
-          .content { margin-left: 220px; }
-      }
-       */
-      /* Header inside the content area */
-
-
-      /* DASHBOARD */
-
-
-      .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 50px;
+        body {
+            background: #f4f6f9;
         }
 
-        .kpi-card {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: transform 0.2s ease-in-out;
+        /* FIX NAVBAR OVERLAP */
+        .app-wrapper {
+            padding-top: 75px;
         }
 
-        .kpi-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .icon {
-            font-size: 2.5rem;
-            color: #4CAF50;
-        }
-
-        .content {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .kpi-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        .kpi-label {
-            font-size: 1rem;
-            color: #777;
-        }
-
-        .charts {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-
-            position: relative;
-            height:40vh;
-            width:80vw;
-
-    
-        }
-
-        canvas {
-            background-color: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        @media (max-width: 768px) {
-            .charts {
-                grid-template-columns: 1fr;
-            }
-        }
-
-
-        /* SETTINGS */
-        .settings-container {
-            max-width: 600px;
-            margin: auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .settings-title {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        input[type="text"], input[type="email"], input[type="password"], select {
+        /* TOP NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            z-index: 999;
         }
 
-        .form-group input[type="checkbox"] {
+        .navbar-nav .nav-link {
+            color: rgba(255,255,255,0.85);
+            font-weight: 500;
             margin-right: 10px;
+            transition: 0.2s ease;
         }
 
-        .settings-container .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
+        .navbar-nav .nav-link:hover {
+            color: #fff;
+            transform: translateY(-1px);
         }
 
-        .btn:hover {
-            background-color: #45a049;
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
         }
 
-        .notification-count {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        width: 18px;
-        height: 18px;
-        background-color: red;
-        color: white;
-        border-radius: 50%;
-        font-size: 12px;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .sidebar-link {
-        position: relative;
-  }
+        /* REMOVE DEFAULT BUTTON COLOR CONFLICTS */
+        .btn {
+            border-radius: 8px;
+        }
     </style>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="./admin.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
 </head>
+
 <body>
 
+<div class="app-wrapper">
 
-    <div class="wrapper">
-        <div class="wrapper">
-        
-        <!-- TOP NAVIGATION BAR -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3 shadow-sm">
-        
-            <!-- Logo -->
-            <a class="navbar-brand fw-bold text-white" href="./dashboard.php">
-                <i class="fas fa-coins me-2 text-warning"></i>
-                AlaskaPay
+<!-- TOP NAVIGATION BAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm px-3">
+
+    <!-- LOGO -->
+    <a class="navbar-brand text-white" href="./dashboard.php">
+        <i class="fas fa-coins text-warning me-2"></i>
+        AlaskaPay
+    </a>
+
+    <!-- MOBILE TOGGLE -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- MENU -->
+    <div class="collapse navbar-collapse" id="topNav">
+
+        <!-- CENTER LINKS -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-3">
+
+            <li class="nav-item">
+                <a class="nav-link" href="./dashboard.php">
+                    <i class="fa-solid fa-gauge me-1"></i> Overview
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="./member_management.php">
+                    <i class="fa-solid fa-user-group me-1"></i> Members
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="./loan_management.php">
+                    <i class="fa-solid fa-money-bill me-1"></i> Loans
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="./manage_users.php">
+                    <i class="fa-solid fa-users-line me-1"></i> Users
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="./settings.php">
+                    <i class="fa-solid fa-cog me-1"></i> Settings
+                </a>
+            </li>
+
+        </ul>
+
+        <!-- RIGHT SIDE -->
+        <div class="d-flex">
+            <a href="./logout.php" class="btn btn-outline-light btn-sm">
+                <i class="fa-solid fa-right-from-bracket me-1"></i>
+                Logout
             </a>
-        
-            <!-- Mobile toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        
-            <!-- Menu -->
-            <div class="collapse navbar-collapse" id="topNav">
-        
-                <!-- Left / Center Nav -->
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-3">
-        
-                    <li class="nav-item">
-                        <a class="nav-link" href="./dashboard.php">
-                            <i class="fa-solid fa-gauge me-1"></i> Overview
-                        </a>
-                    </li>
-        
-                    <li class="nav-item">
-                        <a class="nav-link" href="./member_management.php">
-                            <i class="fa-solid fa-user-group me-1"></i> Members
-                        </a>
-                    </li>
-        
-                    <li class="nav-item">
-                        <a class="nav-link" href="./loan_management.php">
-                            <i class="fa-solid fa-money-bill me-1"></i> Loans
-                        </a>
-                    </li>
-        
-                    <li class="nav-item">
-                        <a class="nav-link" href="./manage_users.php">
-                            <i class="fa-solid fa-users-line me-1"></i> Users
-                        </a>
-                    </li>
-        
-                    <li class="nav-item">
-                        <a class="nav-link" href="./settings.php">
-                            <i class="fa-solid fa-cog me-1"></i> Settings
-                        </a>
-                    </li>
-        
-                </ul>
-        
-                <!-- Right Side (Logout) -->
-                <div class="d-flex">
-                    <a href="./logout.php" class="btn btn-outline-light btn-sm">
-                        <i class="fa-solid fa-sign-out-alt me-1"></i> Logout
-                    </a>
-                </div>
-        
-            </div>
-        </nav>
-  
+        </div>
+
+    </div>
+</nav>
