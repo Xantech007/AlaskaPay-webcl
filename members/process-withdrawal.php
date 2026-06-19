@@ -147,7 +147,7 @@ try {
 
     $conn->commit();
 
-    $_SESSION['success'] =
+    $_SESSION['success_message'] =
         "Withdrawal request submitted successfully.";
 
 } catch (Exception $e) {
