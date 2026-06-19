@@ -1,10 +1,8 @@
 <?php
-// admin/dashboard.php - Modern Admin Dashboard (Enhanced 2026)
-
 session_start();
 require '../config/db.php';
 
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
@@ -42,135 +40,119 @@ try {
 }
 ?>
 
-<style>
-.quick-actions .action-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 28px 15px;
-    border-radius: 16px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.25s ease;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    color: #fff !important;
-}
-
-.quick-actions .action-btn i {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    color: #fff !important;
-}
-
-.quick-actions .action-btn:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 14px 30px rgba(0,0,0,0.18);
-}
-
-.action-primary { background: #0d6efd; }
-.action-success { background: #198754; }
-.action-danger  { background: #dc3545; }
-.action-warning { background: #ffc107; color:#000 !important; }
-.action-warning i { color:#000 !important; }
-</style>
-
 <div class="main p-4">
 
-<!-- HEADER -->
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <div>
-        <h2 class="fw-bold text-primary mb-0">
-            <i class="fas fa-chart-line"></i> Platform Overview
-        </h2>
-        <small class="text-muted">Real-time system statistics & activity</small>
+    <!-- HEADER (MATCH USERS.PHP STYLE) -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold text-primary mb-0">
+                <i class="fas fa-chart-line"></i> Dashboard Overview
+            </h2>
+            <small class="text-muted">Platform analytics & system summary</small>
+        </div>
+
+        <small class="text-muted">
+            Last updated: <?= date('M d, Y - h:i A') ?>
+        </small>
+
     </div>
 
-</div>
+    <p class="text-muted mb-4">
+        Welcome back, <strong><?= htmlspecialchars($_SESSION['full_name'] ?? 'Admin') ?></strong>.
+    </p>
 
-<p class="lead text-muted mb-4">
-    Welcome back, <strong><?= htmlspecialchars($_SESSION['full_name'] ?? 'Admin') ?></strong>.
-</p>
+    <!-- KPI CARDS (MATCH USERS STYLE) -->
+    <div class="row g-4 mb-4">
 
-<!-- KPI DASHBOARD -->
-<div class="row g-4 mb-4">
-
-    <div class="col-6 col-md-4 col-lg-2">
-        <div class="card shadow-lg border-start border-primary border-4">
-            <div class="card-body text-center">
-                <i class="fas fa-users fa-2x text-primary mb-2"></i>
-                <h6 class="text-muted">Users</h6>
-                <h3 class="fw-bold"><?= number_format($totalUsers) ?></h3>
+        <div class="col-md-3">
+            <div class="card shadow-lg border-start border-primary border-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                    <h6 class="text-muted">Total Users</h6>
+                    <h3 class="fw-bold"><?= number_format($totalUsers) ?></h3>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-6 col-md-4 col-lg-2">
-        <div class="card shadow-lg border-start border-success border-4">
-            <div class="card-body text-center">
-                <i class="fas fa-wallet fa-2x text-success mb-2"></i>
-                <h6 class="text-muted">Deposits</h6>
-                <h3 class="fw-bold"><?= number_format($totalDeposits) ?></h3>
+        <div class="col-md-3">
+            <div class="card shadow-lg border-start border-success border-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-wallet fa-2x text-success mb-2"></i>
+                    <h6 class="text-muted">Deposits</h6>
+                    <h3 class="fw-bold"><?= number_format($totalDeposits) ?></h3>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-6 col-md-4 col-lg-2">
-        <div class="card shadow-lg border-start border-danger border-4">
-            <div class="card-body text-center">
-                <i class="fas fa-hand-holding-usd fa-2x text-danger mb-2"></i>
-                <h6 class="text-muted">Withdrawals</h6>
-                <h3 class="fw-bold"><?= number_format($totalWithdrawals) ?></h3>
+        <div class="col-md-3">
+            <div class="card shadow-lg border-start border-danger border-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-hand-holding-usd fa-2x text-danger mb-2"></i>
+                    <h6 class="text-muted">Withdrawals</h6>
+                    <h3 class="fw-bold"><?= number_format($totalWithdrawals) ?></h3>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-6 col-md-6 col-lg-3">
-        <div class="card shadow-lg border-start border-info border-4">
-            <div class="card-body text-center">
-                <i class="fas fa-globe fa-2x text-info mb-2"></i>
-                <h6 class="text-muted">Countries</h6>
-                <h3 class="fw-bold"><?= number_format($totalCountries) ?></h3>
+        <div class="col-md-3">
+            <div class="card shadow-lg border-start border-info border-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-globe fa-2x text-info mb-2"></i>
+                    <h6 class="text-muted">Countries</h6>
+                    <h3 class="fw-bold"><?= number_format($totalCountries) ?></h3>
+                </div>
             </div>
         </div>
+
     </div>
 
-    <div class="col-6 col-md-6 col-lg-3">
-        <div class="card shadow-lg border-start border-warning border-4">
-            <div class="card-body text-center">
-                <i class="fas fa-credit-card fa-2x text-warning mb-2"></i>
-                <h6 class="text-muted">Payment Methods</h6>
-                <h3 class="fw-bold"><?= number_format($totalPaymentMethods) ?></h3>
+    <!-- SECOND ROW KPI -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6">
+            <div class="card shadow-lg border-start border-warning border-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-credit-card fa-2x text-warning mb-2"></i>
+                    <h6 class="text-muted">Payment Methods</h6>
+                    <h3 class="fw-bold"><?= number_format($totalPaymentMethods) ?></h3>
+                </div>
             </div>
         </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-lg border-start border-dark border-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-server fa-2x text-dark mb-2"></i>
+                    <h6 class="text-muted">System Status</h6>
+                    <h3 class="fw-bold text-success">Online</h3>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-</div>
+    <!-- RECENT ACTIVITY -->
+    <div class="row g-4">
 
-<!-- RECENT ACTIVITY -->
-<div class="row g-4">
+        <!-- DEPOSITS -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg">
 
-    <!-- DEPOSITS -->
-    <div class="col-lg-6">
-        <div class="card shadow-lg h-100">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0"><i class="fas fa-arrow-down"></i> Recent Deposits</h5>
-            </div>
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-arrow-down"></i> Recent Deposits</h5>
+                </div>
 
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>User</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                    <?php if (empty($recentDeposits)): ?>
-                        <tr><td colspan="3" class="text-center text-muted py-3">No deposits yet</td></tr>
-                    <?php else: ?>
+                <div class="card-body p-0 table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         <?php foreach ($recentDeposits as $d): ?>
                             <tr>
                                 <td><?= htmlspecialchars($d['full_name'] ?? 'System') ?></td>
@@ -178,34 +160,31 @@ try {
                                 <td><?= date('M d, Y', strtotime($d['created_at'])) ?></td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
-    </div>
 
-    <!-- WITHDRAWALS -->
-    <div class="col-lg-6">
-        <div class="card shadow-lg h-100">
-            <div class="card-header bg-danger text-white">
-                <h5 class="mb-0"><i class="fas fa-arrow-up"></i> Recent Withdrawals</h5>
-            </div>
+        <!-- WITHDRAWALS -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg">
 
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>User</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="fas fa-arrow-up"></i> Recent Withdrawals</h5>
+                </div>
 
-                    <tbody>
-                    <?php if (empty($recentWithdrawals)): ?>
-                        <tr><td colspan="3" class="text-center text-muted py-3">No withdrawals yet</td></tr>
-                    <?php else: ?>
+                <div class="card-body p-0 table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         <?php foreach ($recentWithdrawals as $w): ?>
                             <tr>
                                 <td><?= htmlspecialchars($w['full_name'] ?? 'System') ?></td>
@@ -213,15 +192,14 @@ try {
                                 <td><?= date('M d, Y', strtotime($w['created_at'])) ?></td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                    </tbody>
+                        </tbody>
+                    </table>
+                </div>
 
-                </table>
             </div>
         </div>
-    </div>
 
-</div>
+    </div>
 
 </div>
 
