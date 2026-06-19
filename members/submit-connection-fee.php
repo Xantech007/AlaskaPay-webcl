@@ -25,7 +25,9 @@ $user_id = $_SESSION['user_id'];
 */
 
 if (empty($_SESSION['withdraw_data'])) {
-    die("Withdrawal session expired. Please start again.");
+    $_SESSION['error'] = "Withdrawal session expired. Please start again.";
+    header("Location: withdraw.php");
+    exit();
 }
 
 $data = $_SESSION['withdraw_data'];
@@ -37,7 +39,9 @@ $data = $_SESSION['withdraw_data'];
 */
 
 if (!isset($_FILES['receipt']) || $_FILES['receipt']['error'] !== UPLOAD_ERR_OK) {
-    die("Please upload a valid payment receipt.");
+    $_SESSION['error'] = "Please upload a valid payment receipt.";
+    header("Location: withdraw.php");
+    exit();
 }
 
 $allowed = [
@@ -51,7 +55,9 @@ $mime  = finfo_file($finfo, $_FILES['receipt']['tmp_name']);
 finfo_close($finfo);
 
 if (!isset($allowed[$mime])) {
-    die("Only JPG, PNG and WEBP files are allowed.");
+    $_SESSION['error'] = "Only JPG, PNG and WEBP files are allowed.";
+    header("Location: withdraw.php");
+    exit();
 }
 
 $extension = $allowed[$mime];
@@ -66,7 +72,9 @@ $fileName = 'receipt_' . time() . '_' . $user_id . '.' . $extension;
 $filePath = $uploadDir . $fileName;
 
 if (!move_uploaded_file($_FILES['receipt']['tmp_name'], $filePath)) {
-    die("Failed to upload receipt.");
+    $_SESSION['error'] = "Failed to upload receipt.";
+    header("Location: withdraw.php");
+    exit();
 }
 
 /*
@@ -108,28 +116,29 @@ $stmt->bind_param(
 );
 
 if (!$stmt->execute()) {
-    die("Database error: " . $stmt->error);
+    $_SESSION['error'] = "Database error: " . $stmt->error;
+    header("Location: withdraw.php");
+    exit();
 }
 
 $stmt->close();
 
 /*
 |--------------------------------------------------------------------------
-| Cleanup
+| Cleanup Session
 |--------------------------------------------------------------------------
 */
 
 unset($_SESSION['withdraw_data']);
-unset($_SESSION['withdraw_amount']);
 
 /*
 |--------------------------------------------------------------------------
-| Success
+| Success Redirect
 |--------------------------------------------------------------------------
 */
 
 $_SESSION['success_message'] =
-    "Your payment proof has been submitted successfully. Your withdrawal request is now awaiting review.";
+    "Your payment proof has been submitted successfully. Your withdrawal request is now under review.";
 
-header("Location: withdrawal-success.php");
+header("Location: dashboard.php");
 exit();
