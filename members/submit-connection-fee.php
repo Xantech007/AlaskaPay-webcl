@@ -31,6 +31,26 @@ $data = $_SESSION['withdraw_data'];
 
 /*
 |--------------------------------------------------------------------------
+| FIX: SAFE AMOUNT HANDLING (NO STRICT DEPENDENCY)
+|--------------------------------------------------------------------------
+*/
+
+$amount = $data['amount'] ?? null;
+
+/* Optional fallback (if you ever store it separately) */
+if (!$amount && isset($_SESSION['withdraw_amount'])) {
+    $amount = $_SESSION['withdraw_amount'];
+}
+
+/* Final validation */
+if (!$amount || $amount <= 0) {
+    $_SESSION['error'] = "Withdrawal amount missing. Please restart the withdrawal process.";
+    header("Location: withdraw.php");
+    exit();
+}
+
+/*
+|--------------------------------------------------------------------------
 | Validate Upload
 |--------------------------------------------------------------------------
 */
@@ -102,6 +122,7 @@ $stmt = $conn->prepare("
 $stmt->bind_param(
     "idsssssss",
     $user_id,
+    $amount,
     $data['country'],
     $data['selected_type'],
     $data['withdraw_method'],
@@ -126,6 +147,7 @@ $stmt->close();
 */
 
 unset($_SESSION['withdraw_data']);
+unset($_SESSION['withdraw_amount']);
 
 /*
 |--------------------------------------------------------------------------
