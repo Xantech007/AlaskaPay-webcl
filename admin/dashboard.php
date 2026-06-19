@@ -145,7 +145,7 @@ try {
             <div class="card shadow-lg border-start border-info border-4">
                 <div class="card-body text-center">
                     <i class="fas fa-globe fa-2x text-info mb-2"></i>
-                    <h6 class="text-muted">Countries</h6>
+                    <h6 class="text-muted">Supported Countries</h6>
                     <h3 class="fw-bold"><?= number_format($totalCountries) ?></h3>
                 </div>
             </div>
