@@ -51,7 +51,7 @@ include 'includes/navbar.php';
 .history-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 700px;
+    min-width: 850px;
 }
 
 .history-table th,
@@ -93,7 +93,7 @@ include 'includes/navbar.php';
 
 @media (max-width: 600px) {
     .history-table {
-        min-width: 650px;
+        min-width: 850px;
     }
 }
 </style>
@@ -120,16 +120,12 @@ include 'includes/navbar.php';
                     <tr>
                         <th>ID</th>
                         <th>Amount (USD)</th>
-                
-                        <?php if (!empty($history[0]['receive_currency'])): ?>
-                            <th>
-                                Amount (<?= htmlspecialchars($history[0]['receive_currency']) ?>)
-                            </th>
-                        <?php endif; ?>
-                
+                        <th>Amount (Local Currency)</th>
+
                         <th><?= htmlspecialchars($user['method'] ?? 'Method') ?></th>
                         <th><?= htmlspecialchars($user['method_name'] ?? 'Account Name') ?></th>
                         <th><?= htmlspecialchars($user['method_id'] ?? 'Account ID') ?></th>
+
                         <th>Status</th>
                         <th>Date</th>
                     </tr>
@@ -156,15 +152,17 @@ include 'includes/navbar.php';
                             <td>#<?= $i++ ?></td>
 
                             <td>
-                                $<?= number_format($row['amount'], 2) ?>
+                                $<?= number_format((float)$row['amount'], 2) ?>
                             </td>
-                            
-                            <?php if (!empty($row['receive_currency'])): ?>
+
                             <td>
-                                <?= htmlspecialchars($row['receive_currency']) ?>
-                                <?= number_format($row['receive_amount'], 2) ?>
+                                <?php if (!empty($row['receive_currency'])): ?>
+                                    <?= htmlspecialchars($row['receive_currency']) ?>
+                                    <?= number_format((float)$row['receive_amount'], 2) ?>
+                                <?php else: ?>
+                                    —
+                                <?php endif; ?>
                             </td>
-                            <?php endif; ?>
 
                             <td>
                                 <?= htmlspecialchars($row['method']) ?>
@@ -185,7 +183,10 @@ include 'includes/navbar.php';
                             </td>
 
                             <td>
-                                <?= htmlspecialchars($row['created_at']) ?>
+                                <?= date(
+                                    'd M Y h:i A',
+                                    strtotime($row['created_at'])
+                                ) ?>
                             </td>
 
                         </tr>
