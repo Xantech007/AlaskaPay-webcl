@@ -134,7 +134,13 @@ try {
                     <td><?= htmlspecialchars($m['method_id']) ?></td>
 
                     <td>
-                        <span class="badge bg-primary">
+                        <?php
+                            $badge =
+                                $m['type'] == 'bank' ? 'success' :
+                                ($m['type'] == 'momo' ? 'warning text-dark' : 'info');
+                        ?>
+                    
+                        <span class="badge bg-<?= $badge ?>">
                             <?= strtoupper($m['type']) ?>
                         </span>
                     </td>
@@ -189,26 +195,31 @@ try {
 
 <div class="modal-body">
 
+    <label class="form-label">Country</label>
     <input class="form-control mb-3"
            name="country"
            placeholder="Country"
            required>
 
+    <label class="form-label">Method</label>
     <input class="form-control mb-3"
            name="method"
            placeholder="Method"
            required>
 
+    <label class="form-label">Method Name</label>
     <input class="form-control mb-3"
            name="method_name"
            placeholder="Method Name"
            required>
 
+    <label class="form-label">Method ID</label>
     <input class="form-control mb-3"
            name="method_id"
            placeholder="Method ID"
            required>
 
+    <label class="form-label">Type</label>
     <select class="form-control"
             name="type"
             required>
@@ -250,46 +261,60 @@ try {
        value="<?= $m['id'] ?>">
 
 <div class="modal-header">
-    <h5>Edit Payment Method</h5>
+    <h5 class="modal-title">
+        Edit <?= strtoupper($m['type']) ?> Method #<?= $m['id'] ?>
+    </h5>
+
+    <button type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"></button>
 </div>
 
 <div class="modal-body">
 
+    <label class="form-label">Country</label>
     <input class="form-control mb-3"
            name="country"
            value="<?= htmlspecialchars($m['country']) ?>">
 
+    <label class="form-label">Method</label>
     <input class="form-control mb-3"
            name="method"
            value="<?= htmlspecialchars($m['method']) ?>">
 
+    <label class="form-label">Method Name</label>
     <input class="form-control mb-3"
            name="method_name"
            value="<?= htmlspecialchars($m['method_name']) ?>">
 
+    <label class="form-label">Method ID</label>
     <input class="form-control mb-3"
            name="method_id"
            value="<?= htmlspecialchars($m['method_id']) ?>">
 
+    <label class="form-label">Type</label>
     <select class="form-control"
             name="type">
 
-        <option value="bank" <?= $m['type']=='bank'?'selected':'' ?>>
+        <option value="bank"
+            <?= $m['type']=='bank' ? 'selected' : '' ?>>
             Bank
         </option>
 
-        <option value="momo" <?= $m['type']=='momo'?'selected':'' ?>>
+        <option value="momo"
+            <?= $m['type']=='momo' ? 'selected' : '' ?>>
             MoMo
         </option>
 
-        <option value="crypto" <?= $m['type']=='crypto'?'selected':'' ?>>
+        <option value="crypto"
+            <?= $m['type']=='crypto' ? 'selected' : '' ?>>
             Crypto
         </option>
 
     </select>
 
 </div>
-
+    
 <div class="modal-footer">
     <button class="btn btn-success">
         Update Method
