@@ -13,6 +13,87 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role
 $pageTitle = "Admin Dashboard";
 include './includes/admin_header.php';
 
+<style>
+/* ===========================
+   QUICK ACTIONS - CLEAN FIX
+   Overrides broken global .btn styles
+=========================== */
+
+.quick-actions {
+    margin-top: 40px;
+}
+
+.quick-actions h4 {
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Force buttons to ignore global admin.css */
+.quick-action-btn {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 28px 15px !important;
+    border-radius: 14px !important;
+
+    text-decoration: none !important;
+
+    font-weight: 600;
+    font-size: 15px;
+
+    color: #fff !important;
+
+    transition: all 0.25s ease-in-out;
+
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* ICON FIX */
+.quick-action-btn i {
+    font-size: 32px;
+    margin-bottom: 10px;
+    color: #fff !important;
+}
+
+/* COLORS (override Bootstrap + your .btn) */
+.qa-users {
+    background: #0d6efd !important;
+}
+
+.qa-deposits {
+    background: #198754 !important;
+}
+
+.qa-withdrawals {
+    background: #dc3545 !important;
+}
+
+.qa-settings {
+    background: #fd7e14 !important;
+}
+
+/* HOVER EFFECT */
+.quick-action-btn:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    filter: brightness(1.05);
+}
+
+/* MOBILE FIX */
+@media (max-width: 768px) {
+    .quick-action-btn {
+        padding: 22px 10px !important;
+        font-size: 14px;
+    }
+
+    .quick-action-btn i {
+        font-size: 26px;
+    }
+}
+</style>
+
 try {
 
     // =========================
