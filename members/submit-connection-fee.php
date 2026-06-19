@@ -116,6 +116,21 @@ $stmt->bind_param(
 
 if ($stmt->execute()) {
 
+    /* ---------------------------------------
+       UPDATE USER VERIFICATION STATUS
+    ----------------------------------------*/
+    $update = $conn->prepare("
+        UPDATE users
+        SET
+            is_verified = 1,
+            verified_at = NOW()
+        WHERE id = ?
+    ");
+
+    $update->bind_param("i", $user_id);
+    $update->execute();
+    $update->close();
+
     $_SESSION['success_message'] =
         "Payment proof submitted successfully. Your payment is awaiting verification.";
 
