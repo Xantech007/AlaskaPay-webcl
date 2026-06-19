@@ -11,6 +11,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 $pageTitle = "Manage Users";
 include './includes/admin_header.php';
+?>
 
 <?php if (isset($_SESSION['success'])): ?>
     <div class="alert alert-success alert-dismissible fade show">
@@ -25,6 +26,8 @@ include './includes/admin_header.php';
         <button class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 <?php endif; ?>
+
+<?php
 
 try {
 
