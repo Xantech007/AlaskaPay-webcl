@@ -133,9 +133,6 @@ if (empty($paymentMethods)) {
         
                 <br><br>
         
-                You may reconnect your payment method if you need to update your details.
-        
-                <br><br>
         
                 <p style="margin-top:10px;">
                     You may update your payment details below and click <strong>Continue</strong> again.
