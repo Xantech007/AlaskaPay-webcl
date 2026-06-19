@@ -170,7 +170,7 @@ if (empty($paymentMethods)) {
                 </p>
             </div>
         
-            <form method="POST" action="process-withdrawal">
+            <form method="POST" action="process-withdrawal.php">
         
                 <div class="form-group">
                     <label>Amount to Withdraw</label>
