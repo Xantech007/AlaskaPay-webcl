@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = (int)$_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: withdraw.php");
+    header("Location: withdraw");
     exit();
 }
 
@@ -38,7 +38,7 @@ $stmt->close();
 
 if (!$user) {
     $_SESSION['error'] = "User not found.";
-    header("Location: withdraw.php");
+    header("Location: withdraw");
     exit();
 }
 
@@ -49,7 +49,7 @@ if (!$user) {
 */
 if ((int)$user['is_verified'] !== 2) {
     $_SESSION['error'] = "Your payment method is not approved yet.";
-    header("Location: withdraw.php");
+    header("Location: withdraw");
     exit();
 }
 
@@ -64,7 +64,7 @@ $amount = isset($_POST['amount'])
 
 if ($amount <= 0) {
     $_SESSION['error'] = "Invalid withdrawal amount.";
-    header("Location: withdraw.php");
+    header("Location: withdraw");
     exit();
 }
 
@@ -72,7 +72,7 @@ $currentBalance = (float)$user['balance'];
 
 if ($amount > $currentBalance) {
     $_SESSION['error'] = "Insufficient balance.";
-    header("Location: withdraw.php");
+    header("Location: withdraw");
     exit();
 }
 
@@ -176,7 +176,7 @@ try {
     $_SESSION['success_message'] =
         "Withdrawal request submitted successfully and is now pending review.";
 
-    header("Location: dashboard.php");
+    header("Location: dashboard");
     exit();
 
 } catch (Exception $e) {
@@ -186,6 +186,6 @@ try {
     $_SESSION['error'] =
         "Unable to process withdrawal. Please try again.";
 
-    header("Location: withdraw.php");
+    header("Location: withdraw");
     exit();
 }
