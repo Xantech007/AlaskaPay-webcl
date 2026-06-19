@@ -120,9 +120,9 @@ include 'includes/navbar.php';
                     <tr>
                         <th>ID</th>
                         <th>Amount</th>
-                        <th>Method</th>
-                        <th>Account Name</th>
-                        <th>Account ID</th>
+                        <th><?= htmlspecialchars($user['method'] ?? 'Method') ?></th>
+                        <th><?= htmlspecialchars($user['method_name'] ?? 'Account Name') ?></th>
+                        <th><?= htmlspecialchars($user['method_id'] ?? 'Account ID') ?></th>
                         <th>Status</th>
                         <th>Date</th>
                     </tr>
