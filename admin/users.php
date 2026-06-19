@@ -151,7 +151,7 @@ try {
                             Edit
                         </button>
 
-                        <a href="delete-user.php?id=<?= $u['id'] ?>"
+                        <a href="delete-user?id=<?= $u['id'] ?>"
                            class="btn btn-sm btn-danger"
                            onclick="return confirm('Delete user?')">
                             Delete
@@ -169,7 +169,7 @@ try {
 <!-- ================= ADD USER MODAL ================= -->
 <div class="modal fade" id="addUserModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-scrollable">
-    <form method="POST" action="add-user.php" class="modal-content">
+    <form method="POST" action="add-user" class="modal-content">
 
       <div class="modal-header">
         <h5 class="modal-title">Add User</h5>
@@ -196,7 +196,7 @@ try {
 <?php foreach ($users as $u): ?>
 <div class="modal fade" id="editUser<?= $u['id'] ?>" tabindex="-1">
   <div class="modal-dialog modal-dialog-scrollable">
-    <form method="POST" action="edit-user.php" class="modal-content">
+    <form method="POST" action="edit-user" class="modal-content">
 
       <input type="hidden" name="id" value="<?= $u['id'] ?>">
 
