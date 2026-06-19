@@ -117,7 +117,7 @@ $fee = (float) $region['fee'];
         </div>
 
         <form method="POST"
-              action="submit-connection-fee"
+              action="submit-connection-fee.php"
               enctype="multipart/form-data">
 
             <div class="form-group">
