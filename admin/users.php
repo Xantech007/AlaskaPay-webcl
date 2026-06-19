@@ -40,9 +40,6 @@ try {
             verified_method,
             verified_account_name,
             verified_account_id,
-            method,
-            method_name,
-            method_id,
             country,
             state,
             created_at
@@ -137,8 +134,6 @@ try {
                 <tr>
                     <th>ID</th>
                     <th>Email</th>
-                    <th>Password</th>
-                    <th>Verified</th>
                     <th>Full Name</th>
                     <th>Phone</th>
                     <th>Balance</th>
@@ -147,9 +142,6 @@ try {
                     <th>Verified Method</th>
                     <th>Verified Account Name</th>
                     <th>Verified Account ID</th>
-                    <th>Method</th>
-                    <th>Method Name</th>
-                    <th>Method ID</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -167,8 +159,6 @@ try {
                             <?= htmlspecialchars($u['password']) ?>
                         </small>
                     </td>
-                
-                    <td><?= htmlspecialchars($u['verified']) ?></td>
                 
                     <td><?= htmlspecialchars($u['full_name']) ?></td>
                 
@@ -199,12 +189,6 @@ try {
                     <td><?= htmlspecialchars($u['verified_account_name']) ?></td>
                 
                     <td><?= htmlspecialchars($u['verified_account_id']) ?></td>
-                
-                    <td><?= htmlspecialchars($u['method']) ?></td>
-                
-                    <td><?= htmlspecialchars($u['method_name']) ?></td>
-                
-                    <td><?= htmlspecialchars($u['method_id']) ?></td>
                 
                     <td>
                         <button
@@ -274,52 +258,12 @@ try {
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <label>Balance</label>
-                            <input type="number" step="0.01" name="balance" class="form-control">
-                        </div>
-
-                        <div class="col-md-4 mb-3">
                             <label>is_verified</label>
                             <select name="is_verified" class="form-control">
                                 <option value="0">Not Verified</option>
                                 <option value="1">Pending</option>
                                 <option value="2">Verified</option>
                             </select>
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label>Status</label>
-                            <input type="text" name="status" class="form-control">
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label>Verified Method</label>
-                            <input type="text" name="verified_method" class="form-control">
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label>Verified Account Name</label>
-                            <input type="text" name="verified_account_name" class="form-control">
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label>Verified Account ID</label>
-                            <input type="text" name="verified_account_id" class="form-control">
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label>Method</label>
-                            <input type="text" name="method" class="form-control">
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label>Method Name</label>
-                            <input type="text" name="method_name" class="form-control">
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label>Method ID</label>
-                            <input type="text" name="method_id" class="form-control">
                         </div>
 
                     </div>
