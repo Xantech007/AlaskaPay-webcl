@@ -4,6 +4,11 @@
 session_start();
 require '../config/db.php';
 
+include 'add-user.php';
+include 'edit-user.php';
+include 'delete-user.php';
+
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
     exit();
@@ -223,8 +228,5 @@ document.getElementById("userSearch").addEventListener("keyup", function () {
 });
 </script>
 
-<?php include 'add-user.php'; ?>
-<?php include 'edit-user.php'; ?>
-<?php include 'delete-user.php'; ?>
 
 <?php include './includes/admin_footer.php'; ?>
