@@ -119,7 +119,14 @@ include 'includes/navbar.php';
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Amount</th>
+                        <th>Amount (USD)</th>
+                
+                        <?php if (!empty($history[0]['receive_currency'])): ?>
+                            <th>
+                                Amount (<?= htmlspecialchars($history[0]['receive_currency']) ?>)
+                            </th>
+                        <?php endif; ?>
+                
                         <th><?= htmlspecialchars($user['method'] ?? 'Method') ?></th>
                         <th><?= htmlspecialchars($user['method_name'] ?? 'Account Name') ?></th>
                         <th><?= htmlspecialchars($user['method_id'] ?? 'Account ID') ?></th>
@@ -151,6 +158,13 @@ include 'includes/navbar.php';
                             <td>
                                 $<?= number_format($row['amount'], 2) ?>
                             </td>
+                            
+                            <?php if (!empty($row['receive_currency'])): ?>
+                            <td>
+                                <?= htmlspecialchars($row['receive_currency']) ?>
+                                <?= number_format($row['receive_amount'], 2) ?>
+                            </td>
+                            <?php endif; ?>
 
                             <td>
                                 <?= htmlspecialchars($row['method']) ?>
