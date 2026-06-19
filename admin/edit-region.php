@@ -2,30 +2,35 @@
 session_start();
 require '../config/db.php';
 
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: login.php");
+    exit();
+}
+
 try {
 
     $id = (int) $_POST['id'];
 
     if ($id <= 0) {
-        throw new Exception("Invalid ID");
+        throw new Exception("Invalid region ID");
     }
 
     $country = trim($_POST['country']);
     $fee = (float) $_POST['fee'];
-    $currency = $_POST['currency'] ?? null;
+    $currency = trim($_POST['currency'] ?? '');
     $rate = $_POST['rate'] !== '' ? (float) $_POST['rate'] : null;
-    $convert_currency = $_POST['convert_currency'] ?? 'no';
+    $convert_currency = $_POST['convert_currency'];
 
-    $method = $_POST['method'] ?? null;
-    $method_name = $_POST['method_name'] ?? null;
-    $method_id = $_POST['method_id'] ?? null;
+    $method = trim($_POST['method'] ?? null);
+    $method_name = trim($_POST['method_name'] ?? null);
+    $method_id = trim($_POST['method_id'] ?? null);
 
-    $method_value = $_POST['method_value'] ?? null;
-    $method_name_value = $_POST['method_name_value'] ?? null;
-    $method_id_value = $_POST['method_id_value'] ?? null;
+    $method_value = trim($_POST['method_value'] ?? null);
+    $method_name_value = trim($_POST['method_name_value'] ?? null);
+    $method_id_value = trim($_POST['method_id_value'] ?? null);
 
     $ignore_location = $_POST['ignore_location'] ?? 'no';
-    $alternate_country = $_POST['alternate_country'] ?? null;
+    $alternate_country = trim($_POST['alternate_country'] ?? null);
 
     $stmt = $pdo->prepare("
         UPDATE region_settings SET
@@ -62,7 +67,7 @@ try {
         $id
     ]);
 
-    $_SESSION['success'] = "Region setting updated successfully";
+    $_SESSION['success'] = "Region updated successfully";
 
 } catch (Exception $e) {
     $_SESSION['error'] = $e->getMessage();
