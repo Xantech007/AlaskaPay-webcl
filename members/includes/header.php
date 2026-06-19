@@ -1,3 +1,4 @@
+<?php include __DIR__ . '/account_status_check.php'; ?>
 <?php
 // includes/header.php
 ?>
