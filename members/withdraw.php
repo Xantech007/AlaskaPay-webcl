@@ -119,11 +119,9 @@ if (empty($paymentMethods)) {
         
                 <br><br>
         
-                <a href="connection-fee.php"
-                   class="submit-btn"
-                   style="display:inline-block;text-decoration:none;">
-                    Connect Payment Method
-                </a>
+                <p style="margin-top:10px;">
+                    Complete the form below and click <strong>Continue</strong> to connect your payment method.
+                </p>
             </div>
         
         <?php elseif ($is_verified === 1): ?>
@@ -139,11 +137,9 @@ if (empty($paymentMethods)) {
         
                 <br><br>
         
-                <a href="connection-fee.php"
-                   class="submit-btn"
-                   style="display:inline-block;text-decoration:none;">
-                    Reconnect Payment Method
-                </a>
+                <p style="margin-top:10px;">
+                    You may update your payment details below and click <strong>Continue</strong> again.
+                </p>
             </div>
         
         <?php elseif ($is_verified === 2): ?>
@@ -154,17 +150,17 @@ if (empty($paymentMethods)) {
                 <hr style="margin:10px 0;">
         
                 <p>
-                    <strong>Method:</strong>
+                    <?= htmlspecialchars($user['method']) ?>
                     <?= htmlspecialchars($user['verified_method']) ?>
                 </p>
         
                 <p>
-                    <strong>Account Name:</strong>
+                    <?= htmlspecialchars($user['method_name']) ?>
                     <?= htmlspecialchars($user['verified_account_name']) ?>
                 </p>
         
                 <p>
-                    <strong>Account ID:</strong>
+                    <?= htmlspecialchars($user['method_id']) ?>
                     <?= htmlspecialchars($user['verified_account_id']) ?>
                 </p>
             </div>
