@@ -15,7 +15,7 @@ $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
 if (!$user) {
-    header('Location: logout.php');
+    header('Location: logout');
     exit();
 }
 
@@ -54,7 +54,7 @@ include 'includes/navbar.php';
             My Profile
         </h2>
 
-        <form method="POST" action="update-profile.php">
+        <form method="POST" action="update-profile">
 
             <div class="form-group">
                 <label>Username</label>
