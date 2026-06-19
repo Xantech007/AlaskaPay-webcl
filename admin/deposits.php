@@ -133,11 +133,11 @@ try {
                         <strong>₦<?= number_format($d['amount'], 2) ?></strong>
                     </td>
 
+                    <!-- PROOF -->
                     <td>
-                        <a href="<?= $proofPath ?>"
-                           target="_blank"
-                           class="btn btn-sm btn-info">
-                            View Proof
+                        <a href="../<?= htmlspecialchars($d['proof_file']) ?>" target="_blank">
+                            <img src="../<?= htmlspecialchars($d['proof_file']) ?>"
+                                 style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
                         </a>
                     </td>
 
