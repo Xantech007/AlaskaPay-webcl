@@ -260,11 +260,12 @@ try {
 
 <div class="modal-header">
     <h5 class="modal-title">Edit Region #<?= $r['id'] ?></h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 </div>
 
 <div class="modal-body">
 
-<!-- SAME FIELDS AS ADD -->
+<!-- COUNTRY -->
 <label class="form-label">Country</label>
 <select class="form-control mb-3" name="country">
     <?php foreach ($countries as $c): ?>
@@ -275,43 +276,64 @@ try {
     <?php endforeach; ?>
 </select>
 
+<!-- FEE -->
+<label class="form-label">Fee</label>
 <input class="form-control mb-3" name="fee"
        value="<?= $r['fee'] ?>">
 
+<!-- CURRENCY -->
+<label class="form-label">Currency</label>
 <input class="form-control mb-3" name="currency"
        value="<?= htmlspecialchars($r['currency']) ?>">
 
+<!-- RATE -->
+<label class="form-label">Rate</label>
 <input class="form-control mb-3" name="rate"
        value="<?= htmlspecialchars($r['rate']) ?>">
 
+<!-- CONVERT CURRENCY -->
+<label class="form-label">Convert Currency</label>
 <select class="form-control mb-3" name="convert_currency">
     <option value="no" <?= $r['convert_currency']=='no'?'selected':'' ?>>No</option>
     <option value="yes" <?= $r['convert_currency']=='yes'?'selected':'' ?>>Yes</option>
 </select>
 
-<!-- PAYMENT -->
+<hr>
+
+<!-- PAYMENT FIELDS -->
+<label class="form-label">Method</label>
 <input class="form-control mb-3" name="method"
        value="<?= htmlspecialchars($r['method']) ?>">
 
+<label class="form-label">Method Name</label>
 <input class="form-control mb-3" name="method_name"
        value="<?= htmlspecialchars($r['method_name']) ?>">
 
+<label class="form-label">Method ID</label>
 <input class="form-control mb-3" name="method_id"
        value="<?= htmlspecialchars($r['method_id']) ?>">
 
+<label class="form-label">Method Value</label>
 <input class="form-control mb-3" name="method_value"
        value="<?= htmlspecialchars($r['method_value']) ?>">
 
+<label class="form-label">Method Name Value</label>
 <input class="form-control mb-3" name="method_name_value"
        value="<?= htmlspecialchars($r['method_name_value']) ?>">
 
+<label class="form-label">Method ID Value</label>
 <textarea class="form-control mb-3" name="method_id_value"><?= htmlspecialchars($r['method_id_value']) ?></textarea>
 
+<hr>
+
+<!-- LOCATION SETTINGS -->
+<label class="form-label">Ignore Location</label>
 <select class="form-control mb-3" name="ignore_location">
     <option value="no" <?= $r['ignore_location']=='no'?'selected':'' ?>>No</option>
     <option value="yes" <?= $r['ignore_location']=='yes'?'selected':'' ?>>Yes</option>
 </select>
 
+<label class="form-label">Alternate Country</label>
 <select class="form-control mb-3" name="alternate_country">
     <option value="">None</option>
     <?php foreach ($countries as $c): ?>
@@ -325,6 +347,7 @@ try {
 </div>
 
 <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
     <button class="btn btn-success">Update</button>
 </div>
 
