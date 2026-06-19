@@ -85,37 +85,43 @@
 
         <!-- CENTER LINKS -->
         <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-3">
-
+        
             <li class="nav-item">
                 <a class="nav-link" href="./dashboard.php">
-                    <i class="fa-solid fa-gauge me-1"></i> Overview
+                    <i class="fa-solid fa-chart-line me-1"></i> Overview
                 </a>
             </li>
-
+        
             <li class="nav-item">
-                <a class="nav-link" href="./member_management.php">
-                    <i class="fa-solid fa-user-group me-1"></i> Members
+                <a class="nav-link" href="./users.php">
+                    <i class="fa-solid fa-user-group me-1"></i> Users
                 </a>
             </li>
-
+        
             <li class="nav-item">
-                <a class="nav-link" href="./loan_management.php">
-                    <i class="fa-solid fa-money-bill me-1"></i> Loans
+                <a class="nav-link" href="./deposits.php">
+                    <i class="fa-solid fa-arrow-down-wide-short me-1"></i> Deposits
                 </a>
             </li>
-
+        
             <li class="nav-item">
-                <a class="nav-link" href="./manage_users.php">
-                    <i class="fa-solid fa-users-line me-1"></i> Users
+                <a class="nav-link" href="./withdrawals.php">
+                    <i class="fa-solid fa-arrow-up-wide-short me-1"></i> Withdrawals
                 </a>
             </li>
-
+        
             <li class="nav-item">
-                <a class="nav-link" href="./settings.php">
-                    <i class="fa-solid fa-cog me-1"></i> Settings
+                <a class="nav-link" href="./payment-settings.php">
+                    <i class="fa-solid fa-credit-card me-1"></i> Payment Settings
                 </a>
             </li>
-
+        
+            <li class="nav-item">
+                <a class="nav-link" href="./region-settings.php">
+                    <i class="fa-solid fa-globe me-1"></i> Region Settings
+                </a>
+            </li>
+        
         </ul>
 
         <!-- RIGHT SIDE -->
