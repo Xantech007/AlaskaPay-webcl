@@ -33,10 +33,8 @@ if (
 
             verified_method = ?,
             verified_account_name = ?,
-            verified_account_id = ?,
+            verified_account_id = ?
 
-            verified_at = NOW(),
-            is_verified = 1
         WHERE id = ?
     ");
 
