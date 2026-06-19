@@ -29,7 +29,7 @@ try {
     $users = $pdo->query("
         SELECT id, username, email, full_name, phone, balance, is_verified, status, country, state, created_at
         FROM users
-        ORDER BY created_at ASC
+        ORDER BY created_at DESC
         LIMIT 200
     ")->fetchAll();
 
