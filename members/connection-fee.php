@@ -19,27 +19,13 @@ $user_id = $_SESSION['user_id'];
    RECEIVED DATA (SAFE HANDLING)
 ------------------------------*/
 $country = trim($_POST['country'] ?? $_SESSION['country'] ?? '');
-$type = $_POST['type'] ?? '';
-
-$selected_type = $_POST['selected_type'] ?? '';
-
-$withdraw_method = $_POST['method'] ?? '';
-$withdraw_method_name = $_POST['method_name'] ?? '';
-$withdraw_method_id = $_POST['method_id'] ?? '';
-
-$account = $_POST['account'] ?? '';
 
 /* --------------------------------
-   STORE FINAL WITHDRAW DATA (NO AMOUNT HERE)
+   STORE FINAL WITHDRAW DATA
 ---------------------------------*/
-$_SESSION['withdraw_data'] = [
+$_SESSION['conn_fee'] = [
     'country' => $country,
-    'type' => $type,
-    'selected_type' => $selected_type,
-    'withdraw_method' => $withdraw_method,
-    'withdraw_method_name' => $withdraw_method_name,
-    'withdraw_method_id' => $withdraw_method_id,
-    'account' => $account
+
 ];
 
 /* --------------------------------
