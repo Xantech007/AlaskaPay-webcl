@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 $pageTitle = "Payment Settings";
 include './includes/admin_header.php';
+include './includes/countries.php';
 
 try {
 
@@ -196,10 +197,19 @@ try {
 <div class="modal-body">
 
     <label class="form-label">Country</label>
-    <input class="form-control mb-3"
-           name="country"
-           placeholder="Country"
-           required>
+    <select class="form-control mb-3"
+            name="country"
+            required>
+    
+        <option value="">Select Country</option>
+    
+        <?php foreach ($countries as $c): ?>
+            <option value="<?= htmlspecialchars($c) ?>">
+                <?= htmlspecialchars($c) ?>
+            </option>
+        <?php endforeach; ?>
+    
+    </select>
 
     <label class="form-label">Method</label>
     <input class="form-control mb-3"
@@ -273,9 +283,18 @@ try {
 <div class="modal-body">
 
     <label class="form-label">Country</label>
-    <input class="form-control mb-3"
-           name="country"
-           value="<?= htmlspecialchars($m['country']) ?>">
+    <select class="form-control mb-3"
+            name="country"
+            required>
+    
+        <?php foreach ($countries as $c): ?>
+            <option value="<?= htmlspecialchars($c) ?>"
+                <?= $m['country'] == $c ? 'selected' : '' ?>>
+                <?= htmlspecialchars($c) ?>
+            </option>
+        <?php endforeach; ?>
+    
+    </select>
 
     <label class="form-label">Method</label>
     <input class="form-control mb-3"
