@@ -16,15 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $country = trim($_POST['country'] ?? $_SESSION['country'] ?? '');
 
-$verified_method =
-    trim($_POST['verified_method'] ?? '');
-
-$verified_account_name =
-    trim($_POST['verified_account_name'] ?? '');
-
-$verified_account_id =
-    trim($_POST['verified_account_id'] ?? '');
-
 /* -----------------------------
    REGION SETTINGS
 ------------------------------*/
@@ -53,24 +44,63 @@ $use_external = $region['use_external'] ?? 'no';
 $external_link = $region['external_link'] ?? '';
 $external_name = $region['external_name'] ?? 'External Payment';
 
+
 /* -----------------------------
-   SAVE DEPOSIT FUNCTION
+   GET USER EMAIL
 ------------------------------*/
-function saveDeposit($conn, $user_id, $country, $fee, $currency, $status = 'pending') {
+$stmt = $conn->prepare("SELECT email FROM users WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$user = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
+$email = $user['email'] ?? '';
+
+/* -----------------------------
+   SAVE DEPOSIT (UPDATED)
+------------------------------*/
+function saveDeposit(
+    $conn,
+    $user_id,
+    $email,
+    $country,
+    $amount,
+    $currency,
+    $is_external,
+    $external_name = null,
+    $external_link = null,
+    $proof_file = null
+) {
 
     $stmt = $conn->prepare("
-        INSERT INTO deposits
-        (user_id, country, amount, currency, status, created_at)
-        VALUES (?, ?, ?, ?, ?, NOW())
+        INSERT INTO deposits (
+            user_id,
+            email,
+            amount,
+            proof_file,
+            status,
+            currency,
+            country,
+            is_external,
+            external_name,
+            external_link,
+            created_at
+        ) VALUES (
+            ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, NOW()
+        )
     ");
 
     $stmt->bind_param(
-        "isdss",
+        "isdssssss",
         $user_id,
-        $country,
-        $fee,
+        $email,
+        $amount,
+        $proof_file,
         $currency,
-        $status
+        $country,
+        $is_external,
+        $external_name,
+        $external_link
     );
 
     $stmt->execute();
@@ -78,11 +108,22 @@ function saveDeposit($conn, $user_id, $country, $fee, $currency, $status = 'pend
 }
 
 /* -----------------------------
-   HANDLE EXTERNAL PROCEED CLICK
+   EXTERNAL FLOW
 ------------------------------*/
 if ($use_external === 'yes' && isset($_POST['proceed_external'])) {
 
-    saveDeposit($conn, $user_id, $country, $fee, $currency);
+    saveDeposit(
+        $conn,
+        $user_id,
+        $email,
+        $country,
+        $fee,
+        $currency,
+        'yes',
+        $external_name,
+        $external_link,
+        null
+    );
 
     $_SESSION['success'] = "Redirecting to " . $external_name;
     header("Location: " . $external_link);
@@ -90,11 +131,33 @@ if ($use_external === 'yes' && isset($_POST['proceed_external'])) {
 }
 
 /* -----------------------------
-   HANDLE INTERNAL SUBMIT
+   INTERNAL FLOW
 ------------------------------*/
 if ($use_external === 'no' && isset($_POST['submit_internal'])) {
 
-    saveDeposit($conn, $user_id, $country, $fee, $currency);
+    // handle file upload
+    $proof_file = null;
+
+    if (!empty($_FILES['receipt']['name'])) {
+        $proof_file = time() . "_" . basename($_FILES['receipt']['name']);
+        move_uploaded_file(
+            $_FILES['receipt']['tmp_name'],
+            "../uploads/" . $proof_file
+        );
+    }
+
+    saveDeposit(
+        $conn,
+        $user_id,
+        $email,
+        $country,
+        $fee,
+        $currency,
+        'no',
+        null,
+        null,
+        $proof_file
+    );
 
     $_SESSION['success'] = "Payment proof submitted successfully.";
     header("Location: dashboard");
