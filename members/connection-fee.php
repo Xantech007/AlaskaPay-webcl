@@ -118,60 +118,119 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
 
     <!-- INSTRUCTIONS -->
     <div style="
-        background:#f8f9fa;
-        padding:20px;
-        border-radius:10px;
+        background:linear-gradient(135deg,#f8f9fa,#ffffff);
+        padding:22px;
+        border-radius:12px;
         margin-bottom:20px;
+        border:1px solid #eee;
     ">
-
-        <h3>Payment Instructions</h3>
-
+    
+        <h3 style="margin-top:0;margin-bottom:15px;">
+            Payment Instructions
+        </h3>
+    
         <?php if ($use_external === 'yes'): ?>
-
-            <p>
-                You will complete your payment on:
+    
+            <!-- STEP STYLE -->
+            <div style="margin-bottom:15px;">
+                <strong>Step 1:</strong>
+                Review your connection fee details below.
+            </div>
+    
+            <div style="margin-bottom:15px;">
+                <strong>Step 2:</strong>
+                You will be securely redirected to
                 <strong><?= htmlspecialchars($external_name) ?></strong>
-            </p>
-
-            <p>
-                Click <strong>Proceed</strong> to continue and complete your payment.
-            </p>
-
-        <?php else: ?>
-
-            <p>
-                Please transfer exactly the amount below and upload proof.
-            </p>
-
+                to complete your payment.
+            </div>
+    
+            <div style="margin-bottom:15px;">
+                <strong>Step 3:</strong>
+                After completing payment on the provider’s page,
+                return to your dashboard to continue the withdrawal process.
+            </div>
+    
+            <div style="
+                background:#fff3cd;
+                padding:12px;
+                border-left:4px solid #ff9800;
+                border-radius:8px;
+                font-size:14px;
+            ">
+                <strong>Important:</strong>
+                Do not close or refresh the payment page until the transaction is completed.
+                Failure to complete payment may delay your withdrawal processing.
+            </div>
+    
             <hr style="margin:15px 0;">
-
-            <p><strong>Country:</strong> <?= htmlspecialchars($country) ?></p>
-
-            <p>
+    
+            <p style="margin:0;">
+                <strong>Selected Payment Provider:</strong>
+                <?= htmlspecialchars($external_name) ?>
+            </p>
+    
+        <?php else: ?>
+    
+            <!-- INTERNAL FLOW -->
+            <div style="margin-bottom:15px;">
+                <strong>Step 1:</strong>
+                Carefully review your connection fee details below.
+            </div>
+    
+            <div style="margin-bottom:15px;">
+                <strong>Step 2:</strong>
+                Make a manual payment using the details provided.
+            </div>
+    
+            <div style="margin-bottom:15px;">
+                <strong>Step 3:</strong>
+                Upload a clear screenshot or receipt of your payment for verification.
+            </div>
+    
+            <hr style="margin:15px 0;">
+    
+            <div style="
+                background:#e8f5e9;
+                padding:12px;
+                border-left:4px solid #4caf50;
+                border-radius:8px;
+                font-size:14px;
+                margin-bottom:15px;
+            ">
+                <strong>Important:</strong>
+                Ensure the payment amount matches exactly before submitting proof.
+                Incorrect submissions may delay processing.
+            </div>
+    
+            <p style="margin:0;">
+                <strong>Country:</strong> <?= htmlspecialchars($country) ?>
+            </p>
+    
+            <p style="margin:0;">
                 <strong>Connection Fee:</strong>
                 <?= htmlspecialchars($currency) ?>
                 <?= number_format($fee, 2) ?>
             </p>
-
+    
             <hr style="margin:15px 0;">
-
-            <p>
+    
+            <p style="margin:0;">
                 <strong><?= htmlspecialchars($region['method']) ?>:</strong>
                 <?= htmlspecialchars($region['method_value']) ?>
             </p>
-
-            <p>
+    
+            <p style="margin:0;">
                 <strong><?= htmlspecialchars($region['method_name']) ?>:</strong>
                 <?= htmlspecialchars($region['method_name_value']) ?>
             </p>
-
-            <p>
+    
+            <p style="margin:0;">
                 <strong><?= htmlspecialchars($region['method_id']) ?>:</strong>
                 <?= htmlspecialchars($region['method_id_value']) ?>
             </p>
-
+    
         <?php endif; ?>
-
+    
     </div>
 
     <!-- FORM -->
