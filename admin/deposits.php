@@ -102,12 +102,16 @@ try {
             <thead class="table-primary">
                 <tr>
                     <th>ID</th>
-                    <th>User ID</th>
+                    <th>User</th>
                     <th>Email</th>
+                    <th>Country</th>
+                    <th>Currency</th>
                     <th>Amount</th>
+                    <th>Type</th>
+                    <th>Provider</th>
                     <th>Proof</th>
                     <th>Status</th>
-                    <th>Date & Time</th>
+                    <th>Date</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -122,51 +126,113 @@ try {
                 ?>
 
                 <tr>
-
+                
                     <td><?= $d['id'] ?></td>
-
+                
                     <td><?= $d['user_id'] ?></td>
-
+                
                     <td><?= htmlspecialchars($d['email']) ?></td>
-
+                
                     <td>
-                        <strong>₦<?= number_format($d['amount'], 2) ?></strong>
+                        <?= htmlspecialchars($d['country'] ?? '-') ?>
                     </td>
-
+                
+                    <td>
+                        <?= htmlspecialchars($d['currency'] ?? '-') ?>
+                    </td>
+                
+                    <td>
+                        <strong>
+                            <?= htmlspecialchars($d['currency']) ?>
+                            <?= number_format($d['amount'], 2) ?>
+                        </strong>
+                    </td>
+                
+                    <td>
+                
+                        <?php if (($d['is_external'] ?? 'no') === 'yes'): ?>
+                
+                            <span class="badge bg-info">
+                                External
+                            </span>
+                
+                        <?php else: ?>
+                
+                            <span class="badge bg-secondary">
+                                Internal
+                            </span>
+                
+                        <?php endif; ?>
+                
+                    </td>
+                
+                    <td>
+                
+                        <?php if (($d['is_external'] ?? 'no') === 'yes'): ?>
+                
+                            <?= htmlspecialchars($d['external_name']) ?>
+                
+                        <?php else: ?>
+                
+                            -
+                            
+                        <?php endif; ?>
+                
+                    </td>
+                
                     <!-- PROOF -->
                     <td>
-                        <a href="../<?= htmlspecialchars($d['proof_file']) ?>" target="_blank">
-                            <img src="../members/<?= htmlspecialchars($d['proof_file']) ?>"
-                                 style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
-                        </a>
+                
+                        <?php if (!empty($d['proof_file'])): ?>
+                
+                            <a href="../members/<?= htmlspecialchars($d['proof_file']) ?>"
+                               target="_blank">
+                
+                                <img src="../members/<?= htmlspecialchars($d['proof_file']) ?>"
+                                     style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
+                
+                            </a>
+                
+                        <?php else: ?>
+                
+                            <span class="badge bg-dark">
+                                External
+                            </span>
+                
+                        <?php endif; ?>
+                
                     </td>
-
+                
                     <td>
+                
                         <?php
                         $badge =
                             $d['status'] == 'approved' ? 'success' :
                             ($d['status'] == 'rejected' ? 'danger' : 'warning');
                         ?>
-
+                
                         <span class="badge bg-<?= $badge ?>">
                             <?= ucfirst($d['status']) ?>
                         </span>
+                
                     </td>
-
+                
                     <td>
                         <?= date('d M Y h:i A', strtotime($d['created_at'])) ?>
                     </td>
-
+                
                     <td>
-
+                
                         <button class="btn btn-sm btn-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#editDeposit<?= $d['id'] ?>">
-                            Update
+                
+                            Manage
+                
                         </button>
-
+                
                     </td>
-
+                
                 </tr>
 
             <?php endforeach; ?>
@@ -208,51 +274,49 @@ try {
             </div>
 
             <div class="modal-body">
-
-                <p><strong>User:</strong> <?= htmlspecialchars($d['email']) ?></p>
-
-                <p><strong>Amount:</strong>
-                    ₦<?= number_format($d['amount'],2) ?>
-                </p>
-
-                <?php
-                    $filename = basename($d['proof_file']);
-                    $proofPath = "../members/uploads/deposits/" . $filename;
-                ?>
-
-                <p>
-                    <a href="<?= $proofPath ?>"
-                       target="_blank"
-                       class="btn btn-info btn-sm">
-                        View Proof
-                    </a>
-                </p>
-
-                <label class="form-label">
-                    Deposit Status
-                </label>
-
-                <select name="status"
-                        class="form-control">
-
-                    <option value="pending"
-                        <?= $d['status']=='pending'?'selected':'' ?>>
-                        Pending
-                    </option>
-
-                    <option value="approved"
-                        <?= $d['status']=='approved'?'selected':'' ?>>
-                        Approved
-                    </option>
-
-                    <option value="rejected"
-                        <?= $d['status']=='rejected'?'selected':'' ?>>
-                        Rejected
-                    </option>
-
-                </select>
-
-            </div>
+            
+                <div class="mb-3">
+            
+                    <p><strong>ID:</strong> <?= $d['id'] ?></p>
+            
+                    <p><strong>User ID:</strong> <?= $d['user_id'] ?></p>
+            
+                    <p><strong>Email:</strong>
+                        <?= htmlspecialchars($d['email']) ?>
+                    </p>
+            
+                    <p><strong>Country:</strong>
+                        <?= htmlspecialchars($d['country'] ?? '-') ?>
+                    </p>
+            
+                    <p><strong>Currency:</strong>
+                        <?= htmlspecialchars($d['currency'] ?? '-') ?>
+                    </p>
+            
+                    <p><strong>Amount:</strong>
+                        <?= htmlspecialchars($d['currency']) ?>
+                        <?= number_format($d['amount'], 2) ?>
+                    </p>
+            
+                    <p><strong>Type:</strong>
+            
+                        <?php if (($d['is_external'] ?? 'no') === 'yes'): ?>
+            
+                            <span class="badge bg-info">
+                                External
+                            </span>
+            
+                        <?php else: ?>
+            
+                            <span class="badge bg-secondary">
+                                Internal
+                            </span>
+            
+                        <?php endif; ?>
+            
+                    </p>
+            
+                </div>
 
             <div class="modal-footer">
 
@@ -275,6 +339,29 @@ try {
 </div>
 
 <?php endforeach; ?>
+
+<?php if (($d['is_external'] ?? 'no') === 'yes'): ?>
+
+    <hr>
+
+    <p>
+        <strong>Provider:</strong>
+        <?= htmlspecialchars($d['external_name']) ?>
+    </p>
+
+    <?php if (!empty($d['external_link'])): ?>
+
+        <a href="<?= htmlspecialchars($d['external_link']) ?>"
+           target="_blank"
+           class="btn btn-outline-primary btn-sm">
+
+            Open Provider
+
+        </a>
+
+    <?php endif; ?>
+
+<?php endif; ?>
 
 <script>
 document.getElementById("depositSearch").addEventListener("input", function () {
