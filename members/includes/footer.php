@@ -3,61 +3,55 @@
 </footer>
 
 <script>
-
 const states = [
-    "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
-    "Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa",
-    "Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan",
-    "Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire",
-    "New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio",
-    "Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota",
-    "Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia",
-    "Wisconsin","Wyoming"
+"Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
+"Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa",
+"Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan",
+"Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire",
+"New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio",
+"Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota",
+"Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia",
+"Wisconsin","Wyoming"
 ];
 
-const names = [
-    "John", "Michael", "David", "James", "Robert", "William", "Mary", "Patricia",
-    "Jennifer", "Linda", "Elizabeth", "Daniel", "Christopher", "Matthew", "Anthony",
-    "Sarah", "Andrew", "Joshua", "Emily", "Sophia"
-];
+const names = ["John","Michael","David","James","Robert","William","Mary","Patricia","Jennifer","Linda","Daniel","Sarah","Emily","Joshua","Sophia"];
 
-function randomItem(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
+function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function amount(){
+    return Math.floor(Math.random()*(7000-3000+1))+3000;
 }
 
-function randomAmount() {
-    return Math.floor(Math.random() * (7000 - 3000 + 1)) + 3000;
-}
-
-function showToast() {
-    const name = randomItem(names);
-    const state = randomItem(states);
+function showWithdrawToast(){
+    const name = rand(names);
+    const state = rand(states);
     const country = "United States";
-    const amount = randomAmount();
+    const amt = amount();
 
-    const message = `${name} from ${state} living in ${country} withdrawed $${amount}`;
+    const msg = `${name} from ${state} living in ${country} withdrawed $${amt}`;
 
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    toast.innerText = message;
+    const box = document.createElement("div");
+    box.className = "withdraw-toast";
+    box.innerText = msg;
 
-    document.getElementById("toast-container").appendChild(toast);
+    const container = document.getElementById("withdraw-toast-container");
+    if(!container) return;
 
-    setTimeout(() => {
-        toast.remove();
-    }, 5000);
+    container.appendChild(box);
+
+    setTimeout(() => box.remove(), 5000);
 }
 
-function scheduleToast() {
-    const delay = Math.floor(Math.random() * (10000 - 4000 + 1)) + 4000;
-
+function loop(){
+    const delay = Math.floor(Math.random()*(10000-4000+1))+4000;
     setTimeout(() => {
-        showToast();
-        scheduleToast();
+        showWithdrawToast();
+        loop();
     }, delay);
 }
 
-scheduleToast();
+loop();
+
     
 function logout() {
     if (confirm('Are you sure you want to log out?')) {
