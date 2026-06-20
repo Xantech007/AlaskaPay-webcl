@@ -1,11 +1,16 @@
 <style>
 
+.loan-form{
+    max-width:700px;
+    margin:auto;
+}
+
 .receipt-card{
     background:#fff;
-    border-radius:20px;
+    border-radius:24px;
     overflow:hidden;
-    box-shadow:0 15px 40px rgba(0,0,0,.08);
-    border:1px solid #eef2f7;
+    box-shadow:0 20px 50px rgba(0,0,0,.08);
+    border:1px solid #edf2f7;
 }
 
 .receipt-header{
@@ -17,8 +22,8 @@
 
 .receipt-header i{
     font-size:70px;
-    margin-bottom:15px;
     color:#4db8ff;
+    margin-bottom:12px;
 }
 
 .receipt-header h2{
@@ -42,7 +47,7 @@
 }
 
 .receipt-table tr{
-    border-bottom:1px solid #f0f2f5;
+    border-bottom:1px solid #eef2f7;
 }
 
 .receipt-table tr:last-child{
@@ -50,12 +55,12 @@
 }
 
 .receipt-table td{
-    padding:16px 0;
+    padding:18px 0;
 }
 
 .receipt-table td:first-child{
-    color:#555;
     font-weight:600;
+    color:#666;
 }
 
 .receipt-table td:last-child{
@@ -69,16 +74,14 @@
     font-size:18px;
 }
 
-.amount-highlight{
-    font-size:24px;
+.amount-usd{
     color:#27ae60;
-    font-weight:700;
+    font-size:24px;
 }
 
-.converted-amount{
-    font-size:20px;
+.amount-receive{
     color:#9b59b6;
-    font-weight:700;
+    font-size:22px;
 }
 
 .status-badge{
@@ -88,13 +91,12 @@
     font-size:13px;
     font-weight:700;
     text-transform:uppercase;
-    letter-spacing:.5px;
 }
 
 .receipt-footer{
-    background:#f8fbff;
     padding:25px;
-    border-top:1px solid #eef2f7;
+    background:#f8fbff;
+    border-top:1px solid #edf2f7;
 }
 
 .receipt-actions{
@@ -108,51 +110,68 @@
     text-align:center;
 }
 
-.receipt-note{
-    margin-top:20px;
-    background:#f8fbff;
-    border-left:4px solid #3498db;
-    padding:15px;
-    border-radius:10px;
-    color:#555;
-    font-size:14px;
-}
+@media (max-width:768px){
 
-@media(max-width:768px){
+    .container{
+        width:100% !important;
+        padding:0 !important;
+        margin:0 !important;
+    }
+
+    .loan-form{
+        max-width:100%;
+        min-height:85vh;
+        display:flex;
+        flex-direction:column;
+        padding:0;
+    }
+
+    .receipt-card{
+        min-height:85vh;
+        border-radius:0;
+        display:flex;
+        flex-direction:column;
+    }
 
     .receipt-body{
-        padding:20px;
+        flex:1;
+        padding:25px;
     }
 
     .receipt-table td{
         display:block;
         width:100%;
         text-align:left !important;
-        padding:8px 0;
+        padding:6px 0;
     }
 
     .receipt-table tr{
         display:block;
-        padding:12px 0;
+        padding:16px 0;
+    }
+
+    .receipt-header{
+        padding:40px 20px;
+    }
+
+    .receipt-header i{
+        font-size:60px;
+    }
+
+    .receipt-header h2{
+        font-size:26px;
+    }
+
+    .receipt-footer{
+        margin-top:auto;
     }
 
     .receipt-actions{
         flex-direction:column;
     }
 
-    .receipt-header h2{
-        font-size:24px;
-    }
-
-    .receipt-header i{
-        font-size:55px;
-    }
-
-    .amount-highlight{
-        font-size:20px;
-    }
-
 }
+
 </style>
 
 
@@ -166,9 +185,7 @@
 
             <h2>Withdrawal Receipt</h2>
 
-            <p>
-                Transaction successfully recorded
-            </p>
+            <p>Transaction successfully recorded</p>
 
         </div>
 
@@ -179,13 +196,13 @@
                 <tr>
                     <td>Receipt ID</td>
                     <td class="receipt-id">
-                        #<?= $withdrawal['id'] ?>
+                        #<?= ($withdrawal['id'] * 27395) ?>
                     </td>
                 </tr>
 
                 <tr>
                     <td>Amount (USD)</td>
-                    <td class="amount-highlight">
+                    <td class="amount-usd">
                         $<?= number_format($withdrawal['amount'], 2) ?>
                     </td>
                 </tr>
@@ -194,48 +211,21 @@
 
                 <tr>
                     <td>
-                        Amount (<?= htmlspecialchars($withdrawal['receive_currency']) ?>)
+                        Amount To Receive (<?= htmlspecialchars($withdrawal['receive_currency']) ?>)
                     </td>
-                    <td class="converted-amount">
+
+                    <td class="amount-receive">
                         <?= htmlspecialchars($withdrawal['receive_currency']) ?>
                         <?= number_format($withdrawal['receive_amount'], 2) ?>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>Exchange Rate</td>
-                    <td>
-                        <?= number_format($withdrawal['exchange_rate'], 2) ?>
                     </td>
                 </tr>
 
                 <?php endif; ?>
 
                 <tr>
-                    <td>Payment Method</td>
-                    <td>
-                        <?= htmlspecialchars($withdrawal['method']) ?>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>Account Name</td>
-                    <td>
-                        <?= htmlspecialchars($withdrawal['account_name']) ?>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>Account ID</td>
-                    <td>
-                        <?= htmlspecialchars($withdrawal['account_id']) ?>
-                    </td>
-                </tr>
-
-                <tr>
                     <td>Status</td>
-                    <td>
 
+                    <td>
                         <span
                             class="status-badge"
                             style="
@@ -244,12 +234,12 @@
                             ">
                             <?= ucfirst($withdrawal['status']) ?>
                         </span>
-
                     </td>
                 </tr>
 
                 <tr>
                     <td>Date & Time</td>
+
                     <td>
                         <?= date(
                             'd M Y h:i A',
@@ -259,12 +249,6 @@
                 </tr>
 
             </table>
-
-            <div class="receipt-note">
-                <i class="fas fa-info-circle"></i>
-                Your withdrawal request has been submitted successfully.
-                Processing time may vary depending on your selected payment method.
-            </div>
 
         </div>
 
@@ -278,7 +262,7 @@
                     Dashboard
                 </a>
 
-                <a href="withdrawal-history"
+                <a href="history"
                    class="submit-btn"
                    style="background:#555;">
                     <i class="fas fa-history"></i>
