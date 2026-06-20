@@ -1,3 +1,7 @@
+<pre>
+<?php print_r($withdrawal); ?>
+</pre>
+
 <style>
 
 .loan-form{
