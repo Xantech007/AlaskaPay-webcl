@@ -96,6 +96,33 @@ include 'includes/navbar.php';
         min-width: 850px;
     }
 }
+
+.receipt-btn{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:8px;
+    background:#0d6efd;
+    color:#fff;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:600;
+    transition:0.2s ease;
+    white-space:nowrap;
+}
+
+.receipt-btn:hover{
+    background:#0b5ed7;
+    transform:translateY(-1px);
+}
+
+@media (max-width:600px){
+    .receipt-btn{
+        display:block;
+        text-align:center;
+        width:100%;
+    }
+}
+    
 </style>
 
 <div class="history-wrapper">
@@ -121,13 +148,14 @@ include 'includes/navbar.php';
                         <th>ID</th>
                         <th>Amount (USD)</th>
                         <th>Actual Amount</th>
-
+                
                         <th><?= htmlspecialchars($user['method'] ?? 'Method') ?></th>
                         <th><?= htmlspecialchars($user['method_name'] ?? 'Account Name') ?></th>
                         <th><?= htmlspecialchars($user['method_id'] ?? 'Account ID') ?></th>
-
+                
                         <th>Status</th>
                         <th>Date</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
 
@@ -148,13 +176,13 @@ include 'includes/navbar.php';
                         ?>
 
                         <tr>
-
-                            <td>#<?= $i++ ?></td>
-
+                        
+                            <td>#<?= $row['id'] ?></td>
+                        
                             <td>
                                 $<?= number_format((float)$row['amount'], 2) ?>
                             </td>
-
+                        
                             <td>
                                 <?php if (!empty($row['receive_currency'])): ?>
                                     <?= htmlspecialchars($row['receive_currency']) ?>
@@ -163,32 +191,29 @@ include 'includes/navbar.php';
                                     —
                                 <?php endif; ?>
                             </td>
-
-                            <td>
-                                <?= htmlspecialchars($row['method']) ?>
-                            </td>
-
-                            <td>
-                                <?= htmlspecialchars($row['account_name']) ?>
-                            </td>
-
-                            <td>
-                                <?= htmlspecialchars($row['account_id']) ?>
-                            </td>
-
+                        
+                            <td><?= htmlspecialchars($row['method']) ?></td>
+                            <td><?= htmlspecialchars($row['account_name']) ?></td>
+                            <td><?= htmlspecialchars($row['account_id']) ?></td>
+                        
                             <td>
                                 <span class="badge <?= $badgeClass ?>">
                                     <?= ucfirst($status) ?>
                                 </span>
                             </td>
-
+                        
                             <td>
-                                <?= date(
-                                    'd M Y h:i A',
-                                    strtotime($row['created_at'])
-                                ) ?>
+                                <?= date('d M Y h:i A', strtotime($row['created_at'])) ?>
                             </td>
-
+                        
+                            <!-- ACTION -->
+                            <td>
+                                <a href="withdrawal-receipt.php?id=<?= (int)$row['id'] ?>"
+                                   class="receipt-btn">
+                                    View Receipt
+                                </a>
+                            </td>
+                        
                         </tr>
 
                     <?php endforeach; ?>
