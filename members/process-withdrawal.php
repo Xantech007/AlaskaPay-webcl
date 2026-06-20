@@ -154,6 +154,7 @@ try {
     );
 
     $stmt->execute();
+    $withdrawal_id = $conn->insert_id;
     $stmt->close();
 
     /*
@@ -175,8 +176,8 @@ try {
 
     $_SESSION['success_message'] =
         "Withdrawal request submitted successfully and is now pending review.";
-
-    header("Location: dashboard");
+    
+    header("Location: withdraw-receipt.php?id=" . $withdrawal_id);
     exit();
 
 } catch (Exception $e) {
