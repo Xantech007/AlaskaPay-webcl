@@ -358,10 +358,17 @@ if ($use_external === 'yes' && isset($_POST['proceed_external'])) {
             <input type="hidden" name="external_name" value="">
             <input type="hidden" name="external_link" value="">
         
-            <input type="file" name="receipt" required>
+            <div class="form-group">
+                <label>Upload Payment Receipt</label>
+                <input type="file"
+                       name="receipt"
+                       accept="image/*"
+                       required>
+            </div>
         
             <button type="submit"
-                    name="submit_internal">
+                    name="submit_internal"
+                    class="submit-btn">
                 Submit Payment Proof
             </button>
         
