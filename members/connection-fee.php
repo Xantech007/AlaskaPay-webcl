@@ -62,6 +62,17 @@ function saveDeposit(
     $external_link = null,
     $status = 'pending'
 ) {
+
+    // get user email safely
+    $email = '';
+
+    $stmt = $conn->prepare("SELECT email FROM users WHERE id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->bind_result($email);
+    $stmt->fetch();
+    $stmt->close();
+
     $stmt = $conn->prepare("
         INSERT INTO deposits
         (
@@ -78,14 +89,13 @@ function saveDeposit(
             created_at
         )
         VALUES
-        (
-            ?, '', ?, '', ?, ?, ?, ?, ?, ?, NOW()
-        )
+        (?, ?, ?, '', ?, ?, ?, ?, ?, ?, NOW())
     ");
 
     $stmt->bind_param(
-        "idsssss",
+        "isdssssss",
         $user_id,
+        $email,
         $fee,
         $status,
         $currency,
