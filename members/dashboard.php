@@ -74,7 +74,11 @@ include 'includes/navbar.php';
             <?php endif; ?>
 
             <a href="withdraw.php" style="text-decoration:none;color:inherit;">
-                <div class="card approved" style="cursor:pointer;">
+                <div class="card approved withdraw-card" style="cursor:pointer; position:relative;">
+                    
+                    <!-- POPUP WILL GO HERE -->
+                    <div id="withdraw-toast-container"></div>
+            
                     <i class="fas fa-money-bill-transfer" style="color:#e67e22;"></i>
                     <h3>Withdraw Funds</h3>
                     <p>Withdraw</p>
