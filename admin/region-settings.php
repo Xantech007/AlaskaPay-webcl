@@ -95,6 +95,10 @@ try {
     <th>Ignore</th>
     <th>Alternate</th>
 
+    <th>Use External</th>
+    <th>External Name</th>
+    <th>External Link</th>
+
     <th>Created</th>
     <th>Action</th>
 </tr>
@@ -134,6 +138,20 @@ try {
     </td>
 
     <td><?= htmlspecialchars($r['alternate_country'] ?? '-') ?></td>
+
+    <td>
+        <span class="badge bg-<?= ($r['use_external'] ?? 'no') === 'yes' ? 'success' : 'secondary' ?>">
+            <?= strtoupper($r['use_external'] ?? 'NO') ?>
+        </span>
+    </td>
+    
+    <td>
+        <?= htmlspecialchars($r['external_name'] ?? '-') ?>
+    </td>
+    
+    <td style="max-width:250px;word-break:break-all;">
+        <?= htmlspecialchars($r['external_link'] ?? '-') ?>
+    </td>
 
     <td><?= date('d M Y h:i A', strtotime($r['created_at'])) ?></td>
 
@@ -221,6 +239,28 @@ try {
 
 <label class="form-label">Method ID Value</label>
 <textarea class="form-control mb-3" name="method_id_value"></textarea>
+
+<hr>
+
+<h6 class="fw-bold text-primary">
+    External Payment Settings
+</h6>
+
+<label class="form-label">Use External Payment</label>
+<select class="form-control mb-3" name="use_external">
+    <option value="no">No</option>
+    <option value="yes">Yes</option>
+</select>
+
+<label class="form-label">External Provider Name</label>
+<input class="form-control mb-3"
+       name="external_name"
+       placeholder="Example: Paystack">
+
+<label class="form-label">External Payment URL</label>
+<input class="form-control mb-3"
+       name="external_link"
+       placeholder="https://example.com/payment">
 
 <!-- REGION CONTROL -->
 <label class="form-label">Ignore Location</label>
@@ -325,6 +365,37 @@ try {
 <textarea class="form-control mb-3" name="method_id_value"><?= htmlspecialchars($r['method_id_value']) ?></textarea>
 
 <hr>
+
+<hr>
+
+<h6 class="fw-bold text-primary">
+    External Payment Settings
+</h6>
+
+<label class="form-label">Use External Payment</label>
+<select class="form-control mb-3" name="use_external">
+
+    <option value="no"
+        <?= ($r['use_external'] ?? 'no') == 'no' ? 'selected' : '' ?>>
+        No
+    </option>
+
+    <option value="yes"
+        <?= ($r['use_external'] ?? 'no') == 'yes' ? 'selected' : '' ?>>
+        Yes
+    </option>
+
+</select>
+
+<label class="form-label">External Provider Name</label>
+<input class="form-control mb-3"
+       name="external_name"
+       value="<?= htmlspecialchars($r['external_name'] ?? '') ?>">
+
+<label class="form-label">External Payment URL</label>
+<input class="form-control mb-3"
+       name="external_link"
+       value="<?= htmlspecialchars($r['external_link'] ?? '') ?>">
 
 <!-- LOCATION SETTINGS -->
 <label class="form-label">Ignore Location</label>
