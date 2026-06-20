@@ -19,7 +19,6 @@ if (!$user) {
     exit();
 }
 
-<?php
 /* -----------------------------
    FLASH MESSAGE SYSTEM
 ------------------------------*/
@@ -44,7 +43,6 @@ if (!empty($_SESSION['error_message'])) {
 
     unset($_SESSION['error_message']);
 }
-?>
 
 include 'includes/header.php';
 include 'includes/navbar.php';
