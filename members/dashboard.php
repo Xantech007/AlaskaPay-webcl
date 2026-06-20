@@ -111,4 +111,6 @@ include 'includes/navbar.php';
 
 </div>
 
+<div id="toast-container"></div>
+
 <?php include 'includes/footer.php'; ?>
