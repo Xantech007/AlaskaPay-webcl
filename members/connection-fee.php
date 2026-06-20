@@ -159,23 +159,20 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
                 margin-bottom:15px;
             ">
             
-                <strong>Verified Payment Details</strong>
+                <strong>Payment Details to Connect</strong>
             
                 <hr style="margin:10px 0; border:0; border-top:1px solid #c8e6c9;">
             
                 <p style="margin:5px 0;">
-                    <strong>Payment Method:</strong>
-                    <?= htmlspecialchars($verified_method ?? 'Not set') ?>
+                    <strong><?= htmlspecialchars($verified_method ?? 'Not set') ?>:</strong>
                 </p>
             
                 <p style="margin:5px 0;">
-                    <strong>Account Name:</strong>
-                    <?= htmlspecialchars($verified_account_name ?? 'Not set') ?>
+                    <strong><?= htmlspecialchars($verified_account_name ?? 'Not set') ?>:</strong>
                 </p>
             
                 <p style="margin:5px 0;">
-                    <strong>Account ID:</strong>
-                    <?= htmlspecialchars($verified_account_id ?? 'Not set') ?>
+                    <strong><?= htmlspecialchars($verified_account_id ?? 'Not set') ?>:</strong>
                 </p>
             
             </div>
@@ -216,23 +213,20 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
                 margin-bottom:15px;
             ">
             
-                <strong>Verified Payment Details</strong>
+                <strong>Payment Details to Connect</strong>
             
                 <hr style="margin:10px 0; border:0; border-top:1px solid #c8e6c9;">
             
                 <p style="margin:5px 0;">
-                    <strong>Payment Method:</strong>
-                    <?= htmlspecialchars($verified_method ?? 'Not set') ?>
+                    <strong><?= htmlspecialchars($verified_method ?? 'Not set') ?>:</strong>
                 </p>
             
                 <p style="margin:5px 0;">
-                    <strong>Account Name:</strong>
-                    <?= htmlspecialchars($verified_account_name ?? 'Not set') ?>
+                    <strong><?= htmlspecialchars($verified_account_name ?? 'Not set') ?>:</strong>
                 </p>
             
                 <p style="margin:5px 0;">
-                    <strong>Account ID:</strong>
-                    <?= htmlspecialchars($verified_account_id ?? 'Not set') ?>
+                    <strong><?= htmlspecialchars($verified_account_id ?? 'Not set') ?>:</strong>
                 </p>
             
             </div>
