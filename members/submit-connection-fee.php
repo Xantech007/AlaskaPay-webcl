@@ -23,31 +23,15 @@ $stmt->close();
 
 $email = $user['email'] ?? '';
 
-/*
-|--------------------------------------------------------------------------
-| GET CONNECTION FEE
-|--------------------------------------------------------------------------
-*/
-$country = $_SESSION['conn_fee']['country'] ?? '';
+$country      = trim($_POST['country'] ?? '');
+$currency     = trim($_POST['currency'] ?? 'USD');
+$amount       = (float)($_POST['amount'] ?? 0);
 
-$stmt = $conn->prepare("
-    SELECT fee
-    FROM region_settings
-    WHERE country = ?
-    LIMIT 1
-");
-$stmt->bind_param("s", $country);
-$stmt->execute();
-$region = $stmt->get_result()->fetch_assoc();
-$stmt->close();
+$is_external  = 'no';
+$external_name = null;
+$external_link = null;
 
-if (!$region) {
-    $_SESSION['error'] = "Region settings not found.";
-    header("Location: withdraw.php");
-    exit();
-}
 
-$amount = (float)$region['fee'];
 
 /*
 |--------------------------------------------------------------------------
@@ -98,20 +82,31 @@ $stmt = $conn->prepare("
         amount,
         proof_file,
         status,
-        created_at
+        created_at,
+        currency,
+        country,
+        is_external,
+        external_name,
+        external_link
     )
     VALUES
     (
-        ?, ?, ?, ?, 'pending', NOW()
+        ?, ?, ?, ?, 'pending', NOW(),
+        ?, ?, ?, ?, ?
     )
 ");
 
 $stmt->bind_param(
-    "isds",
+    "isdssssss",
     $user_id,
     $email,
     $amount,
-    $filePath
+    $filePath,
+    $currency,
+    $country,
+    $is_external,
+    $external_name,
+    $external_link
 );
 
 if ($stmt->execute()) {
