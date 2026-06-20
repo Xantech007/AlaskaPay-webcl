@@ -394,32 +394,32 @@
         }
 
 
-        #toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
+     
+        #withdraw-toast-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
         }
         
-        .toast {
+        .withdraw-toast {
             background: #1f1f1f;
             color: #fff;
-            padding: 12px 15px;
-            margin-bottom: 10px;
+            padding: 10px 12px;
             border-radius: 8px;
-            font-size: 14px;
-            width: 280px;
+            font-size: 12px;
+            width: 220px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             animation: slideIn 0.5s ease, fadeOut 0.5s ease 4.5s forwards;
         }
         
         @keyframes slideIn {
-            from { transform: translateX(120%); opacity: 0; }
+            from { transform: translateX(40px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
         
         @keyframes fadeOut {
-            to { opacity: 0; transform: translateX(120%); }
+            to { opacity: 0; transform: translateX(40px); }
         }
 
         
