@@ -105,6 +105,7 @@ try {
                     <th>User ID</th>
                     <th>Email</th>
                     <th>Amount</th>
+                    <th>External</th>
                     <th>Proof</th>
                     <th>Status</th>
                     <th>Date & Time</th>
@@ -130,7 +131,26 @@ try {
                     <td><?= htmlspecialchars($d['email']) ?></td>
 
                     <td>
-                        <strong>$<?= number_format($d['amount'], 2) ?></strong>
+                        <strong>
+                            <?= htmlspecialchars($d['currency'] ?? '$') ?>
+                            <?= number_format($d['amount'], 2) ?>
+                        </strong>
+                    </td>
+
+                    <td>
+                        <?php if ($d['is_external'] === 'yes'): ?>
+                            <span class="badge bg-info">Yes</span><br>
+                            <small>
+                                <?= htmlspecialchars($d['external_name']) ?><br>
+                                <?php if (!empty($d['external_link'])): ?>
+                                    <a href="<?= htmlspecialchars($d['external_link']) ?>" target="_blank">
+                                        Visit Link
+                                    </a>
+                                <?php endif; ?>
+                            </small>
+                        <?php else: ?>
+                            <span class="badge bg-secondary">No</span>
+                        <?php endif; ?>
                     </td>
 
                     <!-- PROOF -->
@@ -212,7 +232,8 @@ try {
                 <p><strong>User:</strong> <?= htmlspecialchars($d['email']) ?></p>
 
                 <p><strong>Amount:</strong>
-                    $<?= number_format($d['amount'],2) ?>
+                    <?= htmlspecialchars($d['currency'] ?? '$') ?>
+                    <?= number_format($d['amount'], 2) ?>
                 </p>
 
                 <?php
