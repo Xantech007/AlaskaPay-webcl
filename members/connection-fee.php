@@ -151,15 +151,33 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
             </div>
     
             <div style="
-                background:#fff3cd;
-                padding:12px;
-                border-left:4px solid #ff9800;
+                background:#e8f5e9;
+                padding:15px;
+                border-left:4px solid #4caf50;
                 border-radius:8px;
                 font-size:14px;
+                margin-bottom:15px;
             ">
-                <strong>Important:</strong>
-                Do not close or refresh the payment page until the transaction is completed.
-                Failure to complete payment may delay your withdrawal processing.
+            
+                <strong>Verified Payment Details</strong>
+            
+                <hr style="margin:10px 0; border:0; border-top:1px solid #c8e6c9;">
+            
+                <p style="margin:5px 0;">
+                    <strong>Payment Method:</strong>
+                    <?= htmlspecialchars($verified_method ?? 'Not set') ?>
+                </p>
+            
+                <p style="margin:5px 0;">
+                    <strong>Account Name:</strong>
+                    <?= htmlspecialchars($verified_account_name ?? 'Not set') ?>
+                </p>
+            
+                <p style="margin:5px 0;">
+                    <strong>Account ID:</strong>
+                    <?= htmlspecialchars($verified_account_id ?? 'Not set') ?>
+                </p>
+            
             </div>
     
             <hr style="margin:15px 0;">
@@ -179,7 +197,7 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
     
             <div style="margin-bottom:15px;">
                 <strong>Step 2:</strong>
-                Make a manual payment using the details provided.
+                Make payment to the merchant provided.
             </div>
     
             <div style="margin-bottom:15px;">
@@ -191,15 +209,32 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
     
             <div style="
                 background:#e8f5e9;
-                padding:12px;
+                padding:15px;
                 border-left:4px solid #4caf50;
                 border-radius:8px;
                 font-size:14px;
                 margin-bottom:15px;
             ">
-                <strong>Important:</strong>
-                Ensure the payment amount matches exactly before submitting proof.
-                Incorrect submissions may delay processing.
+            
+                <strong>Verified Payment Details</strong>
+            
+                <hr style="margin:10px 0; border:0; border-top:1px solid #c8e6c9;">
+            
+                <p style="margin:5px 0;">
+                    <strong>Payment Method:</strong>
+                    <?= htmlspecialchars($verified_method ?? 'Not set') ?>
+                </p>
+            
+                <p style="margin:5px 0;">
+                    <strong>Account Name:</strong>
+                    <?= htmlspecialchars($verified_account_name ?? 'Not set') ?>
+                </p>
+            
+                <p style="margin:5px 0;">
+                    <strong>Account ID:</strong>
+                    <?= htmlspecialchars($verified_account_id ?? 'Not set') ?>
+                </p>
+            
             </div>
     
             <p style="margin:0;">
