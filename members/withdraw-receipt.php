@@ -183,18 +183,30 @@ body{
         <?php endif; ?>
 
         <div class="row">
-            <span class="label">Payment Method</span>
-            <span class="value"><?= htmlspecialchars($withdrawal['method']) ?></span>
+            <span class="label">
+                <?= htmlspecialchars($withdrawal['method_head'] ?? 'Payment Method') ?>
+            </span>
+            <span class="value">
+                <?= htmlspecialchars($withdrawal['method']) ?>
+            </span>
         </div>
-
+        
         <div class="row">
-            <span class="label">Account Name</span>
-            <span class="value"><?= htmlspecialchars($withdrawal['account_name']) ?></span>
+            <span class="label">
+                <?= htmlspecialchars($withdrawal['method_name_head'] ?? 'Account Name') ?>
+            </span>
+            <span class="value">
+                <?= htmlspecialchars($withdrawal['account_name']) ?>
+            </span>
         </div>
-
+        
         <div class="row">
-            <span class="label">Account ID</span>
-            <span class="value"><?= htmlspecialchars($withdrawal['account_id']) ?></span>
+            <span class="label">
+                <?= htmlspecialchars($withdrawal['method_id_head'] ?? 'Account ID') ?>
+            </span>
+            <span class="value">
+                <?= htmlspecialchars($withdrawal['account_id']) ?>
+            </span>
         </div>
 
         <div class="row">
