@@ -100,19 +100,16 @@ try {
         <table class="table table-hover mb-0" id="depositsTable">
 
             <thead class="table-primary">
-            <tr>
-                <th>ID</th>
-                <th>User ID</th>
-                <th>Email</th>
-                <th>Amount</th>
-                <th>Country</th>
-                <th>External</th>
-                <th>Provider</th>
-                <th>Proof</th>
-                <th>Status</th>
-                <th>Date & Time</th>
-                <th>Action</th>
-            </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Email</th>
+                    <th>Amount</th>
+                    <th>Proof</th>
+                    <th>Status</th>
+                    <th>Date & Time</th>
+                    <th>Action</th>
+                </tr>
             </thead>
 
             <tbody>
@@ -125,79 +122,51 @@ try {
                 ?>
 
                 <tr>
-                
+
                     <td><?= $d['id'] ?></td>
-                
+
                     <td><?= $d['user_id'] ?></td>
-                
+
                     <td><?= htmlspecialchars($d['email']) ?></td>
-                
+
                     <td>
-                        <?= htmlspecialchars($d['currency'] ?? '$') ?>
-                        <?= number_format($d['amount'], 2) ?>
+                        <strong>$<?= number_format($d['amount'], 2) ?></strong>
                     </td>
-                
-                    <!-- NEW: Country -->
-                    <td>
-                        <?= htmlspecialchars($d['country'] ?? 'N/A') ?>
-                    </td>
-                
-                    <!-- NEW: External -->
-                    <td>
-                        <?php if (($d['is_external'] ?? 'no') === 'yes'): ?>
-                            <span class="badge bg-success">YES</span>
-                        <?php else: ?>
-                            <span class="badge bg-secondary">NO</span>
-                        <?php endif; ?>
-                    </td>
-                
-                    <!-- NEW: Provider -->
-                    <td>
-                        <?php if (!empty($d['external_name'])): ?>
-                            <strong><?= htmlspecialchars($d['external_name']) ?></strong>
-                            <br>
-                        
-                        <?php else: ?>
-                            <span class="text-muted">-</span>
-                        <?php endif; ?>
-                    </td>
-                
+
                     <!-- PROOF -->
                     <td>
-                        <?php if (!empty($d['proof_file'])): ?>
-                            <a href="../<?= htmlspecialchars($d['proof_file']) ?>" target="_blank">
-                                <img src="../members/<?= htmlspecialchars($d['proof_file']) ?>"
-                                     style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
-                            </a>
-                        <?php else: ?>
-                            <span class="text-muted">-</span>
-                        <?php endif; ?>
+                        <a href="../<?= htmlspecialchars($d['proof_file']) ?>" target="_blank">
+                            <img src="../members/<?= htmlspecialchars($d['proof_file']) ?>"
+                                 style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
+                        </a>
                     </td>
-                
+
                     <td>
                         <?php
                         $badge =
                             $d['status'] == 'approved' ? 'success' :
                             ($d['status'] == 'rejected' ? 'danger' : 'warning');
                         ?>
-                
+
                         <span class="badge bg-<?= $badge ?>">
                             <?= ucfirst($d['status']) ?>
                         </span>
                     </td>
-                
+
                     <td>
                         <?= date('d M Y h:i A', strtotime($d['created_at'])) ?>
                     </td>
-                
+
                     <td>
+
                         <button class="btn btn-sm btn-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#editDeposit<?= $d['id'] ?>">
                             Update
                         </button>
+
                     </td>
-                
+
                 </tr>
 
             <?php endforeach; ?>
