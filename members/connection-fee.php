@@ -180,7 +180,7 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
             <hr style="margin:15px 0;">
     
             <p style="margin:0;">
-                <strong>Selected Payment Provider:</strong>
+                <strong>Payment Provider:</strong>
                 <?= htmlspecialchars($external_name) ?>
             </p>
     
