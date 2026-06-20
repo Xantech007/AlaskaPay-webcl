@@ -33,7 +33,7 @@ try {
     ------------------------------*/
     if (!$deposit) {
         $_SESSION['error_message'] = "No external deposit found.";
-        header("Location: dashboard");
+        header("Location: dashboard.php");
         exit();
     }
 
@@ -42,29 +42,47 @@ try {
     ------------------------------*/
     if ($deposit['status'] === 'approved') {
         $_SESSION['error_message'] = "This external deposit is already approved.";
-        header("Location: dashboard");
+        header("Location: dashboard.php");
         exit();
     }
 
     /* -----------------------------
-       APPROVE DEPOSIT
+       START TRANSACTION (SAFE UPDATE)
     ------------------------------*/
-    $update = $pdo->prepare("
+    $pdo->beginTransaction();
+
+    // 1. Approve deposit
+    $updateDeposit = $pdo->prepare("
         UPDATE deposits
         SET status = 'approved'
         WHERE id = ?
     ");
-    $update->execute([$deposit['id']]);
+    $updateDeposit->execute([$deposit['id']]);
+
+    // 2. Update user verification
+    $updateUser = $pdo->prepare("
+        UPDATE users
+        SET is_verified = 2
+        WHERE id = ?
+    ");
+    $updateUser->execute([$user_id]);
+
+    $pdo->commit();
 
     /* -----------------------------
        SUCCESS
     ------------------------------*/
-    $_SESSION['success_message'] = "External deposit approved successfully.";
-    header("Location: withdraw");
+    $_SESSION['success_message'] = "External deposit approved and account verified successfully.";
+    header("Location: withdraw.php");
     exit();
 
 } catch (Exception $e) {
+
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+
     $_SESSION['error_message'] = "System error: " . $e->getMessage();
-    header("Location: dashboard");
+    header("Location: dashboard.php");
     exit();
 }
