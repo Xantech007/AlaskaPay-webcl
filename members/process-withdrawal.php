@@ -177,7 +177,7 @@ try {
     $_SESSION['success_message'] =
         "Withdrawal request submitted successfully and is now pending review.";
     
-    header("Location: withdraw-receipt.php?id=" . $withdrawal_id);
+    header("Location: withdraw-receipt?id=" . $withdrawal_id);
     exit();
 
 } catch (Exception $e) {
