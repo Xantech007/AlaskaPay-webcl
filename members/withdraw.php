@@ -14,6 +14,7 @@ $user_id = $_SESSION['user_id'];
 ------------------------------*/
 $stmt = $conn->prepare("
     SELECT
+        balance,
         is_verified,
 
         method,
@@ -214,6 +215,31 @@ if (empty($paymentMethods)) {
                     <?= htmlspecialchars($user['verified_account_id']) ?>
                 </p>
             </div>
+
+
+            <!-- AVAILABLE BALANCE -->
+            <div style="
+                padding:15px;
+                background:#f8fbff;
+                border-left:5px solid #2196f3;
+                border-radius:10px;
+                margin-bottom:20px;
+            ">
+            
+                <strong>Available Balance</strong>
+            
+                <hr style="margin:10px 0;">
+            
+                <div style="
+                    font-size:28px;
+                    font-weight:700;
+                    color:#2196f3;
+                ">
+                    USD <?= number_format((float)$user['balance'], 2) ?>
+                </div>
+            
+            </div>
+        
         
             <form method="POST" action="process-withdrawal">
         
