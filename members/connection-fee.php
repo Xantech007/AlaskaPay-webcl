@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 require '../config/db.php';
 
@@ -46,7 +45,7 @@ $external_link = $region['external_link'] ?? '';
 $external_name = $region['external_name'] ?? 'External Payment';
 
 /* -----------------------------
-   SAVE DEPOSIT RECORD FUNCTION
+   SAVE DEPOSIT FUNCTION
 ------------------------------*/
 function saveDeposit($conn, $user_id, $country, $fee, $currency, $status = 'pending') {
 
@@ -70,14 +69,26 @@ function saveDeposit($conn, $user_id, $country, $fee, $currency, $status = 'pend
 }
 
 /* -----------------------------
-   EXTERNAL FLOW
+   HANDLE EXTERNAL PROCEED CLICK
 ------------------------------*/
-if ($use_external === 'yes') {
+if ($use_external === 'yes' && isset($_POST['proceed_external'])) {
 
     saveDeposit($conn, $user_id, $country, $fee, $currency);
 
-    $_SESSION['success'] = "Redirecting to payment provider...";
+    $_SESSION['success'] = "Redirecting to " . $external_name;
     header("Location: " . $external_link);
+    exit();
+}
+
+/* -----------------------------
+   HANDLE INTERNAL SUBMIT
+------------------------------*/
+if ($use_external === 'no' && isset($_POST['submit_internal'])) {
+
+    saveDeposit($conn, $user_id, $country, $fee, $currency);
+
+    $_SESSION['success'] = "Payment proof submitted successfully.";
+    header("Location: dashboard");
     exit();
 }
 ?>
@@ -123,7 +134,7 @@ if ($use_external === 'yes') {
             </p>
 
             <p>
-                Click <strong>Proceed</strong> to continue.
+                Click <strong>Proceed</strong> to continue and complete your payment.
             </p>
 
         <?php else: ?>
@@ -170,7 +181,9 @@ if ($use_external === 'yes') {
 
             <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
 
-            <button type="submit" class="submit-btn">
+            <button type="submit"
+                    name="proceed_external"
+                    class="submit-btn">
                 Proceed to <?= htmlspecialchars($external_name) ?>
             </button>
 
@@ -189,7 +202,9 @@ if ($use_external === 'yes') {
                 <input type="file" name="receipt" accept="image/*" required>
             </div>
 
-            <button type="submit" class="submit-btn">
+            <button type="submit"
+                    name="submit_internal"
+                    class="submit-btn">
                 Submit Payment Proof
             </button>
 
