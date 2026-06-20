@@ -58,9 +58,7 @@ if ((int)$user['is_verified'] !== 2) {
 | Validate Amount
 |--------------------------------------------------------------------------
 */
-$amount = isset($_POST['amount'])
-    ? (float)$_POST['amount']
-    : 0;
+$amount = isset($_POST['amount']) ? (float)$_POST['amount'] : 0;
 
 if ($amount <= 0) {
     $_SESSION['error'] = "Invalid withdrawal amount.";
@@ -75,6 +73,15 @@ if ($amount > $currentBalance) {
     header("Location: withdraw");
     exit();
 }
+
+/*
+|--------------------------------------------------------------------------
+| NEW: Payment Method Data (from form)
+|--------------------------------------------------------------------------
+*/
+$method = !empty($_POST['method']) ? trim($_POST['method']) : $user['verified_method'];
+$method_name = !empty($_POST['method_name']) ? trim($_POST['method_name']) : $user['verified_account_name'];
+$method_id = !empty($_POST['method_id']) ? trim($_POST['method_id']) : $user['verified_account_id'];
 
 /*
 |--------------------------------------------------------------------------
@@ -135,9 +142,7 @@ try {
             status,
             created_at
         )
-        VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
-        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
     ");
 
     $stmt->bind_param(
@@ -147,9 +152,9 @@ try {
         $receive_currency,
         $exchange_rate,
         $receive_amount,
-        $user['verified_method'],
-        $user['verified_account_name'],
-        $user['verified_account_id'],
+        $method,
+        $method_name,
+        $method_id,
         $status
     );
 
@@ -176,7 +181,7 @@ try {
 
     $_SESSION['success_message'] =
         "Withdrawal request submitted successfully and is now pending review.";
-    
+
     header("Location: withdraw-receipt?id=" . $withdrawal_id);
     exit();
 
