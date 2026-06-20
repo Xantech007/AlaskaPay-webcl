@@ -1,6 +1,72 @@
-<pre>
-<?php print_r($withdrawal); ?>
-</pre>
+<?php
+session_start();
+require '../config/db.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+$user_id = (int)$_SESSION['user_id'];
+
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    header("Location: dashboard");
+    exit();
+}
+
+$withdrawal_id = (int)$_GET['id'];
+
+/*
+|--------------------------------------------------------------------------
+| Fetch Withdrawal
+|--------------------------------------------------------------------------
+*/
+$stmt = $conn->prepare("
+    SELECT *
+    FROM withdrawals
+    WHERE id = ?
+    AND user_id = ?
+    LIMIT 1
+");
+
+$stmt->bind_param(
+    "ii",
+    $withdrawal_id,
+    $user_id
+);
+
+$stmt->execute();
+
+$withdrawal =
+    $stmt->get_result()->fetch_assoc();
+
+$stmt->close();
+
+if (!$withdrawal) {
+    $_SESSION['error'] =
+        "Withdrawal receipt not found.";
+
+    header("Location: history");
+    exit();
+}
+
+/*
+|--------------------------------------------------------------------------
+| Status Color
+|--------------------------------------------------------------------------
+*/
+$statusColor =
+    $withdrawal['status'] === 'approved'
+        ? '#27ae60'
+        : (
+            $withdrawal['status'] === 'rejected'
+            ? '#e74c3c'
+            : '#f39c12'
+        );
+
+include 'includes/header.php';
+include 'includes/navbar.php';
+?>
 
 <style>
 
@@ -280,3 +346,6 @@
     </div>
 
 </div>
+
+
+<? php include 'includes/navbar.php'; ?>
