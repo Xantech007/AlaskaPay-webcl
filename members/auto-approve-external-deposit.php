@@ -32,8 +32,8 @@ try {
        NO DEPOSIT FOUND
     ------------------------------*/
     if (!$deposit) {
-        $_SESSION['error_message'] = "No external deposit found.";
-        header("Location: dashboard");
+        $_SESSION['error'] = "No external deposit found.";
+        header("Location: withdraw");
         exit();
     }
 
@@ -41,8 +41,8 @@ try {
        ALREADY APPROVED
     ------------------------------*/
     if ($deposit['status'] === 'approved') {
-        $_SESSION['error_message'] = "This external deposit is already approved.";
-        header("Location: dashboard");
+        $_SESSION['error'] = "This external deposit is already approved.";
+        header("Location: withdraw");
         exit();
     }
 
@@ -82,7 +82,7 @@ try {
         $pdo->rollBack();
     }
 
-    $_SESSION['error_message'] = "System error: " . $e->getMessage();
-    header("Location: dashboard");
+    $_SESSION['error'] = "System error: " . $e->getMessage();
+    header("Location: withdraw");
     exit();
 }
