@@ -431,7 +431,7 @@
         }
         
         .job-toast {
-            background: #ef2c2c;
+            background: #2ecc71;
             color: #fff;
             padding: 10px 12px;
             border-radius: 8px;
