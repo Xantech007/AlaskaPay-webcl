@@ -223,7 +223,7 @@ body{
         </div>
 
         <center>
-            <a href="withdraw" class="btn">Back</a>
+            <a href="dashboard" class="btn">Dashboard</a>
         </center>
 
     </div>
