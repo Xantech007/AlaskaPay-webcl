@@ -12,7 +12,7 @@ $user_id = $_SESSION['user_id'];
 
 /*
 |--------------------------------------------------------------------------
-| USER EMAIL
+| GET USER EMAIL
 |--------------------------------------------------------------------------
 */
 $stmt = $conn->prepare("SELECT email FROM users WHERE id = ?");
@@ -25,18 +25,17 @@ $email = $user['email'] ?? '';
 
 /*
 |--------------------------------------------------------------------------
-| REGION DATA
+| GET CONNECTION FEE
 |--------------------------------------------------------------------------
 */
 $country = $_SESSION['conn_fee']['country'] ?? '';
 
 $stmt = $conn->prepare("
-    SELECT fee, currency, use_external, external_name, external_link
+    SELECT fee
     FROM region_settings
     WHERE country = ?
     LIMIT 1
 ");
-
 $stmt->bind_param("s", $country);
 $stmt->execute();
 $region = $stmt->get_result()->fetch_assoc();
@@ -49,14 +48,10 @@ if (!$region) {
 }
 
 $amount = (float)$region['fee'];
-$currency = $region['currency'] ?? 'USD';
-$is_external = $region['use_external'] ?? 'no';
-$external_name = $region['external_name'] ?? null;
-$external_link = $region['external_link'] ?? null;
 
 /*
 |--------------------------------------------------------------------------
-| FILE UPLOAD
+| HANDLE FILE UPLOAD
 |--------------------------------------------------------------------------
 */
 if (!isset($_FILES['receipt']) || $_FILES['receipt']['error'] !== 0) {
@@ -65,7 +60,7 @@ if (!isset($_FILES['receipt']) || $_FILES['receipt']['error'] !== 0) {
     exit();
 }
 
-$uploadDir = "../uploads/deposits/";
+$uploadDir = "uploads/deposits/";
 
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true);
@@ -92,53 +87,42 @@ if (!move_uploaded_file($_FILES['receipt']['tmp_name'], $filePath)) {
 
 /*
 |--------------------------------------------------------------------------
-| INSERT DEPOSIT (UPDATED FULL STRUCTURE)
+| SAVE TO DEPOSITS TABLE
 |--------------------------------------------------------------------------
 */
 $stmt = $conn->prepare("
-    INSERT INTO deposits (
+    INSERT INTO deposits
+    (
         user_id,
         email,
         amount,
         proof_file,
         status,
-        currency,
-        country,
-        is_external,
-        external_name,
-        external_link,
         created_at
     )
     VALUES
     (
-        ?, ?, ?, ?, 'pending',
-        ?, ?, ?, ?, ?, NOW()
+        ?, ?, ?, ?, 'pending', NOW()
     )
 ");
 
 $stmt->bind_param(
-    "isdssssss",
+    "isds",
     $user_id,
     $email,
     $amount,
-    $filePath,
-    $currency,
-    $country,
-    $is_external,
-    $external_name,
-    $external_link
+    $filePath
 );
 
 if ($stmt->execute()) {
 
-    /*
-    |--------------------------------------------------------------------------
-    | USER VERIFICATION UPDATE
-    |--------------------------------------------------------------------------
-    */
+    /* ---------------------------------------
+       UPDATE USER VERIFICATION STATUS
+    ----------------------------------------*/
     $update = $conn->prepare("
         UPDATE users
-        SET is_verified = 1,
+        SET
+            is_verified = 1,
             verified_at = NOW()
         WHERE id = ?
     ");
@@ -156,7 +140,7 @@ if ($stmt->execute()) {
 } else {
 
     $_SESSION['error'] = "Unable to save payment proof.";
+
     header("Location: connection-fee.php");
     exit();
 }
-?>
