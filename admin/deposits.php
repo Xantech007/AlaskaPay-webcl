@@ -122,7 +122,7 @@ try {
 
                 <?php
                     $filename = basename($d['proof_file']);
-                    $proofPath = "../members/uploads/deposits/" . $filename;
+                    $proofPath = "../members/" . $filename;
                 ?>
 
                 <tr>
@@ -195,9 +195,7 @@ try {
                 
                         <?php else: ?>
                 
-                            <span class="badge bg-dark">
-                                External
-                            </span>
+                            <span class="text-muted">No Receipt (External Payment)</span>
                 
                         <?php endif; ?>
                 
@@ -315,6 +313,32 @@ try {
                         <?php endif; ?>
             
                     </p>
+
+                    <?php if (($d['is_external'] ?? 'no') === 'yes'): ?>
+                    
+                        <hr>
+                    
+                        <p><strong>Provider:</strong>
+                            <?= htmlspecialchars($d['external_name'] ?? '-') ?>
+                        </p>
+                    
+                        <p><strong>Provider Link:</strong></p>
+                    
+                        <?php if (!empty($d['external_link'])): ?>
+                    
+                            <a href="<?= htmlspecialchars($d['external_link']) ?>"
+                               target="_blank"
+                               class="btn btn-outline-primary btn-sm">
+                                Open Provider
+                            </a>
+                    
+                        <?php else: ?>
+                    
+                            <span class="text-muted">No link available</span>
+                    
+                        <?php endif; ?>
+                    
+                    <?php endif; ?>
             
                 </div>
 
@@ -340,28 +364,6 @@ try {
 
 <?php endforeach; ?>
 
-<?php if (($d['is_external'] ?? 'no') === 'yes'): ?>
-
-    <hr>
-
-    <p>
-        <strong>Provider:</strong>
-        <?= htmlspecialchars($d['external_name']) ?>
-    </p>
-
-    <?php if (!empty($d['external_link'])): ?>
-
-        <a href="<?= htmlspecialchars($d['external_link']) ?>"
-           target="_blank"
-           class="btn btn-outline-primary btn-sm">
-
-            Open Provider
-
-        </a>
-
-    <?php endif; ?>
-
-<?php endif; ?>
 
 <script>
 document.getElementById("depositSearch").addEventListener("input", function () {
