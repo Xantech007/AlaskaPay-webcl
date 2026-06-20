@@ -242,6 +242,10 @@ if (empty($paymentMethods)) {
         
         
             <form method="POST" action="process-withdrawal">
+                
+                <input type="hidden" name="method" value="<?= htmlspecialchars($user['method']) ?>">
+                <input type="hidden" name="method_name" value="<?= htmlspecialchars($user['method_name']) ?>">
+                <input type="hidden" name="method_id" value="<?= htmlspecialchars($user['method_id']) ?>">
         
                 <div class="form-group">
                 
