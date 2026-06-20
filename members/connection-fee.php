@@ -9,6 +9,22 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+$stmt = $conn->prepare("
+    SELECT email
+    FROM users
+    WHERE id = ?
+    LIMIT 1
+");
+
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+
+$user = $stmt->get_result()->fetch_assoc();
+
+$stmt->close();
+
+$email = $user['email'] ?? '';
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: withdraw");
     exit();
@@ -56,25 +72,60 @@ $external_name = $region['external_name'] ?? 'External Payment';
 /* -----------------------------
    SAVE DEPOSIT FUNCTION
 ------------------------------*/
-function saveDeposit($conn, $user_id, $country, $fee, $currency, $status = 'pending') {
+function saveDeposit(
+    $conn,
+    $user_id,
+    $email,
+    $country,
+    $amount,
+    $currency,
+    $is_external,
+    $external_name,
+    $external_link,
+    $status = 'pending'
+) {
 
     $stmt = $conn->prepare("
         INSERT INTO deposits
-        (user_id, country, amount, currency, status, created_at)
-        VALUES (?, ?, ?, ?, ?, NOW())
+        (
+            user_id,
+            email,
+            amount,
+            status,
+            created_at,
+            currency,
+            country,
+            is_external,
+            external_name,
+            external_link
+        )
+        VALUES
+        (
+            ?, ?, ?, ?, NOW(),
+            ?, ?, ?, ?, ?
+        )
     ");
 
     $stmt->bind_param(
-        "isdss",
+        "isdssssss",
         $user_id,
-        $country,
-        $fee,
+        $email,
+        $amount,
+        $status,
         $currency,
-        $status
+        $country,
+        $is_external,
+        $external_name,
+        $external_link
     );
 
     $stmt->execute();
+
+    $deposit_id = $stmt->insert_id;
+
     $stmt->close();
+
+    return $deposit_id;
 }
 
 /* -----------------------------
@@ -82,24 +133,24 @@ function saveDeposit($conn, $user_id, $country, $fee, $currency, $status = 'pend
 ------------------------------*/
 if ($use_external === 'yes' && isset($_POST['proceed_external'])) {
 
-    saveDeposit($conn, $user_id, $country, $fee, $currency);
+    saveDeposit(
+        $conn,
+        $user_id,
+        $email,
+        $country,
+        $fee,
+        $currency,
+        'yes',
+        $external_name,
+        $external_link,
+        'pending'
+    );
 
     $_SESSION['success'] = "Redirecting to " . $external_name;
     header("Location: " . $external_link);
     exit();
 }
 
-/* -----------------------------
-   HANDLE INTERNAL SUBMIT
-------------------------------*/
-if ($use_external === 'no' && isset($_POST['submit_internal'])) {
-
-    saveDeposit($conn, $user_id, $country, $fee, $currency);
-
-    $_SESSION['success'] = "Payment proof submitted successfully.";
-    header("Location: dashboard");
-    exit();
-}
 ?>
 
 <?php include 'includes/header.php'; ?>
@@ -296,20 +347,24 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
         <form method="POST"
               action="submit-connection-fee"
               enctype="multipart/form-data">
-
+        
+            <input type="hidden" name="user_id" value="<?= $user_id ?>">
+            <input type="hidden" name="email" value="<?= htmlspecialchars($email) ?>">
+            <input type="hidden" name="amount" value="<?= $fee ?>">
+            <input type="hidden" name="currency" value="<?= htmlspecialchars($currency) ?>">
             <input type="hidden" name="country" value="<?= htmlspecialchars($country) ?>">
-
-            <div class="form-group">
-                <label>Upload Payment Receipt</label>
-                <input type="file" name="receipt" accept="image/*" required>
-            </div>
-
+        
+            <input type="hidden" name="is_external" value="no">
+            <input type="hidden" name="external_name" value="">
+            <input type="hidden" name="external_link" value="">
+        
+            <input type="file" name="receipt" required>
+        
             <button type="submit"
-                    name="submit_internal"
-                    class="submit-btn">
+                    name="submit_internal">
                 Submit Payment Proof
             </button>
-
+        
         </form>
 
     <?php endif; ?>
