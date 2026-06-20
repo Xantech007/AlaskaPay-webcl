@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+<pre>
+<?php print_r($withdrawal); ?>
+</pre>
+
 require '../config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
