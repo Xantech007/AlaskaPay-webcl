@@ -23,7 +23,6 @@ if ($id <= 0) {
 $stmt = $conn->prepare("
     SELECT
         w.*,
-        u.full_name,
         u.email
     FROM withdrawals w
     INNER JOIN users u ON u.id = w.user_id
@@ -175,13 +174,6 @@ body{
         </div>
         <?php endif; ?>
 
-        <?php if (!empty($withdrawal['exchange_rate'])): ?>
-        <div class="row">
-            <span class="label">Exchange Rate</span>
-            <span class="value"><?= $withdrawal['exchange_rate'] ?></span>
-        </div>
-        <?php endif; ?>
-
         <div class="row">
             <span class="label">
                 <?= htmlspecialchars($withdrawal['method_head'] ?? 'Payment Method') ?>
@@ -223,11 +215,6 @@ body{
             <span class="value">
                 <?= date('F d, Y h:i A', strtotime($withdrawal['created_at'])) ?>
             </span>
-        </div>
-
-        <div class="row">
-            <span class="label">Customer</span>
-            <span class="value"><?= htmlspecialchars($withdrawal['full_name']) ?></span>
         </div>
 
         <div class="row">
