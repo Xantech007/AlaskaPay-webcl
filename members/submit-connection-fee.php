@@ -44,7 +44,7 @@ $stmt->close();
 
 if (!$region) {
     $_SESSION['error'] = "Region settings not found.";
-    header("Location: withdraw.php");
+    header("Location: withdraw");
     exit();
 }
 
@@ -61,7 +61,7 @@ $external_link = $region['external_link'] ?? null;
 */
 if (!isset($_FILES['receipt']) || $_FILES['receipt']['error'] !== 0) {
     $_SESSION['error'] = "Please upload a payment receipt.";
-    header("Location: connection-fee.php");
+    header("Location: connection-fee");
     exit();
 }
 
@@ -77,7 +77,7 @@ $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 if (!in_array($ext, $allowed)) {
     $_SESSION['error'] = "Invalid file type.";
-    header("Location: connection-fee.php");
+    header("Location: connection-fee");
     exit();
 }
 
@@ -86,7 +86,7 @@ $filePath = $uploadDir . $filename;
 
 if (!move_uploaded_file($_FILES['receipt']['tmp_name'], $filePath)) {
     $_SESSION['error'] = "Failed to upload receipt.";
-    header("Location: connection-fee.php");
+    header("Location: connection-fee");
     exit();
 }
 
@@ -150,13 +150,13 @@ if ($stmt->execute()) {
     $_SESSION['success_message'] =
         "Payment proof submitted successfully. Your payment is awaiting verification.";
 
-    header("Location: dashboard.php");
+    header("Location: dashboard");
     exit();
 
 } else {
 
     $_SESSION['error'] = "Unable to save payment proof.";
-    header("Location: connection-fee.php");
+    header("Location: connection-fee");
     exit();
 }
 ?>
