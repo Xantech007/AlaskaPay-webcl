@@ -86,7 +86,11 @@ include 'includes/navbar.php';
             </a>
 
             <a href="job-application.php" style="text-decoration:none;color:inherit;">
-                <div class="card approved" style="cursor:pointer;">
+                <div class="card approved job-card" style="cursor:pointer; position:relative;">
+            
+                    <!-- POPUP CONTAINER (inside card only) -->
+                    <div id="job-toast-container"></div>
+            
                     <i class="fas fa-briefcase" style="color:#ef2c2c;"></i>
                     <h3>Apply for a Job</h3>
                     <p>Submit application</p>
