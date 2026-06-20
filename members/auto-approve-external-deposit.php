@@ -32,7 +32,7 @@ try {
        NO DEPOSIT FOUND
     ------------------------------*/
     if (!$deposit) {
-        $_SESSION['error'] = "No external deposit found.";
+        $_SESSION['error'] = "No deposit found.";
         header("Location: withdraw");
         exit();
     }
@@ -41,7 +41,7 @@ try {
        ALREADY APPROVED
     ------------------------------*/
     if ($deposit['status'] === 'approved') {
-        $_SESSION['error'] = "This external deposit is already approved.";
+        $_SESSION['error'] = "This deposit is already approved.";
         header("Location: withdraw");
         exit();
     }
@@ -72,7 +72,7 @@ try {
     /* -----------------------------
        SUCCESS
     ------------------------------*/
-    $_SESSION['success'] = "External deposit approved and account verified successfully.";
+    $_SESSION['success'] = "Deposit approved and account verified successfully.";
     header("Location: withdraw");
     exit();
 
