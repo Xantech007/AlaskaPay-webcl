@@ -72,7 +72,7 @@ try {
     /* -----------------------------
        SUCCESS
     ------------------------------*/
-    $_SESSION['success_message'] = "External deposit approved and account verified successfully.";
+    $_SESSION['success'] = "External deposit approved and account verified successfully.";
     header("Location: withdraw");
     exit();
 
