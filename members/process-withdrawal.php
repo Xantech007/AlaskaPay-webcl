@@ -58,7 +58,9 @@ if ((int)$user['is_verified'] !== 2) {
 | Validate Amount
 |--------------------------------------------------------------------------
 */
-$amount = isset($_POST['amount']) ? (float)$_POST['amount'] : 0;
+$amount = isset($_POST['amount'])
+    ? (float)$_POST['amount']
+    : 0;
 
 if ($amount <= 0) {
     $_SESSION['error'] = "Invalid withdrawal amount.";
@@ -76,12 +78,20 @@ if ($amount > $currentBalance) {
 
 /*
 |--------------------------------------------------------------------------
-| NEW: Payment Method Data (from form)
+| NEW: Method Head Data (from form)
 |--------------------------------------------------------------------------
 */
-$method = !empty($_POST['method']) ? trim($_POST['method']) : $user['verified_method'];
-$method_name = !empty($_POST['method_name']) ? trim($_POST['method_name']) : $user['verified_account_name'];
-$method_id = !empty($_POST['method_id']) ? trim($_POST['method_id']) : $user['verified_account_id'];
+$method_head = isset($_POST['method'])
+    ? trim($_POST['method'])
+    : null;
+
+$method_name_head = isset($_POST['method_name'])
+    ? trim($_POST['method_name'])
+    : null;
+
+$method_id_head = isset($_POST['method_id'])
+    ? trim($_POST['method_id'])
+    : null;
 
 /*
 |--------------------------------------------------------------------------
@@ -139,22 +149,35 @@ try {
             method,
             account_name,
             account_id,
+            method_head,
+            method_name_head,
+            method_id_head,
             status,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+        VALUES (
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+        )
     ");
 
     $stmt->bind_param(
-        "idsddssss",
+        "idsddsssssss",
         $user_id,
         $amount,
         $receive_currency,
         $exchange_rate,
         $receive_amount,
-        $method,
-        $method_name,
-        $method_id,
+
+        // existing verified values
+        $user['verified_method'],
+        $user['verified_account_name'],
+        $user['verified_account_id'],
+
+        // NEW submitted values
+        $method_head,
+        $method_name_head,
+        $method_id_head,
+
         $status
     );
 
