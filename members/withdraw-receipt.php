@@ -2,7 +2,7 @@
 session_start();
 
 <pre>
-<?php print_r($withdrawal); ?>
+print_r($withdrawal);
 </pre>
 
 require '../config/db.php';
