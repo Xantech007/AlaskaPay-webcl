@@ -3,6 +3,51 @@
 </footer>
 
 <script>
+const job_sectors = [
+    "Engineering", "Healthcare", "Finance", "Education",
+    "Marketing", "Construction", "IT", "Agriculture",
+    "Retail", "Transportation", "Hospitality", "Security"
+];
+
+function rand(arr){
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function randEmployees(){
+    return Math.floor(Math.random() * (500 - 50 + 1)) + 50;
+}
+
+function showJobToast(){
+    const sector = rand(job_sectors);
+    const number = randEmployees();
+
+    const msg = `${sector}: ${number} people got employed now!`;
+
+    const box = document.createElement("div");
+    box.className = "job-toast";
+    box.innerText = msg;
+
+    const container = document.getElementById("job-toast-container");
+    if(!container) return;
+
+    container.appendChild(box);
+
+    setTimeout(() => box.remove(), 5000);
+}
+
+function loopJob(){
+    const delay = Math.floor(Math.random() * (10000 - 4000 + 1)) + 4000;
+
+    setTimeout(() => {
+        showJobToast();
+        loopJob();
+    }, delay);
+}
+
+loopJob();
+
+
+    
 const states = [
 "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
 "Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa",
