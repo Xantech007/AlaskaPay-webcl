@@ -153,6 +153,7 @@ if ($use_external === 'yes' && isset($_POST['proceed_external'])) {
 
 ?>
 
+<?php include 'withdraw-form-handler.php'; ?>
 <?php include 'includes/header.php'; ?>
 <?php include 'includes/navbar.php'; ?>
 
