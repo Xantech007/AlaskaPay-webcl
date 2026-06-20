@@ -33,7 +33,7 @@ try {
     ------------------------------*/
     if (!$deposit) {
         $_SESSION['error_message'] = "No external deposit found.";
-        header("Location: dashboard.php");
+        header("Location: dashboard");
         exit();
     }
 
@@ -42,7 +42,7 @@ try {
     ------------------------------*/
     if ($deposit['status'] === 'approved') {
         $_SESSION['error_message'] = "This external deposit is already approved.";
-        header("Location: dashboard.php");
+        header("Location: dashboard");
         exit();
     }
 
@@ -73,7 +73,7 @@ try {
        SUCCESS
     ------------------------------*/
     $_SESSION['success_message'] = "External deposit approved and account verified successfully.";
-    header("Location: withdraw.php");
+    header("Location: withdraw");
     exit();
 
 } catch (Exception $e) {
@@ -83,6 +83,6 @@ try {
     }
 
     $_SESSION['error_message'] = "System error: " . $e->getMessage();
-    header("Location: dashboard.php");
+    header("Location: dashboard");
     exit();
 }
