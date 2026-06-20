@@ -220,8 +220,8 @@ if (empty($paymentMethods)) {
             <!-- AVAILABLE BALANCE -->
             <div style="
                 padding:15px;
-                background:#f8fbff;
-                border-left:5px solid #2196f3;
+                background:#fff8e1;
+                border-left:5px solid #ff9800;
                 border-radius:10px;
                 margin-bottom:20px;
             ">
@@ -233,7 +233,7 @@ if (empty($paymentMethods)) {
                 <div style="
                     font-size:28px;
                     font-weight:700;
-                    color:#2196f3;
+                    color:#ff9800;
                 ">
                     USD <?= number_format((float)$user['balance'], 2) ?>
                 </div>
