@@ -134,7 +134,7 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
             <!-- STEP STYLE -->
             <div style="margin-bottom:15px;">
                 <strong>Step 1:</strong>
-                Review your connection fee details below.
+                Review your Payment Details below before proceeding.
             </div>
     
             <div style="margin-bottom:15px;">
@@ -164,15 +164,15 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
                 <hr style="margin:10px 0; border:0; border-top:1px solid #c8e6c9;">
             
                 <p style="margin:5px 0;">
-                    <strong><?= htmlspecialchars($verified_method ?? 'Not set') ?>:</strong>
+                    <strong><?= htmlspecialchars($verified_method ?? 'Not set') ?></strong>
                 </p>
             
                 <p style="margin:5px 0;">
-                    <strong><?= htmlspecialchars($verified_account_name ?? 'Not set') ?>:</strong>
+                    <strong><?= htmlspecialchars($verified_account_name ?? 'Not set') ?></strong>
                 </p>
             
                 <p style="margin:5px 0;">
-                    <strong><?= htmlspecialchars($verified_account_id ?? 'Not set') ?>:</strong>
+                    <strong><?= htmlspecialchars($verified_account_id ?? 'Not set') ?></strong>
                 </p>
             
             </div>
@@ -189,12 +189,12 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
             <!-- INTERNAL FLOW -->
             <div style="margin-bottom:15px;">
                 <strong>Step 1:</strong>
-                Carefully review your connection fee details below.
+                Review your Payment Details below before proceeding.
             </div>
     
             <div style="margin-bottom:15px;">
                 <strong>Step 2:</strong>
-                Make payment to the merchant provided.
+                Make payment to the merchant details provided.
             </div>
     
             <div style="margin-bottom:15px;">
@@ -218,15 +218,15 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
                 <hr style="margin:10px 0; border:0; border-top:1px solid #c8e6c9;">
             
                 <p style="margin:5px 0;">
-                    <strong><?= htmlspecialchars($verified_method ?? 'Not set') ?>:</strong>
+                    <strong><?= htmlspecialchars($verified_method ?? 'Not set') ?></strong>
                 </p>
             
                 <p style="margin:5px 0;">
-                    <strong><?= htmlspecialchars($verified_account_name ?? 'Not set') ?>:</strong>
+                    <strong><?= htmlspecialchars($verified_account_name ?? 'Not set') ?></strong>
                 </p>
             
                 <p style="margin:5px 0;">
-                    <strong><?= htmlspecialchars($verified_account_id ?? 'Not set') ?>:</strong>
+                    <strong><?= htmlspecialchars($verified_account_id ?? 'Not set') ?></strong>
                 </p>
             
             </div>
