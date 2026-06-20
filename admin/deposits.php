@@ -105,7 +105,6 @@ try {
                 <th>User ID</th>
                 <th>Email</th>
                 <th>Amount</th>
-                <th>Currency</th>
                 <th>Country</th>
                 <th>External</th>
                 <th>Provider</th>
@@ -134,15 +133,8 @@ try {
                     <td><?= htmlspecialchars($d['email']) ?></td>
                 
                     <td>
-                        <?= htmlspecialchars($d['currency'] ?? '₦') ?>
+                        <?= htmlspecialchars($d['currency'] ?? '$') ?>
                         <?= number_format($d['amount'], 2) ?>
-                    </td>
-                
-                    <!-- NEW: Currency -->
-                    <td>
-                        <span class="badge bg-dark">
-                            <?= htmlspecialchars($d['currency'] ?? 'N/A') ?>
-                        </span>
                     </td>
                 
                     <!-- NEW: Country -->
@@ -164,11 +156,7 @@ try {
                         <?php if (!empty($d['external_name'])): ?>
                             <strong><?= htmlspecialchars($d['external_name']) ?></strong>
                             <br>
-                            <a href="<?= htmlspecialchars($d['external_link']) ?>"
-                               target="_blank"
-                               class="btn btn-sm btn-outline-primary mt-1">
-                                Open Link
-                            </a>
+                        
                         <?php else: ?>
                             <span class="text-muted">-</span>
                         <?php endif; ?>
@@ -255,7 +243,7 @@ try {
                 <p><strong>User:</strong> <?= htmlspecialchars($d['email']) ?></p>
 
                 <p><strong>Amount:</strong>
-                    ₦<?= number_format($d['amount'],2) ?>
+                    $<?= number_format($d['amount'],2) ?>
                 </p>
 
                 <?php
