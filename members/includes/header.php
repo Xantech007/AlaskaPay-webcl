@@ -403,7 +403,7 @@
         }
         
         .withdraw-toast {
-            background: #1f1f1f;
+            background: #e67e22;
             color: #fff;
             padding: 10px 12px;
             border-radius: 8px;
@@ -431,7 +431,7 @@
         }
         
         .job-toast {
-            background: #1f1f1f;
+            background: #ef2c2c;
             color: #fff;
             padding: 10px 12px;
             border-radius: 8px;
