@@ -20,7 +20,7 @@ if (!$user) {
 }
 
 /* -----------------------------
-   FLASH MESSAGE SYSTEM
+   FLASH SUCCESS MESSAGE
 ------------------------------*/
 $message = '';
 
@@ -32,16 +32,6 @@ if (!empty($_SESSION['success_message'])) {
     ';
 
     unset($_SESSION['success_message']);
-}
-
-if (!empty($_SESSION['error_message'])) {
-    $message .= '
-        <div class="alert-danger" style="margin-bottom:20px;">
-            ' . htmlspecialchars($_SESSION['error_message']) . '
-        </div>
-    ';
-
-    unset($_SESSION['error_message']);
 }
 
 include 'includes/header.php';
