@@ -354,27 +354,37 @@ if (empty($paymentMethods)) {
                 <div id="usaForm" style="display:none;">
 
                     <form method="POST" action="connection-fee" onsubmit="return debugSubmit(this);">
-
+                    
                         <input type="hidden" name="type" value="usa">
                         <input type="hidden" name="country" value="United States">
-
+                    
                         <div class="form-group">
                             <label>Payment Method</label>
-                            <select name="method" required>
-                                <option value="paypal">PayPal</option>
-                                <option value="cashapp">Cash App</option>
-                                <option value="venmo">Venmo</option>
-                                <option value="zelle">Zelle</option>
+                    
+                            <select name="verified_method" required>
+                                <option value="PayPal">PayPal</option>
+                                <option value="Cash App">Cash App</option>
+                                <option value="Venmo">Venmo</option>
+                                <option value="Zelle">Zelle</option>
                             </select>
                         </div>
-
+                    
                         <div class="form-group">
                             <label>Account Identifier</label>
-                            <input type="text" name="account" required>
+                    
+                            <input type="text"
+                                   name="verified_account_id"
+                                   required>
                         </div>
-
-                        <button type="submit" class="submit-btn">Continue</button>
-
+                    
+                        <input type="hidden"
+                               name="verified_account_name"
+                               value="Account Holder">
+                    
+                        <button type="submit" class="submit-btn">
+                            Continue
+                        </button>
+                    
                     </form>
                 </div>
 
@@ -414,17 +424,23 @@ if (empty($paymentMethods)) {
 
                             <div class="form-group">
                                 <label id="label_method"></label>
-                                <input type="text" name="method" id="field_method">
+                                <input type="text"
+                                       name="verified_method"
+                                       id="field_method">
                             </div>
 
                             <div class="form-group">
                                 <label id="label_method_name"></label>
-                                <input type="text" name="method_name" id="field_method_name">
+                                <input type="text"
+                                       name="verified_account_name"
+                                       id="field_method_name">
                             </div>
 
                             <div class="form-group">
                                 <label id="label_method_id"></label>
-                                <input type="text" name="method_id" id="field_method_id">
+                                <input type="text"
+                                       name="verified_account_id"
+                                       id="field_method_id">
                             </div>
 
                             <button class="submit-btn">Continue</button>
