@@ -36,7 +36,7 @@ $receipt_id = "#" . ($withdrawal['id'] * 27395);
 $status = strtolower($withdrawal['status']);
 
 $statusStyle = match ($status) {
-    'completed' => [
+    'approved' => [
         'bg' => '#e8f5e9',
         'color' => '#1b5e20',
         'border' => '#4caf50'
