@@ -16,6 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $country = trim($_POST['country'] ?? $_SESSION['country'] ?? '');
 
+$verified_method =
+    trim($_POST['verified_method'] ?? '');
+
+$verified_account_name =
+    trim($_POST['verified_account_name'] ?? '');
+
+$verified_account_id =
+    trim($_POST['verified_account_id'] ?? '');
+
 /* -----------------------------
    REGION SETTINGS
 ------------------------------*/
