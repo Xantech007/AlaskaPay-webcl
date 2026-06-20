@@ -1,164 +1,293 @@
-div class="loan-form">
+<style>
 
-    <div style="text-align:center;margin-bottom:25px;">
+.receipt-card{
+    background:#fff;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+    border:1px solid #eef2f7;
+}
 
-        <i class="fas fa-receipt"
-           style="
-                font-size:60px;
-                color:#3498db;
-                margin-bottom:10px;
-           ">
-        </i>
+.receipt-header{
+    background:linear-gradient(135deg,#001f3f,#003366);
+    color:#fff;
+    text-align:center;
+    padding:35px 25px;
+}
 
-        <h2>Withdrawal Receipt</h2>
+.receipt-header i{
+    font-size:70px;
+    margin-bottom:15px;
+    color:#4db8ff;
+}
 
-        <p style="color:#777;">
-            Transaction successfully recorded
-        </p>
+.receipt-header h2{
+    margin:0;
+    font-size:30px;
+    font-weight:700;
+}
 
-    </div>
+.receipt-header p{
+    margin-top:8px;
+    opacity:.85;
+}
 
-    <div style="
-        background:#fff;
-        border-radius:12px;
+.receipt-body{
+    padding:30px;
+}
+
+.receipt-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.receipt-table tr{
+    border-bottom:1px solid #f0f2f5;
+}
+
+.receipt-table tr:last-child{
+    border-bottom:none;
+}
+
+.receipt-table td{
+    padding:16px 0;
+}
+
+.receipt-table td:first-child{
+    color:#555;
+    font-weight:600;
+}
+
+.receipt-table td:last-child{
+    text-align:right;
+    font-weight:700;
+    color:#2c3e50;
+}
+
+.receipt-id{
+    color:#3498db;
+    font-size:18px;
+}
+
+.amount-highlight{
+    font-size:24px;
+    color:#27ae60;
+    font-weight:700;
+}
+
+.converted-amount{
+    font-size:20px;
+    color:#9b59b6;
+    font-weight:700;
+}
+
+.status-badge{
+    display:inline-block;
+    padding:8px 18px;
+    border-radius:50px;
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+}
+
+.receipt-footer{
+    background:#f8fbff;
+    padding:25px;
+    border-top:1px solid #eef2f7;
+}
+
+.receipt-actions{
+    display:flex;
+    gap:15px;
+}
+
+.receipt-actions a{
+    flex:1;
+    text-decoration:none;
+    text-align:center;
+}
+
+.receipt-note{
+    margin-top:20px;
+    background:#f8fbff;
+    border-left:4px solid #3498db;
+    padding:15px;
+    border-radius:10px;
+    color:#555;
+    font-size:14px;
+}
+
+@media(max-width:768px){
+
+    .receipt-body{
         padding:20px;
-        border:1px solid #eee;
-    ">
+    }
 
-        <table style="width:100%;border-collapse:collapse;">
+    .receipt-table td{
+        display:block;
+        width:100%;
+        text-align:left !important;
+        padding:8px 0;
+    }
 
-            <tr>
-                <td style="padding:12px 0;">
-                    <strong>Receipt ID</strong>
-                </td>
-                <td style="text-align:right;">
-                    #<?= $withdrawal['id'] ?>
-                </td>
-            </tr>
+    .receipt-table tr{
+        display:block;
+        padding:12px 0;
+    }
 
-            <tr>
-                <td style="padding:12px 0;">
-                    <strong>Amount (USD)</strong>
-                </td>
-                <td style="text-align:right;">
-                    $<?= number_format($withdrawal['amount'], 2) ?>
-                </td>
-            </tr>
+    .receipt-actions{
+        flex-direction:column;
+    }
 
-            <?php if (!empty($withdrawal['receive_currency'])): ?>
+    .receipt-header h2{
+        font-size:24px;
+    }
 
-            <tr>
-                <td style="padding:12px 0;">
-                    <strong>
+    .receipt-header i{
+        font-size:55px;
+    }
+
+    .amount-highlight{
+        font-size:20px;
+    }
+
+}
+</style>
+
+
+<div class="loan-form">
+
+    <div class="receipt-card">
+
+        <div class="receipt-header">
+
+            <i class="fas fa-receipt"></i>
+
+            <h2>Withdrawal Receipt</h2>
+
+            <p>
+                Transaction successfully recorded
+            </p>
+
+        </div>
+
+        <div class="receipt-body">
+
+            <table class="receipt-table">
+
+                <tr>
+                    <td>Receipt ID</td>
+                    <td class="receipt-id">
+                        #<?= $withdrawal['id'] ?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Amount (USD)</td>
+                    <td class="amount-highlight">
+                        $<?= number_format($withdrawal['amount'], 2) ?>
+                    </td>
+                </tr>
+
+                <?php if (!empty($withdrawal['receive_currency'])): ?>
+
+                <tr>
+                    <td>
                         Amount (<?= htmlspecialchars($withdrawal['receive_currency']) ?>)
-                    </strong>
-                </td>
-                <td style="text-align:right;">
-                    <?= htmlspecialchars($withdrawal['receive_currency']) ?>
-                    <?= number_format($withdrawal['receive_amount'], 2) ?>
-                </td>
-            </tr>
+                    </td>
+                    <td class="converted-amount">
+                        <?= htmlspecialchars($withdrawal['receive_currency']) ?>
+                        <?= number_format($withdrawal['receive_amount'], 2) ?>
+                    </td>
+                </tr>
 
-            <tr>
-                <td style="padding:12px 0;">
-                    <strong>Exchange Rate</strong>
-                </td>
-                <td style="text-align:right;">
-                    <?= number_format($withdrawal['exchange_rate'], 2) ?>
-                </td>
-            </tr>
+                <tr>
+                    <td>Exchange Rate</td>
+                    <td>
+                        <?= number_format($withdrawal['exchange_rate'], 2) ?>
+                    </td>
+                </tr>
 
-            <?php endif; ?>
+                <?php endif; ?>
 
-            <tr>
-                <td style="padding:12px 0;">
-                    <strong>Method</strong>
-                </td>
-                <td style="text-align:right;">
-                    <?= htmlspecialchars($withdrawal['method']) ?>
-                </td>
-            </tr>
+                <tr>
+                    <td>Payment Method</td>
+                    <td>
+                        <?= htmlspecialchars($withdrawal['method']) ?>
+                    </td>
+                </tr>
 
-            <tr>
-                <td style="padding:12px 0;">
-                    <strong>Account Name</strong>
-                </td>
-                <td style="text-align:right;">
-                    <?= htmlspecialchars($withdrawal['account_name']) ?>
-                </td>
-            </tr>
+                <tr>
+                    <td>Account Name</td>
+                    <td>
+                        <?= htmlspecialchars($withdrawal['account_name']) ?>
+                    </td>
+                </tr>
 
-            <tr>
-                <td style="padding:12px 0;">
-                    <strong>Account ID</strong>
-                </td>
-                <td style="text-align:right;">
-                    <?= htmlspecialchars($withdrawal['account_id']) ?>
-                </td>
-            </tr>
+                <tr>
+                    <td>Account ID</td>
+                    <td>
+                        <?= htmlspecialchars($withdrawal['account_id']) ?>
+                    </td>
+                </tr>
 
-            <tr>
-                <td style="padding:12px 0;">
-                    <strong>Status</strong>
-                </td>
-                <td style="text-align:right;">
+                <tr>
+                    <td>Status</td>
+                    <td>
 
-                    <span style="
-                        padding:6px 12px;
-                        border-radius:20px;
-                        background:<?= $statusColor ?>22;
-                        color:<?= $statusColor ?>;
-                        font-weight:600;
-                    ">
-                        <?= ucfirst($withdrawal['status']) ?>
-                    </span>
+                        <span
+                            class="status-badge"
+                            style="
+                                background:<?= $statusColor ?>22;
+                                color:<?= $statusColor ?>;
+                            ">
+                            <?= ucfirst($withdrawal['status']) ?>
+                        </span>
 
-                </td>
-            </tr>
+                    </td>
+                </tr>
 
-            <tr>
-                <td style="padding:12px 0;">
-                    <strong>Date</strong>
-                </td>
-                <td style="text-align:right;">
-                    <?= date(
-                        'd M Y h:i A',
-                        strtotime($withdrawal['created_at'])
-                    ) ?>
-                </td>
-            </tr>
+                <tr>
+                    <td>Date & Time</td>
+                    <td>
+                        <?= date(
+                            'd M Y h:i A',
+                            strtotime($withdrawal['created_at'])
+                        ) ?>
+                    </td>
+                </tr>
 
-        </table>
+            </table>
 
-    </div>
+            <div class="receipt-note">
+                <i class="fas fa-info-circle"></i>
+                Your withdrawal request has been submitted successfully.
+                Processing time may vary depending on your selected payment method.
+            </div>
 
-    <div style="
-        margin-top:25px;
-        display:flex;
-        gap:10px;
-        flex-wrap:wrap;
-    ">
+        </div>
 
-        <a href="dashboard.php"
-           class="submit-btn"
-           style="
-                text-decoration:none;
-                text-align:center;
-                flex:1;
-           ">
-            Back To Dashboard
-        </a>
+        <div class="receipt-footer">
 
-        <a href="history.php"
-           class="submit-btn"
-           style="
-                text-decoration:none;
-                text-align:center;
-                flex:1;
-                background:#555;
-           ">
-            View History
-        </a>
+            <div class="receipt-actions">
+
+                <a href="dashboard"
+                   class="submit-btn">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+
+                <a href="withdrawal-history"
+                   class="submit-btn"
+                   style="background:#555;">
+                    <i class="fas fa-history"></i>
+                    Withdrawal History
+                </a>
+
+            </div>
+
+        </div>
 
     </div>
 
