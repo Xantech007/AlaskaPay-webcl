@@ -183,6 +183,12 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
                 <strong>Payment Provider:</strong>
                 <?= htmlspecialchars($external_name) ?>
             </p>
+
+            <p style="margin:0;">
+                <strong>Connection Fee:</strong>
+                <?= htmlspecialchars($currency) ?>
+                <?= number_format($fee, 2) ?>
+            </p>
     
         <?php else: ?>
     
@@ -230,10 +236,7 @@ if ($use_external === 'no' && isset($_POST['submit_internal'])) {
                 </p>
             
             </div>
-    
-            <p style="margin:0;">
-                <strong>Country:</strong> <?= htmlspecialchars($country) ?>
-            </p>
+        
     
             <p style="margin:0;">
                 <strong>Connection Fee:</strong>
