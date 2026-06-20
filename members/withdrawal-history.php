@@ -208,7 +208,7 @@ include 'includes/navbar.php';
                         
                             <!-- ACTION -->
                             <td>
-                                <a href="withdrawal-receipt?id=<?= (int)$row['id'] ?>"
+                                <a href="withdraw-receipt?id=<?= (int)$row['id'] ?>"
                                    class="receipt-btn">
                                     View Receipt
                                 </a>
