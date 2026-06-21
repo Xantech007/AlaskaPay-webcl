@@ -505,6 +505,26 @@
             margin: 0;
         }
 
+        .balance-wrapper{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .funding-note{
+            font-size: 11px;
+            color: rgba(0,0,0,0.35);
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+        
+        .funding-note{
+            font-size: 10px;
+            color: rgba(0,0,0,0.25);
+            text-transform: uppercase;
+        }
         
     </style>
 </head>
