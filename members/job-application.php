@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['success_message'] =
         "Your job application has been submitted successfully.";
 
-    header("Location: job-application.php");
+    header("Location: dashboard");
     exit();
 }
 
