@@ -48,7 +48,7 @@ include 'includes/navbar.php';
         <div class="cards-grid">
 
             <div class="card balance">
-                <i class="fas fa-wallet" style="color:#2ecc71;"></i>
+                <i class="fas fa-wallet"></i>
                 <h3>Account Balance</h3>
                 <p>USD <?= number_format($user['balance'] ?? 0, 2) ?></p>
             </div>
