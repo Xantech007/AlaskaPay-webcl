@@ -82,14 +82,6 @@ include 'includes/navbar.php';
                     value="<?= htmlspecialchars($user['full_name'] ?? '') ?>">
             </div>
 
-            <div class="form-group">
-                <label>Phone Number</label>
-                <input
-                    type="text"
-                    name="phone"
-                    value="<?= htmlspecialchars($user['phone'] ?? '') ?>">
-            </div>
-
             <hr style="margin:25px 0;">
 
             <h3 style="margin-bottom:15px;">
