@@ -106,7 +106,6 @@ try {
                     <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Phone</th>
                     <th>Balance</th>
                     <th>Status</th>
                     <th>Verified</th>
@@ -126,7 +125,6 @@ try {
                     </td>
 
                     <td><?= htmlspecialchars($u['email']) ?></td>
-                    <td><?= htmlspecialchars($u['phone'] ?? '-') ?></td>
 
                     <td>₦<?= number_format($u['balance'], 2) ?></td>
 
@@ -190,7 +188,6 @@ try {
         <input class="form-control mb-2" name="email" placeholder="Email" required>
         <input class="form-control mb-2" name="password" type="password" placeholder="Password" required>
         <input class="form-control mb-2" name="full_name" placeholder="Full Name">
-        <input class="form-control mb-2" name="phone" placeholder="Phone">
       </div>
 
       <div class="modal-footer">
@@ -231,11 +228,6 @@ try {
         <label class="form-label">Full Name</label>
         <input class="form-control mb-3" name="full_name"
                value="<?= htmlspecialchars($u['full_name'] ?? '') ?>">
-
-        <!-- PHONE -->
-        <label class="form-label">Phone</label>
-        <input class="form-control mb-3" name="phone"
-               value="<?= htmlspecialchars($u['phone'] ?? '') ?>">
 
         <!-- BALANCE -->
         <label class="form-label">Balance</label>
