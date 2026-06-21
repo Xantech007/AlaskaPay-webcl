@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         created_at
                     )
                     VALUES (
-                        ?, ?, ?, ?, ?, 0.00, 'active', NOW()
+                        ?, ?, ?, ?, 0.00, 'active', NOW()
                     )
                 ");
 
