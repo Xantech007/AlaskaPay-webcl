@@ -505,6 +505,69 @@
             margin: 0;
         }
 
+        .cards-grid .card:not(.balance){
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+            transition: all .3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cards-grid .card:not(.balance)::before{
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 100px;
+            height: 100px;
+            background: rgba(154, 34, 248, 0.05);
+            border-radius: 50%;
+        }
+        
+        .cards-grid .card:not(.balance):hover{
+            transform: translateY(-6px);
+            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.12);
+            border-color: #dbeafe;
+        }
+        
+        .cards-grid .card:not(.balance) h3{
+            color: #1e293b;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+        
+        .cards-grid .card:not(.balance) p{
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-top: 6px;
+        }
+        
+        .cards-grid .card:not(.balance) i{
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Optional colored accent borders per card */
+        .loans{
+            border-left: 4px solid #3498db !important;
+        }
+        
+        .withdraw-card{
+            border-left: 4px solid #e67e22 !important;
+        }
+        
+        .job-card{
+            border-left: 4px solid #ef4444 !important;
+        }
+        
+        .approved{
+            border-left: 4px solid #9a22f8;
+        }
+
         
     </style>
 </head>
