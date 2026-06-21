@@ -78,15 +78,6 @@ body {
 }
 
 /* ---------- SLIDESHOW ---------- */
-.slideshow {
-    width: 100%;
-    height: 320px;
-    border-radius: 15px;
-    overflow: hidden;
-    position: relative;
-    margin-bottom: 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
 
 .slideshow img {
     width: 100%;
@@ -235,19 +226,6 @@ button:hover {
     padding:30px;
 }
 
-.job-form{
-    background:#fff;
-    padding:35px;
-    border-radius:20px;
-    box-shadow:0 15px 45px rgba(0,0,0,.08);
-}
-
-.grid-2{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
-
 .form-section{
     margin-top:25px;
     margin-bottom:25px;
@@ -296,6 +274,16 @@ button:hover {
     }
 
 }
+
+.job-alert{
+    background:#fff8e1;
+    border-left:4px solid #ff9800;
+    padding:12px;
+    border-radius:10px;
+    margin:10px 0;
+    font-size:14px;
+}
+    
 </style>
 
 <div class="job-container">
@@ -308,6 +296,7 @@ button:hover {
             <img
                 src="../assets/jobs-slideshow/<?= $i ?>.png"
                 class="slide <?= $i === 1 ? 'active' : '' ?>"
+                loading="lazy"
             >
     
         <?php endfor; ?>
@@ -343,51 +332,50 @@ button:hover {
                 <input type="text" name="phone" placeholder="Phone Number" required>
                 <input type="date" name="dob">
 
-                <div class="section-title">Location Status</div>
-
-                <select name="country_status" id="country_status" required>
-                    <option value="">Select Status</option>
-                    <option value="in_us">Currently in United States</option>
-                    <option value="outside_us">Outside United States</option>
-                </select>
-
-                <input type="text" name="us_state" id="us_state" placeholder="US State (if in USA)" style="display:none;">
-                <div class="form-section">
+                <div class="section-title">Location Information</div>
                 
-                    <h3>Location Information</h3>
+                <div class="form-grid-full">
                 
-                    <div class="grid-2">
+                    <select name="country_status" id="country_status" required>
+                        <option value="">Select Status</option>
+                        <option value="in_us">Currently in United States</option>
+                        <option value="outside_us">Outside United States</option>
+                    </select>
                 
-                        <div class="form-group">
-                            <label>Current Location Status</label>
+                </div>
                 
-                            <select
-                                name="country_status"
-                                id="country_status"
-                                required
-                            >
-                                <option value="">
-                                    Select Status
+                <div class="form-grid">
+                
+                    <div class="form-group" id="us_state_wrapper" style="display:none;">
+                        <label>US State</label>
+                        <input type="text" name="us_state" placeholder="US State">
+                    </div>
+                
+                    <div class="form-group" id="country_wrapper" style="display:none;">
+                        <label>Country</label>
+                
+                        <select name="current_country" id="current_country">
+                            <option value="">Select Country</option>
+                
+                            <?php foreach($countries as $country): ?>
+                                <option value="<?= htmlspecialchars($country) ?>">
+                                    <?= htmlspecialchars($country) ?>
                                 </option>
+                            <?php endforeach; ?>
                 
-                                <option value="in_us">
-                                    Currently in United States
-                                </option>
+                        </select>
+                    </div>
                 
-                                <option value="outside_us">
-                                    Outside United States
-                                </option>
-                            </select>
-                        </div>
-                
-                        <div
+                </div>
                             class="form-group"
                             id="country_wrapper"
+                            style="display:none;"
                         >
                             <label>Country</label>
                 
                             <select
                                 name="current_country"
+                                id="current_country"
                             >
                                 <option value="">
                                     Select Country
@@ -415,7 +403,9 @@ button:hover {
                 <select name="sector" required>
                     <option value="">Select Sector</option>
                     <?php foreach ($sectors as $s): ?>
-                        <option value="<?= $s ?>"><?= $s ?></option>
+                        <option value="<?= htmlspecialchars($s) ?>">
+                            <?= htmlspecialchars($s) ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
 
@@ -438,9 +428,77 @@ button:hover {
                     <label><input type="checkbox" name="relocation"> Willing to Relocate</label>
                 </div>
 
+                <div class="form-section">
+                
+                    <h3>
+                        <i class="fas fa-id-card"></i>
+                        Identity Verification
+                    </h3>
+                
+                    <div class="job-alert">
+                        Please upload a valid government-issued identification document.
+                    </div>
+                
+                    <div class="grid-2">
+                
+                        <div class="form-group">
+                            <label>ID Type *</label>
+                
+                            <select name="id_type" required>
+                                <option value="">Select ID Type</option>
+                                <option value="Passport">Passport</option>
+                                <option value="National ID">National ID Card</option>
+                                <option value="Driver License">Driver License</option>
+                                <option value="Permanent Resident Card">Permanent Resident Card</option>
+                                <option value="Voter Card">Voter Card</option>
+                            </select>
+                        </div>
+                
+                        <div class="form-group">
+                            <label>ID Number *</label>
+                            <input
+                                type="text"
+                                name="id_number"
+                                required
+                            >
+                        </div>
+                
+                    </div>
+                
+                    <div class="grid-2">
+                
+                        <div class="form-group">
+                            <label>ID Front Image *</label>
+                
+                            <input
+                                type="file"
+                                name="id_front"
+                                accept=".jpg,.jpeg,.png,.pdf"
+                                required
+                            >
+                        </div>
+                
+                        <div class="form-group">
+                            <label>ID Back Image (Optional)</label>
+                
+                            <input
+                                type="file"
+                                name="id_back"
+                                accept=".jpg,.jpeg,.png,.pdf"
+                            >
+                        </div>
+                
+                    </div>
+                
+                </div>
+
                 <div class="section-title">Upload CV</div>
 
-                <input type="file" name="resume" required>
+                <div class="section-title">Upload CV</div>
+                
+                <div class="form-grid-full">
+                    <input type="file" name="resume" accept=".pdf,.doc,.docx" required>
+                </div>
 
                 <button type="submit">Submit Application</button>
 
@@ -477,13 +535,28 @@ setInterval(() => {
 
 
 /* ---------- LOCATION TOGGLE ---------- */
-document.getElementById('country_status').addEventListener('change', function () {
-    document.getElementById('us_state').style.display =
-        this.value === 'in_us' ? 'block' : 'none';
+const statusField = document.getElementById('country_status');
+const stateWrapper = document.getElementById('us_state_wrapper');
+const countryWrapper = document.getElementById('country_wrapper');
 
-    document.getElementById('current_country').style.display =
-        this.value === 'outside_us' ? 'block' : 'none';
-});
+if (statusField) {
+    statusField.addEventListener('change', function () {
+
+        if (this.value === 'in_us') {
+            stateWrapper.style.display = 'block';
+            countryWrapper.style.display = 'none';
+
+        } else if (this.value === 'outside_us') {
+            stateWrapper.style.display = 'none';
+            countryWrapper.style.display = 'block';
+
+        } else {
+            stateWrapper.style.display = 'none';
+            countryWrapper.style.display = 'none';
+        }
+
+    });
+}
 </script>
 
 <?php include 'includes/footer.php'; ?>
