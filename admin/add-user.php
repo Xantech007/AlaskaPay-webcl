@@ -12,7 +12,6 @@ try {
     $email = trim($_POST['email']);
     $passwordRaw = $_POST['password'];
     $full_name = trim($_POST['full_name']);
-    $phone = trim($_POST['phone']);
 
     // basic validation
     if (!$email || !$passwordRaw || !$full_name) {
@@ -32,8 +31,8 @@ try {
 
     // insert user
     $stmt = $pdo->prepare("
-        INSERT INTO users (username, email, password, full_name, phone, is_verified, status)
-        VALUES (?, ?, ?, ?, ?, 0, 'active')
+        INSERT INTO users (username, email, password, full_name, is_verified, status)
+        VALUES (?, ?, ?, ?, 0, 'active')
     ");
 
     $stmt->execute([
@@ -41,7 +40,6 @@ try {
         $email,
         $password,
         $full_name,
-        $phone
     ]);
 
     $_SESSION['success'] = "User created successfully";
