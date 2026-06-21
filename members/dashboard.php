@@ -85,6 +85,14 @@ include 'includes/navbar.php';
                 </div>
             </a>
 
+            <a href="history.php" style="text-decoration:none;color:inherit;">
+                <div class="card approved" style="cursor:pointer;">
+                    <i class="fas fa-history" style="color:#34495e;"></i>
+                    <h3>History</h3>
+                    <p>View</p>
+                </div>
+            </a>
+
             <a href="job-application.php" style="text-decoration:none;color:inherit;">
                 <div class="card approved job-card" style="cursor:pointer; position:relative;">
             
@@ -105,11 +113,11 @@ include 'includes/navbar.php';
                 </div>
             </a>
 
-            <a href="history.php" style="text-decoration:none;color:inherit;">
+            <a href="https://ai-access.com" target="_blank" style="text-decoration:none;color:inherit;">
                 <div class="card approved" style="cursor:pointer;">
-                    <i class="fas fa-history" style="color:#34495e;"></i>
-                    <h3>History</h3>
-                    <p>View</p>
+                    <i class="fas fa-robot" style="color:#ffd700;"></i>
+                    <h3>Explore AI Tools</h3>
+                    <p>All Al Apps in One Place-100% FR££</p>
                 </div>
             </a>
 
