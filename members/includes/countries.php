@@ -185,7 +185,6 @@ $countries = [
     'Ukraine',
     'United Arab Emirates',
     'United Kingdom',
-    'United States',
     'Uruguay',
     'Uzbekistan',
     'Vanuatu',
