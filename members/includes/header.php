@@ -514,17 +514,12 @@
         
         .funding-note{
             font-size: 11px;
-            color: rgba(255,255,255,0.8);
+            color: rgba(255, 255, 255, 0.65);
             text-align: center;
             margin-bottom: 8px;
             letter-spacing: 0.3px;
         }
         
-        .funding-note{
-            font-size: 10px;
-            color: rgba(0,0,0,0.25);
-            text-transform: uppercase;
-        }
         
     </style>
 </head>
