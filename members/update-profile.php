@@ -17,7 +17,6 @@ $user_id = $_SESSION['user_id'];
 
 $email = trim($_POST['email'] ?? '');
 $full_name = trim($_POST['full_name'] ?? '');
-$phone = trim($_POST['phone'] ?? '');
 
 $password = $_POST['password'] ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
@@ -86,7 +85,7 @@ if (!empty($password)) {
         SET
             email = ?,
             full_name = ?,
-            phone = ?,
+             = ?,
             password = ?
         WHERE id = ?
     ");
@@ -94,7 +93,7 @@ if (!empty($password)) {
     $success = $stmt->execute([
         $email,
         $full_name,
-        $phone,
+        $,
         $hashedPassword,
         $user_id
     ]);
@@ -106,14 +105,12 @@ if (!empty($password)) {
         SET
             email = ?,
             full_name = ?,
-            phone = ?
         WHERE id = ?
     ");
 
     $success = $stmt->execute([
         $email,
         $full_name,
-        $phone,
         $user_id
     ]);
 }
