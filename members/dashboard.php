@@ -113,7 +113,7 @@ include 'includes/navbar.php';
                 </div>
             </a>
 
-            <a href="https://chatgptfree.ai" target="_blank" style="text-decoration:none;color:inherit;">
+            <a href="ai-select.php" style="text-decoration:none;color:inherit;">
                 <div class="card access-ai" style="cursor:pointer;">
                     <i class="fas fa-robot" style="color:#ffd700;"></i>
                     <h3>All Al Apps in One Place-100% FR££</h3>
