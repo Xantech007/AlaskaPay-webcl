@@ -354,7 +354,7 @@ button:hover {
                 <input type="text" name="full_name" placeholder="Full Name" required>
                 <input type="email" name="email" placeholder="Email Address" required>
                 <input type="text" name="phone" placeholder="Phone Number" required>
-                <input type="date" name="dob">
+                <input type="date" name="dob" placeholder="Date of Birth" required>
 
                 <div class="section-title">Location Information</div>
                 
