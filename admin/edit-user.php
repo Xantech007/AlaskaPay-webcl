@@ -15,7 +15,6 @@ try {
 
     $email = trim($_POST['email']);
     $full_name = trim($_POST['full_name']);
-    $phone = trim($_POST['phone']);
     $balance = (float) $_POST['balance'];
     $is_verified = (int) $_POST['is_verified'];
     $status = trim($_POST['status']);
@@ -59,7 +58,6 @@ try {
                 email=?,
                 password=?,
                 full_name=?,
-                phone=?,
                 balance=?,
                 is_verified=?,
                 status=?,
@@ -73,7 +71,6 @@ try {
             $email,
             $password,
             $full_name,
-            $phone,
             $balance,
             $is_verified,
             $status,
@@ -89,7 +86,6 @@ try {
             UPDATE users SET
                 email=?,
                 full_name=?,
-                phone=?,
                 balance=?,
                 is_verified=?,
                 status=?,
@@ -102,7 +98,6 @@ try {
         $stmt->execute([
             $email,
             $full_name,
-            $phone,
             $balance,
             $is_verified,
             $status,
