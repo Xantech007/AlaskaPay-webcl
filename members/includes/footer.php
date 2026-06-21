@@ -303,7 +303,10 @@ function logout() {
 </script>
 
 <a href="https://wa.me/+1501234567" target="_blank" class="whatsapp-float">
-    <i class="fab fa-whatsapp"></i>
+    <div class="whatsapp-inner">
+        <i class="fab fa-whatsapp"></i>
+        <span>Contact Support</span>
+    </div>
 </a>
 
 </body>
