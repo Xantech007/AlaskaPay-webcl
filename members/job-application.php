@@ -26,14 +26,84 @@ if (!$user) {
 */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // collect fields
+    // collect form data safely
+    $full_name = $_POST['full_name'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $phone = $_POST['phone'] ?? '';
+    $date_of_birth = $_POST['dob'] ?? null;
 
-    // upload resume
+    $country_status = $_POST['country_status'] ?? '';
+    $current_country = $_POST['current_country'] ?? null;
+    $us_state = $_POST['us_state'] ?? null;
 
-    // insert into job_applications table
+    $sector = $_POST['sector'] ?? '';
+    $highest_education = $_POST['education'] ?? null;
+    $years_of_experience = $_POST['experience'] ?? 0;
+    $expected_salary = $_POST['salary'] ?? null;
 
-    $_SESSION['success_message'] =
-        "Your job application has been submitted successfully.";
+    $skills = $_POST['skills'] ?? null;
+    $cover_letter = $_POST['cover_letter'] ?? null;
+
+    $visa_required = isset($_POST['visa_required']) ? 1 : 0;
+    $relocation_willing = isset($_POST['relocation']) ? 1 : 0;
+
+    $id_type = $_POST['id_type'] ?? null;
+    $id_number = $_POST['id_number'] ?? null;
+
+    // FILE UPLOAD (resume example)
+    $resume_path = null;
+    if (!empty($_FILES['resume']['name'])) {
+        $targetDir = "../uploads/resumes/";
+        if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
+
+        $fileName = time() . "_" . basename($_FILES["resume"]["name"]);
+        $resume_path = $targetDir . $fileName;
+
+        move_uploaded_file($_FILES["resume"]["tmp_name"], $resume_path);
+    }
+
+    // INSERT
+    $stmt = $pdo->prepare("
+        INSERT INTO job_applications (
+            user_id, full_name, email, phone, date_of_birth,
+            country_status, current_country, us_state,
+            sector, highest_education, years_of_experience,
+            expected_salary, skills, cover_letter,
+            resume_path, visa_required, relocation_willing,
+            id_type, id_number
+        ) VALUES (
+            ?, ?, ?, ?, ?,
+            ?, ?, ?,
+            ?, ?, ?,
+            ?, ?, ?,
+            ?, ?, ?,
+            ?, ?
+        )
+    ");
+
+    $stmt->execute([
+        $user_id,
+        $full_name,
+        $email,
+        $phone,
+        $date_of_birth,
+        $country_status,
+        $current_country,
+        $us_state,
+        $sector,
+        $highest_education,
+        $years_of_experience,
+        $expected_salary,
+        $skills,
+        $cover_letter,
+        $resume_path,
+        $visa_required,
+        $relocation_willing,
+        $id_type,
+        $id_number
+    ]);
+
+    $_SESSION['success_message'] = "Your job application has been submitted successfully.";
 
     header("Location: dashboard");
     exit();
