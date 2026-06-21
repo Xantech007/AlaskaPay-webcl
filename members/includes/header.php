@@ -451,115 +451,121 @@
         }
 
 
-        .cards-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-            gap:20px;
-        }
-        
-        .card{
-            --accent:#9a22f8;
-        
-            position:relative;
-            overflow:hidden;
-            padding:25px;
-            border-radius:20px;
-            background:linear-gradient(135deg,#1e293b,#0f172a);
-            border:1px solid rgba(255,255,255,.08);
-            color:#fff;
-            cursor:pointer;
-            transition:.35s ease;
+        .card.balance{
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #fff;
+            border-radius: 18px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
             box-shadow:
-                0 10px 30px rgba(0,0,0,.25),
-                0 0 20px color-mix(in srgb, var(--accent) 25%, transparent);
+                0 10px 30px rgba(0,0,0,0.25),
+                0 0 20px rgba(46,204,113,0.15);
+            transition: all 0.3s ease;
         }
         
-        .card::before{
-            content:'';
-            position:absolute;
-            top:-60px;
-            right:-60px;
-            width:180px;
-            height:180px;
-            border-radius:50%;
-            background:var(--accent);
-            opacity:.12;
-            filter:blur(35px);
+        .card.balance::before{
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 140px;
+            height: 140px;
+            background: rgba(46,204,113,0.15);
+            border-radius: 50%;
+            filter: blur(20px);
         }
         
-        .card::after{
-            content:'';
-            position:absolute;
-            inset:0;
-            background:linear-gradient(
-                135deg,
-                rgba(255,255,255,.08),
-                transparent 40%
-            );
-            pointer-events:none;
-        }
-        
-        .card:hover{
-            transform:translateY(-6px);
+        .card.balance:hover{
+            transform: translateY(-5px);
             box-shadow:
-                0 15px 40px rgba(0,0,0,.35),
-                0 0 35px color-mix(in srgb, var(--accent) 40%, transparent);
+                0 15px 40px rgba(0,0,0,0.35),
+                0 0 30px rgba(46,204,113,0.25);
         }
         
-        .card i{
-            font-size:2rem;
-            color:var(--accent);
-            margin-bottom:12px;
-            display:block;
+        .card.balance i{
+            font-size: 2rem;
+            color: #2ecc71;
+            margin-bottom: 12px;
         }
         
-        .card h3{
-            font-size:1rem;
-            font-weight:600;
-            color:rgba(255,255,255,.85);
-            margin-bottom:10px;
+        .card.balance h3{
+            color: rgba(255,255,255,0.8);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
-        .card p{
-            margin:0;
-            font-size:1.8rem;
-            font-weight:700;
-            color:#fff;
-        }
-        
-        .card p.small{
-            font-size:.95rem;
-            font-weight:500;
-            color:rgba(255,255,255,.75);
+        .card.balance p{
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
         }
 
-
-        .balance{
-            --accent:#2ecc71;
+        .cards-grid .card:not(.balance){
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+            transition: all .3s ease;
+            position: relative;
+            overflow: hidden;
         }
         
-        .state{
-            --accent:#3498db;
+        .cards-grid .card:not(.balance)::before{
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 100px;
+            height: 100px;
+            background: rgba(154, 34, 248, 0.05);
+            border-radius: 50%;
         }
         
-        .withdraw{
-            --accent:#f39c12;
+        .cards-grid .card:not(.balance):hover{
+            transform: translateY(-6px);
+            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.12);
+            border-color: #dbeafe;
         }
         
-        .history{
-            --accent:#95a5a6;
+        .cards-grid .card:not(.balance) h3{
+            color: #1e293b;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 12px;
         }
         
-        .job{
-            --accent:#ef4444;
+        .cards-grid .card:not(.balance) p{
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-top: 6px;
         }
         
-        .get-loan{
-            --accent:#9a22f8;
+        .cards-grid .card:not(.balance) i{
+            font-size: 2rem;
+            margin-bottom: 10px;
         }
         
-        .access-ai{
-            --accent:#ffd700;
+        /* Optional colored accent borders per card */
+        .loans{
+            border-left: 4px solid #3498db !important;
+        }
+        
+        .withdraw-card{
+            border-left: 4px solid #e67e22 !important;
+        }
+        
+        .job-card{
+            border-left: 4px solid #ef4444 !important;
+        }
+        
+        .approved{
+            border-left: 4px solid #9a22f8;
         }
 
         
