@@ -39,11 +39,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
+/* -----------------------------
+   SECTORS LIST
+------------------------------*/
 $sectors = [
-    "Engineering",
-    "Software Engineering",
-    "Civil Engineering",
-    ...
+    "Engineering","Software Engineering","Civil Engineering","Mechanical Engineering",
+    "Electrical Engineering","Chemical Engineering","Aerospace Engineering",
+    "Biomedical Engineering","Healthcare","Nursing","Medicine","Pharmacy","Dentistry",
+    "Public Health","Medical Laboratory Science","Finance","Accounting","Banking",
+    "Investment Banking","Insurance","Economics","Taxation","Education","Teaching",
+    "Academic Research","Early Childhood Education","Administration","Marketing",
+    "Digital Marketing","Social Media Management","Public Relations","Advertising",
+    "Brand Management","Sales","E-commerce","Retail","Customer Service",
+    "Business Development","Management","Human Resources","Recruitment",
+    "Construction","Architecture","Real Estate","Urban Planning","Surveying",
+    "Information Technology","Cybersecurity","Data Science","Artificial Intelligence",
+    "Machine Learning","Cloud Computing","Network Administration","Agriculture",
+    "Farming","Agribusiness","Food Processing","Horticulture","Transportation",
+    "Logistics","Supply Chain Management","Aviation","Marine Transport",
+    "Hospitality","Tourism","Hotel Management","Catering","Food & Beverage",
+    "Security","Law Enforcement","Military","Private Security","Legal Services",
+    "Law","Judiciary","Entertainment","Film Production","Music Industry",
+    "Media & Journalism","Broadcasting","Sports Management","Fitness & Wellness",
+    "Beauty & Cosmetics","Fashion Design","Textile Industry","Manufacturing",
+    "Automotive","Oil & Gas","Energy","Renewable Energy","Mining",
+    "Environmental Science","Non-Profit / NGO","Government Services","Civil Service",
+    "Diplomacy","Consulting","Project Management","IT Support","Technical Support",
     "Call Center Operations"
 ];
 
