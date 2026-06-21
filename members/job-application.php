@@ -283,6 +283,30 @@ button:hover {
     margin:10px 0;
     font-size:14px;
 }
+
+.grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+@media(max-width:768px){
+    .grid-2{
+        grid-template-columns:1fr;
+    }
+}
+
+.submit-btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#4a90e2,#6c5ce7);
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
     
 </style>
 
@@ -364,36 +388,6 @@ button:hover {
                             <?php endforeach; ?>
                 
                         </select>
-                    </div>
-                
-                </div>
-                            class="form-group"
-                            id="country_wrapper"
-                            style="display:none;"
-                        >
-                            <label>Country</label>
-                
-                            <select
-                                name="current_country"
-                                id="current_country"
-                            >
-                                <option value="">
-                                    Select Country
-                                </option>
-                
-                                <?php foreach($countries as $country): ?>
-                
-                                    <option
-                                        value="<?= htmlspecialchars($country) ?>"
-                                    >
-                                        <?= htmlspecialchars($country) ?>
-                                    </option>
-                
-                                <?php endforeach; ?>
-                
-                            </select>
-                        </div>
-                
                     </div>
                 
                 </div>
@@ -493,14 +487,14 @@ button:hover {
                 </div>
 
                 <div class="section-title">Upload CV</div>
-
-                <div class="section-title">Upload CV</div>
                 
                 <div class="form-grid-full">
                     <input type="file" name="resume" accept=".pdf,.doc,.docx" required>
                 </div>
 
-                <button type="submit">Submit Application</button>
+                <button type="submit" class="submit-btn">
+                    Submit Application
+                </button>
 
             </div>
 
@@ -557,6 +551,30 @@ if (statusField) {
 
     });
 }
+
+function updateLocationFields(value) {
+
+    if (value === 'in_us') {
+        stateWrapper.style.display = 'block';
+        countryWrapper.style.display = 'none';
+
+    } else if (value === 'outside_us') {
+        stateWrapper.style.display = 'none';
+        countryWrapper.style.display = 'block';
+
+    } else {
+        stateWrapper.style.display = 'none';
+        countryWrapper.style.display = 'none';
+    }
+}
+
+statusField.addEventListener('change', function () {
+    updateLocationFields(this.value);
+});
+
+// run on page load
+updateLocationFields(statusField.value);
+    
 </script>
 
 <?php include 'includes/footer.php'; ?>
