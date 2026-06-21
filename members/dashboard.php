@@ -100,7 +100,7 @@ include 'includes/navbar.php';
                     <div id="job-toast-container"></div>
             
                     <i class="fas fa-briefcase" style="color:#ef2c2c;"></i>
-                    <h3>Apply for a Job</h3>
+                    <h3>Apply for a Job in the United States</h3>
                     <p>Submit application</p>
                 </div>
             </a>
