@@ -451,6 +451,60 @@
         }
 
 
+        .card.balance{
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #fff;
+            border-radius: 18px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.25),
+                0 0 20px rgba(46,204,113,0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .card.balance::before{
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 140px;
+            height: 140px;
+            background: rgba(46,204,113,0.15);
+            border-radius: 50%;
+            filter: blur(20px);
+        }
+        
+        .card.balance:hover{
+            transform: translateY(-5px);
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.35),
+                0 0 30px rgba(46,204,113,0.25);
+        }
+        
+        .card.balance i{
+            font-size: 2rem;
+            color: #2ecc71;
+            margin-bottom: 12px;
+        }
+        
+        .card.balance h3{
+            color: rgba(255,255,255,0.8);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .card.balance p{
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+        }
+
         
     </style>
 </head>
