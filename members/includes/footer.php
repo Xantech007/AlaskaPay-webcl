@@ -173,7 +173,7 @@ const names = [
     "Selorm","Edem","Elorm","Mawuli","Eyram","Kafui","Komla","Nukunu","Torgbui","Fiifi",
     "Ekow","Ebo","Kwamena","Aba","Araba","Naa","Dede","Afi","Korkor","Mawusi",
     "Ntim","Boakye","Kyeremeh","Poku","Donkor","Ayew","Baffoe","Gyasi","Osei","Kusi",
-    "Ahenkorah","Amoah","Asiedu","Danso","Nkansah","Peprah","Twum","Yeboah","Awuah","Odoom"
+    "Ahenkorah","Amoah","Asiedu","Danso","Nkansah","Peprah","Twum","Yeboah","Awuah","Odoom",
     "Adebayo","Adeola","Oluwaseun","Chinedu","Ngozi","Ifeanyi","Tunde","Temitope","Folake","Bisi",
     "Nkiru","Obinna","Emeka","Uche","Chioma","Kelechi","Amara","Zainab","Amina","Musa",
     "Thabo","Sipho","Nandi","Lerato","Nomsa","Zanele","Sibusiso","Themba","Mpho","Ayanda",
@@ -181,7 +181,7 @@ const names = [
     "Jean","Claude","Didier","Eric","Patrick","Emmanuel","Yves","Blaise","Josiane","Clarisse",
     "Mariam","Fatou","Aissatou","Ousmane","Mamadou","Cheikh","Ibrahima","Khadija","Samba","Binta",
     "Tafadzwa","Tendai","Nyasha","Tinashe","Rutendo","Kudzai","Tatenda","Farai","Blessing","Shamiso",
-    "Abebe","Bekele","Meseret","Hana","Dawit","Solomon","Mekdes","Birhanu","Tigist","Fikru"
+    "Abebe","Bekele","Meseret","Hana","Dawit","Solomon","Mekdes","Birhanu","Tigist","Fikru",
     "John","Michael","David","James","Robert","William","Christopher","Daniel","Matthew","Andrew",
     "Sarah","Emily","Sophia","Olivia","Emma","Charlotte","Amelia","Grace","Ava","Isabella",
     "Carlos","Miguel","Jose","Juan","Alejandro","Luis","Fernando","Diego","Maria","Sofia",
@@ -189,6 +189,70 @@ const names = [
     "Pierre","Jean","Louis","Antoine","Claire","Camille","Juliette","Sophie","Lucie","Marie",
     "Ahmed","Mohammed","Omar","Ali","Hassan","Fatima","Noor","Layla","Yusuf","Khalid",
     "Wei","Li","Chen","Wang","Zhang","Liu","Mei","Xiao","Jing","Yan"
+];
+
+const countries = [
+
+    // ===== GHANA (50%) =====
+    "Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana",
+    "Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana",
+    "Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana",
+    "Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana",
+    "Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana",
+
+    // ===== OTHER AFRICA (30%) =====
+    "Nigeria",
+    "Kenya",
+    "South Africa",
+    "Uganda",
+    "Tanzania",
+    "Rwanda",
+    "Zambia",
+    "Zimbabwe",
+    "Botswana",
+    "Namibia",
+    "Cameroon",
+    "Senegal",
+    "Ivory Coast",
+    "Ethiopia",
+    "Liberia",
+    "Sierra Leone",
+    "Gambia",
+    "Mali",
+    "Niger",
+    "Benin",
+    "Togo",
+    "Burkina Faso",
+    "Gabon",
+    "Malawi",
+    "Mozambique",
+    "Mauritius",
+    "Angola",
+    "DR Congo",
+    "Somalia",
+    "Madagascar",
+
+    // ===== REST OF WORLD (20%) =====
+    "United States",
+    "Canada",
+    "United Kingdom",
+    "Germany",
+    "France",
+    "Italy",
+    "Spain",
+    "Netherlands",
+    "Australia",
+    "New Zealand",
+    "Brazil",
+    "Mexico",
+    "Argentina",
+    "India",
+    "China",
+    "Japan",
+    "South Korea",
+    "Singapore",
+    "United Arab Emirates",
+    "Saudi Arabia"
 ];
 
 
@@ -201,73 +265,12 @@ function amount(){
 function showWithdrawToast(){
     const name = rand(names);
     const state = rand(states);
-    const countries = [
+    const country = rand(countries);
     
-        // ===== GHANA (50%) =====
-        "Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana",
-        "Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana",
-        "Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana",
-        "Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana",
-        "Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana","Ghana",
-    
-        // ===== OTHER AFRICA (30%) =====
-        "Nigeria",
-        "Kenya",
-        "South Africa",
-        "Uganda",
-        "Tanzania",
-        "Rwanda",
-        "Zambia",
-        "Zimbabwe",
-        "Botswana",
-        "Namibia",
-        "Cameroon",
-        "Senegal",
-        "Ivory Coast",
-        "Ethiopia",
-        "Liberia",
-        "Sierra Leone",
-        "Gambia",
-        "Mali",
-        "Niger",
-        "Benin",
-        "Togo",
-        "Burkina Faso",
-        "Gabon",
-        "Malawi",
-        "Mozambique",
-        "Mauritius",
-        "Angola",
-        "DR Congo",
-        "Somalia",
-        "Madagascar",
-    
-        // ===== REST OF WORLD (20%) =====
-        "United States",
-        "Canada",
-        "United Kingdom",
-        "Germany",
-        "France",
-        "Italy",
-        "Spain",
-        "Netherlands",
-        "Australia",
-        "New Zealand",
-        "Brazil",
-        "Mexico",
-        "Argentina",
-        "India",
-        "China",
-        "Japan",
-        "South Korea",
-        "Singapore",
-        "United Arab Emirates",
-        "Saudi Arabia"
-    ];
     
     const amt = amount();
 
-    const msg = `${name} from ${state} living in ${country} withdrawed $${amt}`;
+    const msg = `${name} from ${state} living in ${country} withdrew $${amt}`;
 
     const box = document.createElement("div");
     box.className = "withdraw-toast";
