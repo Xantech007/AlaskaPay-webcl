@@ -522,7 +522,7 @@
 
         .whatsapp-float-wrapper{
             position: fixed;
-            bottom: 45px;
+            middle: 20px;
             right: 20px;
             display: flex;
             flex-direction: column;
