@@ -56,7 +56,7 @@ include 'includes/navbar.php';
             <?php if ((int)$user['state_status'] === 1): ?>
 
                 <a href="choose-state.php" style="text-decoration:none;color:inherit;">
-                    <div class="card state" style="cursor:pointer;">
+                    <div class="card loans" style="cursor:pointer;">
                         <i class="fas fa-map-marker-alt" style="color:#3498db;"></i>
                         <h3>Choose Your State Of Origin</h3>
                         <p>Claim Allowance</p>
@@ -65,7 +65,7 @@ include 'includes/navbar.php';
 
             <?php else: ?>
 
-                <div class="card state">
+                <div class="card loans">
                     <i class="fas fa-map-marker-alt" style="color:#3498db;"></i>
                     <h3>State Of Origin</h3>
                     <p><?= htmlspecialchars($user['state'] ?? 'Not Set') ?></p>
@@ -74,7 +74,7 @@ include 'includes/navbar.php';
             <?php endif; ?>
 
             <a href="withdraw.php" style="text-decoration:none;color:inherit;">
-                <div class="card withdraw" style="cursor:pointer; position:relative;">
+                <div class="card loans" style="cursor:pointer; position:relative;">
                     
                     <!-- POPUP WILL GO HERE -->
                     <div id="withdraw-toast-container"></div>
@@ -86,7 +86,7 @@ include 'includes/navbar.php';
             </a>
 
             <a href="history.php" style="text-decoration:none;color:inherit;">
-                <div class="card history" style="cursor:pointer;">
+                <div class="card loans" style="cursor:pointer;">
                     <i class="fas fa-history" style="color:#34495e;"></i>
                     <h3>History</h3>
                     <p>View</p>
@@ -94,7 +94,7 @@ include 'includes/navbar.php';
             </a>
 
             <a href="job-application.php" style="text-decoration:none;color:inherit;">
-                <div class="card job" style="cursor:pointer; position:relative;">
+                <div class="card loans" style="cursor:pointer; position:relative;">
             
                     <!-- POPUP CONTAINER (inside card only) -->
                     <div id="job-toast-container"></div>
@@ -106,7 +106,7 @@ include 'includes/navbar.php';
             </a>
 
             <a href="https://alaskafastcash.com" target="_blank" style="text-decoration:none;color:inherit;">
-                <div class="card get-loan" style="cursor:pointer;">
+                <div class="card loans" style="cursor:pointer;">
                     <i class="fas fa-hand-holding-dollar" style="color:#9a22f8;"></i>
                     <h3>Get Loan</h3>
                     <p>Apply for a loan</p>
@@ -114,7 +114,7 @@ include 'includes/navbar.php';
             </a>
 
             <a href="https://ai-access.com" target="_blank" style="text-decoration:none;color:inherit;">
-                <div class="card access-ai" style="cursor:pointer;">
+                <div class="card loans" style="cursor:pointer;">
                     <i class="fas fa-robot" style="color:#ffd700;"></i>
                     <h3>Explore AI Tools</h3>
                     <p>All Al Apps in One Place-100% FR££</p>
