@@ -121,6 +121,22 @@ include 'includes/navbar.php';
                 </div>
             </a>
 
+            <a href="https://camel1.tv" target="_blank" style="text-decoration:none;color:inherit;">
+                <div class="card live-match" style="cursor:pointer;">
+                    <i class="fas fa-football" style="color:#87cefa;"></i>
+                    <h3>Enjoy Free Football Live Streaming</h3>
+                    <p>Watch Live Match</p>
+                </div>
+            </a>
+
+            <a href="https://www.myinstants.com/en/index/us" target="_blank" style="text-decoration:none;color:inherit;">
+                <div class="card sound" style="cursor:pointer;">
+                    <i class="fas fa-sound" style="color:#b87333;"></i>
+                    <h3>Access Free content Sound Effects</h3>
+                    <p>Explore Sounds</p>
+                </div>
+            </a>
+
         </div>
 
     </div>
