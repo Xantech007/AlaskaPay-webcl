@@ -351,10 +351,14 @@ button:hover {
 
                 <div class="section-title">Personal Information</div>
 
-                <input type="text" name="full_name" placeholder="Full Name" required>
-                <input type="email" name="email" placeholder="Email Address" required>
-                <input type="text" name="phone" placeholder="Phone Number" required>
-                <input type="date" name="dob" placeholder="Date of Birth" required>
+                <label>Full Name</label>
+                <input type="text" name="full_name" required>
+                <label>Email</label>
+                <input type="email" name="email" required>
+                <label>Phone Number</label>
+                <input type="text" name="phone" required>
+                <label>Date of Birth</label>
+                <input type="date" name="dob" required>
 
                 <div class="section-title">Location Information</div>
                 
