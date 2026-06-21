@@ -80,7 +80,7 @@ include 'includes/navbar.php';
                     <div id="withdraw-toast-container"></div>
             
                     <i class="fas fa-money-bill-transfer" style="color:#e67e22;"></i>
-                    <h3>Withdraw Funds</h3>
+                    <h3>Withdraw Funds to Local Wallet or Accounts</h3>
                     <p>Withdraw</p>
                 </div>
             </a>
@@ -88,7 +88,7 @@ include 'includes/navbar.php';
             <a href="history.php" style="text-decoration:none;color:inherit;">
                 <div class="card history" style="cursor:pointer;">
                     <i class="fas fa-history" style="color:#34495e;"></i>
-                    <h3>History</h3>
+                    <h3>Transaction & Withdrawal History</h3>
                     <p>View</p>
                 </div>
             </a>
@@ -116,8 +116,8 @@ include 'includes/navbar.php';
             <a href="https://ai-access.com" target="_blank" style="text-decoration:none;color:inherit;">
                 <div class="card access-ai" style="cursor:pointer;">
                     <i class="fas fa-robot" style="color:#ffd700;"></i>
-                    <h3>Explore AI Tools</h3>
-                    <p>All Al Apps in One Place-100% FR££</p>
+                    <h3>All Al Apps in One Place-100% FR££</h3>
+                    <p>Explore AI Tools</p>
                 </div>
             </a>
 
