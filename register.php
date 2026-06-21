@@ -10,12 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $full_name = trim($_POST['full_name'] ?? '');
     $email     = trim($_POST['email'] ?? '');
-    $phone     = trim($_POST['phone'] ?? '');
     $password  = $_POST['password'] ?? '';
     $confirm   = $_POST['confirm_password'] ?? '';
 
     // Validation
-    if (empty($full_name) || empty($email) || empty($phone) || empty($password) || empty($confirm)) {
+    if (empty($full_name) || empty($email) || empty($password) || empty($confirm)) {
         $error = "All fields are required.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Please enter a valid email address.";
@@ -66,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         username,
                         full_name,
                         email,
-                        phone,
                         password,
                         balance,
                         status,
@@ -81,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $username,
                     $full_name,
                     $email,
-                    $phone,
                     $hash
                 ]);
 
@@ -323,11 +320,6 @@ button:hover{
             <div class="form-group">
                 <input type="email" name="email" required>
                 <label>Email Address</label>
-            </div>
-
-            <div class="form-group">
-                <input type="text" name="phone" required>
-                <label>Phone Number</label>
             </div>
 
             <div class="form-group">
