@@ -1,33 +1,50 @@
 <?php
 session_start();
 require '../config/db.php';
+include 'includes/countries.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in'])) {
+    header('Location: ../login.php');
     exit();
 }
 
-/* -----------------------------
-   SLIDESHOW IMAGES
-------------------------------*/
-$slides = [
-    "../assets/jobs-slideshow/1.png",
-    "../assets/jobs-slideshow/2.png",
-    "../assets/jobs-slideshow/3.png",
-    "../assets/jobs-slideshow/4.png",
-    "../assets/jobs-slideshow/5.png"
-];
+$user_id = $_SESSION['user_id'];
 
-/* -----------------------------
-   SECTORS (trimmed for readability in UI)
-------------------------------*/
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->execute([$user_id]);
+$user = $stmt->fetch();
+
+if (!$user) {
+    header('Location: logout.php');
+    exit();
+}
+
+/*
+|--------------------------------------------------------------------------
+| HANDLE FORM SUBMISSION
+|--------------------------------------------------------------------------
+*/
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // collect fields
+
+    // upload resume
+
+    // insert into job_applications table
+
+    $_SESSION['success_message'] =
+        "Your job application has been submitted successfully.";
+
+    header("Location: job-application.php");
+    exit();
+}
+
 $sectors = [
-    "Software Engineering","Civil Engineering","Mechanical Engineering","Electrical Engineering",
-    "Healthcare","Nursing","Finance","Accounting","Banking","Education",
-    "Marketing","Data Science","Cybersecurity","Artificial Intelligence",
-    "Construction","Architecture","Human Resources","Logistics",
-    "Hospitality","Law","Media & Journalism","Oil & Gas","Renewable Energy",
-    "Government Services","Consulting","Call Center Operations"
+    "Engineering",
+    "Software Engineering",
+    "Civil Engineering",
+    ...
+    "Call Center Operations"
 ];
 
 include 'includes/header.php';
@@ -161,15 +178,132 @@ button:hover {
         grid-template-columns: 1fr;
     }
 }
+
+.job-hero{
+    height:450px;
+    position:relative;
+    overflow:hidden;
+    border-radius:20px;
+    margin-bottom:30px;
+}
+
+.slide{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:0;
+    transition:opacity 1s ease;
+}
+
+.slide.active{
+    opacity:1;
+}
+
+.hero-overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:#fff;
+    text-align:center;
+    padding:30px;
+}
+
+.job-form{
+    background:#fff;
+    padding:35px;
+    border-radius:20px;
+    box-shadow:0 15px 45px rgba(0,0,0,.08);
+}
+
+.grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.form-section{
+    margin-top:25px;
+    margin-bottom:25px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+.job-form input,
+.job-form select,
+.job-form textarea{
+    width:100%;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    background:#fafafa;
+}
+
+.job-form input:focus,
+.job-form select:focus,
+.job-form textarea:focus{
+    border-color:#0d6efd;
+    outline:none;
+    background:#fff;
+}
+
+.submit-btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:12px;
+    background:#0d6efd;
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+@media(max-width:768px){
+
+    .grid-2{
+        grid-template-columns:1fr;
+    }
+
+}
 </style>
 
 <div class="job-container">
 
     <!-- SLIDESHOW -->
-    <div class="slideshow">
-        <?php foreach ($slides as $i => $img): ?>
-            <img src="<?= $img ?>" class="<?= $i === 0 ? 'active' : '' ?>">
-        <?php endforeach; ?>
+    <div class="job-hero">
+    
+        <?php for($i=1; $i<=15; $i++): ?>
+    
+            <img
+                src="../assets/jobs-slideshow/<?= $i ?>.png"
+                class="slide <?= $i === 1 ? 'active' : '' ?>"
+            >
+    
+        <?php endfor; ?>
+    
+        <div class="hero-overlay">
+    
+            <h1>Apply for Jobs in the United States</h1>
+    
+            <p>
+                Explore opportunities across Engineering,
+                Healthcare, Information Technology,
+                Finance, Construction, Government,
+                Hospitality and more.
+            </p>
+    
+        </div>
+    
     </div>
 
     <div class="job-card">
@@ -197,7 +331,63 @@ button:hover {
                 </select>
 
                 <input type="text" name="us_state" id="us_state" placeholder="US State (if in USA)" style="display:none;">
-                <input type="text" name="current_country" id="current_country" placeholder="Current Country" style="display:none;">
+                <div class="form-section">
+                
+                    <h3>Location Information</h3>
+                
+                    <div class="grid-2">
+                
+                        <div class="form-group">
+                            <label>Current Location Status</label>
+                
+                            <select
+                                name="country_status"
+                                id="country_status"
+                                required
+                            >
+                                <option value="">
+                                    Select Status
+                                </option>
+                
+                                <option value="in_us">
+                                    Currently in United States
+                                </option>
+                
+                                <option value="outside_us">
+                                    Outside United States
+                                </option>
+                            </select>
+                        </div>
+                
+                        <div
+                            class="form-group"
+                            id="country_wrapper"
+                        >
+                            <label>Country</label>
+                
+                            <select
+                                name="current_country"
+                            >
+                                <option value="">
+                                    Select Country
+                                </option>
+                
+                                <?php foreach($countries as $country): ?>
+                
+                                    <option
+                                        value="<?= htmlspecialchars($country) ?>"
+                                    >
+                                        <?= htmlspecialchars($country) ?>
+                                    </option>
+                
+                                <?php endforeach; ?>
+                
+                            </select>
+                        </div>
+                
+                    </div>
+                
+                </div>
 
                 <div class="section-title">Professional Details</div>
 
@@ -241,15 +431,29 @@ button:hover {
 </div>
 
 <script>
-/* ---------- SLIDESHOW ---------- */
-let slides = document.querySelectorAll(".slideshow img");
-let index = 0;
+
+const slides =
+document.querySelectorAll('.slide');
+
+let current = 0;
 
 setInterval(() => {
-    slides[index].classList.remove("active");
-    index = (index + 1) % slides.length;
-    slides[index].classList.add("active");
-}, 3000);
+
+    slides[current]
+        .classList.remove('active');
+
+    current++;
+
+    if(current >= slides.length){
+        current = 0;
+    }
+
+    slides[current]
+        .classList.add('active');
+
+}, 3500);
+
+
 
 /* ---------- LOCATION TOGGLE ---------- */
 document.getElementById('country_status').addEventListener('change', function () {
