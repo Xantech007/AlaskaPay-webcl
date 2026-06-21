@@ -111,8 +111,9 @@ function rand(arr){
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
+// ✅ NOW 3–15 instead of 50–500
 function randEmployees(){
-    return Math.floor(Math.random() * (500 - 50 + 1)) + 50;
+    return Math.floor(Math.random() * (15 - 3 + 1)) + 3;
 }
 
 function showJobToast(){
@@ -134,12 +135,13 @@ function showJobToast(){
 }
 
 function loopJob(){
-    const delay = Math.floor(Math.random() * (10000 - 4000 + 1)) + 4000;
+    // ✅ NOW 5–12 seconds instead of 4–10
+    const delay = Math.floor(Math.random() * (12 - 5 + 1)) + 5;
 
     setTimeout(() => {
         showJobToast();
         loopJob();
-    }, delay);
+    }, delay * 1000); // convert seconds → milliseconds
 }
 
 loopJob();
