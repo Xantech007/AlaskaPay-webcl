@@ -514,7 +514,7 @@
         
         .funding-note{
             font-size: 11px;
-            color: fff;
+            color: rgba(255,255,255,0.8);
             text-align: center;
             margin-bottom: 8px;
             letter-spacing: 0.3px;
