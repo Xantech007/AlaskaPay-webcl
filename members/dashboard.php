@@ -47,10 +47,18 @@ include 'includes/navbar.php';
 
         <div class="cards-grid">
 
-            <div class="card balance">
-                <i class="fas fa-wallet"></i>
-                <h3>Account Balance</h3>
-                <p>USD <?= number_format($user['balance'] ?? 0, 2) ?></p>
+            <div class="balance-wrapper">
+                
+                <div class="funding-note">
+                    Funds administered with support from the United States Government
+                </div>
+            
+                <div class="card balance">
+                    <i class="fas fa-wallet"></i>
+                    <h3>Account Balance</h3>
+                    <p>USD <?= number_format($user['balance'] ?? 0, 2) ?></p>
+                </div>
+            
             </div>
 
             <?php if ((int)$user['state_status'] === 1): ?>
