@@ -217,7 +217,7 @@ if ($use_external === 'yes' && isset($_POST['proceed_external'])) {
 
     <?php else: ?>
 
-        <form method="POST" action="submit-job-fee" enctype="multipart/form-data">
+        <form method="POST" action="submit-application-fee" enctype="multipart/form-data">
 
             <input type="hidden" name="application_id" value="<?= $application_id ?>">
             <input type="hidden" name="user_id" value="<?= $user_id ?>">
