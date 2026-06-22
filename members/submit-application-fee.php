@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 /* -----------------------------
-   USER INFO
+   USER EMAIL
 ------------------------------*/
 $stmt = $pdo->prepare("SELECT email FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
@@ -19,40 +19,50 @@ $user = $stmt->fetch();
 $email = $user['email'] ?? '';
 
 /* -----------------------------
-   POST DATA
+   FORM DATA
 ------------------------------*/
 $application_id = $_POST['application_id'] ?? null;
-$amount         = $_POST['amount'] ?? 0;
-$currency       = $_POST['currency'] ?? 'USD';
-$country        = $_POST['country'] ?? '';
-$description    = $_POST['description'] ?? 'job application fee';
+$country        = trim($_POST['country'] ?? '');
+$currency       = trim($_POST['currency'] ?? 'USD');
+$amount         = (float)($_POST['amount'] ?? 0);
+$description    = 'job application fee';
+
+$is_external    = 'no';
+$external_name  = null;
+$external_link  = null;
 
 /* -----------------------------
-   VALIDATION
+   VALIDATE FILE UPLOAD
 ------------------------------*/
-if (!$application_id || !$amount) {
-    $_SESSION['error'] = "Invalid payment submission.";
-    header("Location: application-fee.php");
+if (!isset($_FILES['receipt']) || $_FILES['receipt']['error'] !== 0) {
+    $_SESSION['error'] = "Please upload a payment receipt.";
+    header("Location: application-fee.php?application_id=" . $application_id);
     exit();
 }
 
-/* -----------------------------
-   UPLOAD RECEIPT
-------------------------------*/
-$receipt_path = null;
+$uploadDir = "../uploads/deposits/";
 
-if (!empty($_FILES['receipt']['name'])) {
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0777, true);
+}
 
-    $targetDir = "../uploads/job-fees/";
+$ext = strtolower(pathinfo($_FILES['receipt']['name'], PATHINFO_EXTENSION));
 
-    if (!is_dir($targetDir)) {
-        mkdir($targetDir, 0777, true);
-    }
+$allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf'];
 
-    $fileName = time() . "_" . basename($_FILES["receipt"]["name"]);
-    $receipt_path = $targetDir . $fileName;
+if (!in_array($ext, $allowed)) {
+    $_SESSION['error'] = "Invalid file type.";
+    header("Location: application-fee.php?application_id=" . $application_id);
+    exit();
+}
 
-    move_uploaded_file($_FILES["receipt"]["tmp_name"], $receipt_path);
+$filename = time() . "_" . uniqid() . "." . $ext;
+$filePath = $uploadDir . $filename;
+
+if (!move_uploaded_file($_FILES['receipt']['tmp_name'], $filePath)) {
+    $_SESSION['error'] = "Failed to upload receipt.";
+    header("Location: application-fee.php?application_id=" . $application_id);
+    exit();
 }
 
 /* -----------------------------
@@ -64,48 +74,50 @@ $stmt = $pdo->prepare("
         user_id,
         email,
         amount,
+        proof_file,
+        status,
+        created_at,
         currency,
         country,
-        status,
-        description,
-        receipt_path,
-        created_at
+        is_external,
+        external_name,
+        external_link,
+        description
     )
     VALUES
-    (?, ?, ?, ?, ?, 'pending', ?, ?, NOW())
+    (
+        ?, ?, ?, ?, 'pending', NOW(),
+        ?, ?, ?, ?, ?, ?
+    )
 ");
 
-$stmt->execute([
+$success = $stmt->execute([
     $user_id,
     $email,
     $amount,
+    $filePath,
     $currency,
     $country,
-    $description,
-    $receipt_path
-]);
-
-$deposit_id = $pdo->lastInsertId();
-
-/* -----------------------------
-   LINK TO JOB APPLICATION
-------------------------------*/
-$stmt = $pdo->prepare("
-    UPDATE job_applications
-    SET payment_status = 'pending',
-        deposit_id = ?
-    WHERE id = ?
-");
-
-$stmt->execute([
-    $deposit_id,
-    $application_id
+    $is_external,
+    $external_name,
+    $external_link,
+    $description
 ]);
 
 /* -----------------------------
-   RESPONSE
+   FINAL RESPONSE
 ------------------------------*/
-$_SESSION['success_message'] = "Payment proof submitted successfully. Awaiting verification.";
+if ($success) {
 
-header("Location: dashboard);
-exit();
+    $_SESSION['success_message'] =
+        "Job application fee submitted successfully. Your payment is awaiting verification.";
+
+    header("Location: dashboard.php");
+    exit();
+
+} else {
+
+    $_SESSION['error'] = "Unable to save payment proof.";
+    header("Location: application-fee.php?application_id=" . $application_id);
+    exit();
+}
