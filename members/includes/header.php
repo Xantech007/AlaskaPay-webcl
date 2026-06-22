@@ -1,7 +1,15 @@
-<?php include __DIR__ . '/account_status_check.php'; ?>
-<?php
-// includes/header.php
+<?php 
+
+include __DIR__ . '/account_status_check.php';
+
+$cs_number = $pdo->query("
+    SELECT cs_number FROM admin LIMIT 1
+")->fetchColumn();
+
+$cs_number = preg_replace('/[^0-9]/', '', $cs_number);
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
