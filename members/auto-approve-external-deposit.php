@@ -62,7 +62,9 @@ try {
     // 2. Update user verification
     $updateUser = $pdo->prepare("
         UPDATE users
-        SET is_verified = 2
+        SET
+            is_verified = 2,
+            verified_at = NOW()
         WHERE id = ?
     ");
     $updateUser->execute([$user_id]);
