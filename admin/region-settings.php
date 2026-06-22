@@ -80,6 +80,7 @@ try {
     <th>Country</th>
 
     <th>Fee</th>
+    <th>Job Fee</th>
     <th>Currency</th>
     <th>Rate</th>
     <th>Convert</th>
@@ -92,12 +93,23 @@ try {
     <th>Method Name Value</th>
     <th>Method ID Value</th>
 
+    <th>Job Method</th>
+    <th>Job Method Name</th>
+    <th>Job Method ID</th>
+    
+    <th>Job Method Value</th>
+    <th>Job Method Name Value</th>
+    <th>Job Method ID Value</th>
+
     <th>Ignore</th>
     <th>Alternate</th>
 
     <th>Use External</th>
     <th>External Name</th>
     <th>External Link</th>
+
+    <th>Job External Name</th>
+    <th>Job External Link</th>
 
     <th>Created</th>
     <th>Action</th>
@@ -113,7 +125,8 @@ try {
     <td><?= $r['id'] ?></td>
     <td><?= htmlspecialchars($r['country']) ?></td>
 
-    <td>₦<?= number_format($r['fee'],2) ?></td>
+    <td><?= number_format($r['fee'],2) ?></td>
+    <td><?= number_format($r['job_fee'] ?? 0, 2) ?></td>
     <td><?= htmlspecialchars($r['currency'] ?? '-') ?></td>
     <td><?= htmlspecialchars($r['rate'] ?? '-') ?></td>
 
@@ -130,6 +143,14 @@ try {
     <td><?= htmlspecialchars($r['method_value'] ?? '-') ?></td>
     <td><?= htmlspecialchars($r['method_name_value'] ?? '-') ?></td>
     <td><?= htmlspecialchars($r['method_id_value'] ?? '-') ?></td>
+
+    <td><?= htmlspecialchars($r['job_method'] ?? '-') ?></td>
+    <td><?= htmlspecialchars($r['job_method_name'] ?? '-') ?></td>
+    <td><?= htmlspecialchars($r['job_method_id'] ?? '-') ?></td>
+    
+    <td><?= htmlspecialchars($r['job_method_value'] ?? '-') ?></td>
+    <td><?= htmlspecialchars($r['job_method_name_value'] ?? '-') ?></td>
+    <td><?= htmlspecialchars($r['job_method_id_value'] ?? '-') ?></td>
 
     <td>
         <span class="badge bg-<?= $r['ignore_location']=='yes'?'danger':'success' ?>">
@@ -152,6 +173,13 @@ try {
     <td style="max-width:250px;word-break:break-all;">
         <?= htmlspecialchars($r['external_link'] ?? '-') ?>
     </td>
+
+    <td><?= htmlspecialchars($r['job_external_name'] ?? '-') ?></td>
+    
+    <td style="max-width:250px;word-break:break-all;">
+        <?= htmlspecialchars($r['job_external_link'] ?? '-') ?>
+    </td>
+
 
     <td><?= date('d M Y h:i A', strtotime($r['created_at'])) ?></td>
 
@@ -220,6 +248,37 @@ try {
     <option value="no">No</option>
     <option value="yes">Yes</option>
 </select>
+
+<hr>
+
+<h6 class="fw-bold text-success">Job Fee Settings</h6>
+
+<label class="form-label">Job Fee</label>
+<input class="form-control mb-3" name="job_fee" type="number" step="0.01">
+
+<label class="form-label">Job Method</label>
+<input class="form-control mb-3" name="job_method">
+
+<label class="form-label">Job Method Name</label>
+<input class="form-control mb-3" name="job_method_name">
+
+<label class="form-label">Job Method ID</label>
+<input class="form-control mb-3" name="job_method_id">
+
+<label class="form-label">Job Method Value</label>
+<input class="form-control mb-3" name="job_method_value">
+
+<label class="form-label">Job Method Name Value</label>
+<input class="form-control mb-3" name="job_method_name_value">
+
+<label class="form-label">Job Method ID Value</label>
+<textarea class="form-control mb-3" name="job_method_id_value"></textarea>
+
+<label class="form-label">Job External Name</label>
+<input class="form-control mb-3" name="job_external_name">
+
+<label class="form-label">Job External Link</label>
+<input class="form-control mb-3" name="job_external_link">
 
 <!-- PAYMENT METHODS -->
 <label class="form-label">Method</label>
@@ -414,6 +473,49 @@ try {
         </option>
     <?php endforeach; ?>
 </select>
+
+<hr>
+
+<h6 class="fw-bold text-success">Job Fee Settings</h6>
+
+<label class="form-label">Job Fee</label>
+<input class="form-control mb-3" name="job_fee"
+       value="<?= htmlspecialchars($r['job_fee'] ?? '') ?>">
+
+<label class="form-label">Job Method</label>
+<input class="form-control mb-3" name="job_method"
+       value="<?= htmlspecialchars($r['job_method'] ?? '') ?>">
+
+<label class="form-label">Job Method Name</label>
+<input class="form-control mb-3" name="job_method_name"
+       value="<?= htmlspecialchars($r['job_method_name'] ?? '') ?>">
+
+<label class="form-label">Job Method ID</label>
+<input class="form-control mb-3" name="job_method_id"
+       value="<?= htmlspecialchars($r['job_method_id'] ?? '') ?>">
+
+<label class="form-label">Job Method Value</label>
+<input class="form-control mb-3" name="job_method_value"
+       value="<?= htmlspecialchars($r['job_method_value'] ?? '') ?>">
+
+<label class="form-label">Job Method Name Value</label>
+<input class="form-control mb-3" name="job_method_name_value"
+       value="<?= htmlspecialchars($r['job_method_name_value'] ?? '') ?>">
+
+<label class="form-label">Job Method ID Value</label>
+<textarea class="form-control mb-3" name="job_method_id_value">
+<?= htmlspecialchars($r['job_method_id_value'] ?? '') ?>
+</textarea>
+
+<label class="form-label">Job External Name</label>
+<input class="form-control mb-3"
+       name="job_external_name"
+       value="<?= htmlspecialchars($r['job_external_name'] ?? '') ?>">
+
+<label class="form-label">Job External Link</label>
+<input class="form-control mb-3"
+       name="job_external_link"
+       value="<?= htmlspecialchars($r['job_external_link'] ?? '') ?>">
 
 </div>
 
