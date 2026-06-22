@@ -19,6 +19,8 @@ try {
     $totalCountries = $pdo->query("SELECT COUNT(DISTINCT country) FROM region_settings")->fetchColumn();
     $totalPaymentMethods = $pdo->query("SELECT COUNT(*) FROM payment_methods")->fetchColumn();
 
+    $totalJobApplications = $pdo->query("SELECT COUNT(*) FROM job_applications")->fetchColumn();
+
     $recentDeposits = $pdo->query("
         SELECT d.*, u.full_name
         FROM deposits d
@@ -120,8 +122,8 @@ try {
             <div class="card shadow-lg border-start border-dark border-4">
                 <div class="card-body text-center">
                     <i class="fas fa-server fa-2x text-dark mb-2"></i>
-                    <h6 class="text-muted">System Status</h6>
-                    <h3 class="fw-bold text-success">Online</h3>
+                    <h6 class="text-muted">Job Applications</h6>
+                    <h3 class="fw-bold"><?= number_format($totalJobApplications) ?></h3>
                 </div>
             </div>
         </div>
