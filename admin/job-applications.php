@@ -100,64 +100,116 @@ try {
         <table class="table table-hover mb-0" id="jobsTable">
 
             <thead class="table-primary">
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Sector</th>
-                    <th>Country</th>
-                    <th>Experience</th>
-                    <th>Salary</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                    <th>Action</th>
-                </tr>
+            <tr>
+                <th>ID</th>
+                <th>User ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>DOB</th>
+                <th>Country Status</th>
+                <th>Current Country</th>
+                <th>State</th>
+                <th>Sector</th>
+                <th>Education</th>
+                <th>Experience</th>
+                <th>Employment</th>
+                <th>Expected Salary</th>
+                <th>Skills</th>
+                <th>Cover Letter</th>
+                <th>Resume</th>
+                <th>Visa</th>
+                <th>Relocation</th>
+                <th>ID Type</th>
+                <th>ID Number</th>
+                <th>ID Front</th>
+                <th>ID Back</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
             </thead>
 
             <tbody>
-
             <?php foreach ($jobs as $j): ?>
-
-                <tr>
-
-                    <td><?= $j['id'] ?></td>
-                    <td><?= htmlspecialchars($j['full_name']) ?></td>
-                    <td><?= htmlspecialchars($j['email']) ?></td>
-                    <td><?= htmlspecialchars($j['phone']) ?></td>
-                    <td><?= htmlspecialchars($j['sector']) ?></td>
-                    <td><?= htmlspecialchars($j['current_country'] ?? '-') ?></td>
-                    <td><?= htmlspecialchars($j['years_of_experience'] ?? 0) ?></td>
-                    <td><?= htmlspecialchars($j['expected_salary'] ?? '-') ?></td>
-
-                    <td>
-                        <?php
-                        $badge =
-                            $j['status'] == 'accepted' ? 'success' :
-                            ($j['status'] == 'rejected' ? 'danger' : 'warning');
-                        ?>
-
-                        <span class="badge bg-<?= $badge ?>">
-                            <?= ucfirst($j['status']) ?>
-                        </span>
-                    </td>
-
-                    <td>
-                        <?= date('d M Y h:i A', strtotime($j['created_at'])) ?>
-                    </td>
-
-                    <td>
-                        <button class="btn btn-sm btn-primary"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editJob<?= $j['id'] ?>">
-                            Update
-                        </button>
-                    </td>
-
-                </tr>
-
+            <tr>
+                <td><?= $j['id'] ?></td>
+                <td><?= htmlspecialchars($j['user_id']) ?></td>
+                <td><?= htmlspecialchars($j['full_name']) ?></td>
+                <td><?= htmlspecialchars($j['email']) ?></td>
+                <td><?= htmlspecialchars($j['phone']) ?></td>
+            
+                <td>
+                    <?php
+                    $badge =
+                        $j['status'] == 'accepted' ? 'success' :
+                        ($j['status'] == 'rejected' ? 'danger' : 'warning');
+                    ?>
+                    <span class="badge bg-<?= $badge ?>">
+                        <?= ucfirst($j['status']) ?>
+                    </span>
+                </td>
+            
+                <td><?= htmlspecialchars($j['date_of_birth']) ?></td>
+                <td><?= htmlspecialchars($j['country_status']) ?></td>
+                <td><?= htmlspecialchars($j['current_country']) ?></td>
+                <td><?= htmlspecialchars($j['us_state']) ?></td>
+                <td><?= htmlspecialchars($j['sector']) ?></td>
+                <td><?= htmlspecialchars($j['highest_education']) ?></td>
+                <td><?= htmlspecialchars($j['years_of_experience']) ?></td>
+                <td><?= htmlspecialchars($j['employment_status']) ?></td>
+                <td><?= htmlspecialchars($j['expected_salary']) ?></td>
+            
+                <td><?= htmlspecialchars($j['skills']) ?></td>
+            
+                <td>
+                    <button class="btn btn-sm btn-outline-info"
+                            data-bs-toggle="modal"
+                            data-bs-target="#cover<?= $j['id'] ?>">
+                        View
+                    </button>
+                </td>
+            
+                <td>
+                    <?php if ($j['resume_path']): ?>
+                        <a href="<?= htmlspecialchars($j['resume_path']) ?>" target="_blank">Download</a>
+                    <?php else: ?>-
+                    <?php endif; ?>
+                </td>
+            
+                <td><?= htmlspecialchars($j['visa_required']) ?></td>
+                <td><?= htmlspecialchars($j['relocation_willing']) ?></td>
+            
+                <td><?= htmlspecialchars($j['id_type']) ?></td>
+                <td><?= htmlspecialchars($j['id_number']) ?></td>
+            
+                <td>
+                    <?php if ($j['id_front']): ?>
+                        <a href="<?= htmlspecialchars($j['id_front']) ?>" target="_blank">View</a>
+                    <?php else: ?>-
+                    <?php endif; ?>
+                </td>
+            
+                <td>
+                    <?php if ($j['id_back']): ?>
+                        <a href="<?= htmlspecialchars($j['id_back']) ?>" target="_blank">View</a>
+                    <?php else: ?>-
+                    <?php endif; ?>
+                </td>
+            
+                <td>
+                    <?= date('d M Y h:i A', strtotime($j['created_at'])) ?>
+                </td>
+            
+                <td>
+                    <button class="btn btn-sm btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editJob<?= $j['id'] ?>">
+                        Update
+                    </button>
+                </td>
+            </tr>
             <?php endforeach; ?>
-
             </tbody>
 
         </table>
