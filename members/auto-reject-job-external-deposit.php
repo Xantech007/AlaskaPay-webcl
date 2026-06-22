@@ -55,20 +55,17 @@ try {
     /* -----------------------------
        STORE DATA IN SESSION (FIXED)
     ------------------------------*/
-    $_SESSION['error'] = "Payment Failed, Please try again.";
-
-    $_SESSION['application_data'] = [
-        'application_id'  => $application['id'],
-        'full_name'       => $application['full_name'],
-        'sector'          => $application['sector'],
-        'expected_salary' => $application['expected_salary']
-    ];
-
-    /* -----------------------------
-       REDIRECT
-    ------------------------------*/
-    header("Location: application-fee");
-    exit();
+   $_SESSION['error'] = "Payment Failed, Please try again.";
+   
+   $_SESSION['application_data'] = [
+       'application_id'  => $application_id,
+       'full_name'       => $full_name,
+       'sector'          => $sector,
+       'expected_salary' => $expected_salary
+   ];
+   
+   header("Location: application-fee.php");
+   exit();
 
 } catch (Exception $e) {
 
