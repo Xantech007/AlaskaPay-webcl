@@ -203,7 +203,9 @@ include 'includes/navbar.php';
                             </td>
                         
                             <td>
-                                <?= date('d M Y h:i A', strtotime($row['created_at'])) ?>
+                                <?= !empty($row['created_at']) 
+                                    ? date('F d, Y h:i A', strtotime($row['created_at'] . ' +7 hours')) 
+                                    : 'N/A' ?>
                             </td>
                         
                             <!-- ACTION -->
