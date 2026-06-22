@@ -93,7 +93,7 @@
         
             <li class="nav-item">
                 <a class="nav-link" href="./users.php">
-                    <i class="fa-solid fa-user-group me-1"></i> Users
+                    <i class="fa-solid fa-users me-1"></i> Users
                 </a>
             </li>
         
@@ -111,7 +111,7 @@
 
             <li class="nav-item">
                 <a class="nav-link" href="./job-applications.php">
-                    <i class="fa-solid fa-briefcase-wide-short me-1"></i> Job Applications
+                    <i class="fa-solid fa-briefcase me-1"></i> Job Applications
                 </a>
             </li>
         
