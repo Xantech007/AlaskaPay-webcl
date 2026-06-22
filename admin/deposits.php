@@ -105,6 +105,7 @@ try {
                     <th>User ID</th>
                     <th>Email</th>
                     <th>Amount</th>
+                    <th>Description</th>
                     <th>External</th>
                     <th>Proof</th>
                     <th>Status</th>
@@ -135,6 +136,12 @@ try {
                             <?= htmlspecialchars($d['currency'] ?? '$') ?>
                             <?= number_format($d['amount'], 2) ?>
                         </strong>
+                    </td>
+
+                    <td>
+                        <span class="text-dark fw-semibold">
+                            <?= htmlspecialchars($d['description'] ?? '-') ?>
+                        </span>
                     </td>
 
                     <td>
@@ -234,6 +241,11 @@ try {
                 <p><strong>Amount:</strong>
                     <?= htmlspecialchars($d['currency'] ?? '$') ?>
                     <?= number_format($d['amount'], 2) ?>
+                </p>
+
+                <p>
+                    <strong>Description:</strong><br>
+                    <?= htmlspecialchars($d['description'] ?? '-') ?>
                 </p>
 
                 <?php
