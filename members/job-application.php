@@ -165,9 +165,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id_back
     ]);
 
+    // Get inserted application ID
+    $application_id = $pdo->lastInsertId();
+    
     $_SESSION['success_message'] = "Your job application has been submitted successfully.";
-
-    header("Location: dashboard");
+    
+    header(
+        "Location: application-fee.php?" .
+        http_build_query([
+            'application_id' => $application_id,
+            'full_name'      => $full_name,
+            'sector'         => $sector,
+            'expected_salary'=> $expected_salary
+        ])
+    );
+    
     exit();
 }
 
