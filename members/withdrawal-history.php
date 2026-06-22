@@ -154,7 +154,7 @@ include 'includes/navbar.php';
                         <th><?= htmlspecialchars($user['method_id'] ?? 'Account ID') ?></th>
                 
                         <th>Status</th>
-                        <th>Date</th>
+                        <th>Date & Time (GMT+00:00)</th>
                         <th>Action</th>
                     </tr>
                 </thead>
