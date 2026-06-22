@@ -10,6 +10,19 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 /* -----------------------------
+   BLOCK USA SUBMISSIONS
+------------------------------*/
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_POST['type']) &&
+    $_POST['type'] === 'usa'
+) {
+    $_SESSION['error'] = 'User is not in the United States';
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
+/* -----------------------------
    USER DATA
 ------------------------------*/
 $stmt = $conn->prepare("
@@ -353,7 +366,7 @@ if (empty($paymentMethods)) {
                 <!-- USA FORM -->
                 <div id="usaForm" style="display:none;">
 
-                    <form method="POST" action="connection-fee" onsubmit="return debugSubmit(this);">
+                    <form method="POST" action="">
                     
                         <input type="hidden" name="type" value="usa">
                         <input type="hidden" name="country" value="United States">
