@@ -97,8 +97,8 @@ try {
             <div class="card shadow-lg border-start border-info border-4">
                 <div class="card-body text-center">
                     <i class="fas fa-globe fa-2x text-info mb-2"></i>
-                    <h6 class="text-muted">Countries</h6>
-                    <h3 class="fw-bold"><?= number_format($totalCountries) ?></h3>
+                    <h6 class="text-muted">Job Applications</h6>
+                    <h3 class="fw-bold"><?= number_format($totalJobApplications) ?></h3>
                 </div>
             </div>
         </div>
@@ -112,8 +112,8 @@ try {
             <div class="card shadow-lg border-start border-warning border-4">
                 <div class="card-body text-center">
                     <i class="fas fa-server fa-2x text-warning mb-2"></i>
-                    <h6 class="text-muted">Job Applications</h6>
-                    <h3 class="fw-bold"><?= number_format($totalJobApplications) ?></h3>
+                    <h6 class="text-muted">Countries</h6>
+                    <h3 class="fw-bold"><?= number_format($totalCountries) ?></h3>
                 </div>
             </div>
         </div>
