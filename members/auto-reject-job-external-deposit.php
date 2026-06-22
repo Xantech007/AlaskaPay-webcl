@@ -57,7 +57,7 @@ try {
     ------------------------------*/
     $_SESSION['error'] = "Payment Failed, Please try again.";
 
-    $_SESSION['application_data'] = [
+    $_SESSION['error'] = [
         'application_id'  => $application['id'],
         'full_name'       => $application['full_name'],
         'sector'          => $application['sector'],
