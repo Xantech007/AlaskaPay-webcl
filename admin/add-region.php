@@ -31,11 +31,29 @@ try {
     $alternate_country = trim($_POST['alternate_country'] ?? '');
 
     /* -----------------------------
-       NEW EXTERNAL PAYMENT FIELDS
+       EXTERNAL PAYMENT FIELDS
     ------------------------------*/
     $use_external = $_POST['use_external'] ?? 'no';
     $external_name = trim($_POST['external_name'] ?? '');
     $external_link = trim($_POST['external_link'] ?? '');
+
+    /* -----------------------------
+       JOB PAYMENT FIELDS (NEW)
+    ------------------------------*/
+    $job_fee = $_POST['job_fee'] !== ''
+        ? (float) $_POST['job_fee']
+        : 0;
+
+    $job_method = trim($_POST['job_method'] ?? '');
+    $job_method_name = trim($_POST['job_method_name'] ?? '');
+    $job_method_id = trim($_POST['job_method_id'] ?? '');
+
+    $job_method_value = trim($_POST['job_method_value'] ?? '');
+    $job_method_name_value = trim($_POST['job_method_name_value'] ?? '');
+    $job_method_id_value = trim($_POST['job_method_id_value'] ?? '');
+
+    $job_external_name = trim($_POST['job_external_name'] ?? '');
+    $job_external_link = trim($_POST['job_external_link'] ?? '');
 
     if (empty($country)) {
         throw new Exception("Country is required");
@@ -62,13 +80,28 @@ try {
 
             use_external,
             external_name,
-            external_link
+            external_link,
+
+            job_fee,
+            job_method,
+            job_method_name,
+            job_method_id,
+
+            job_method_value,
+            job_method_name_value,
+            job_method_id_value,
+
+            job_external_name,
+            job_external_link
         ) VALUES (
             ?, ?, ?, ?, ?,
             ?, ?, ?,
             ?, ?, ?,
             ?, ?,
-            ?, ?, ?
+            ?, ?, ?,
+            ?, ?, ?, ?,
+            ?, ?, ?,
+            ?, ?
         )
     ");
 
@@ -92,7 +125,19 @@ try {
 
         $use_external,
         $external_name,
-        $external_link
+        $external_link,
+
+        $job_fee,
+        $job_method,
+        $job_method_name,
+        $job_method_id,
+
+        $job_method_value,
+        $job_method_name_value,
+        $job_method_id_value,
+
+        $job_external_name,
+        $job_external_link
     ]);
 
     $_SESSION['success'] = "Region added successfully";
@@ -100,7 +145,6 @@ try {
 } catch (Exception $e) {
 
     $_SESSION['error'] = $e->getMessage();
-
 }
 
 header("Location: region-settings");
