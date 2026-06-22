@@ -38,6 +38,13 @@ try {
         <small class="text-muted">Manage fees, currency, and payment routing</small>
     </div>
 
+    <div class="d-flex align-items-center gap-3">
+
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#withdrawtimerModal">
+            <i class="fas fa-stopwatch"></i> Withdraw Timer
+        </button>
+    </div>
+
     <button class="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#addRegion">
@@ -530,6 +537,39 @@ try {
 </div>
 
 <?php endforeach; ?>
+
+<!-- WITHDRAW TIMER MODAL (GLOBAL) -->
+<div class="modal fade" id="withdrawtimerModal">
+    <div class="modal-dialog">
+        <form method="POST" action="update-withdraw-timer" class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Withdraw Timer (All Regions)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <label class="form-label">Duration (seconds)</label>
+                <input type="number"
+                       name="duration"
+                       class="form-control"
+                       min="0"
+                       required>
+
+                <small class="text-muted">
+                    This will apply to ALL regions.
+                </small>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary">Update Timer</button>
+            </div>
+
+        </form>
+    </div>
+</div>
 
 <script>
 document.getElementById("regionSearch").addEventListener("input", function () {
