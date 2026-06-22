@@ -7,26 +7,35 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+try {
 
-    $duration = (int) $_POST['duration'];
+    /* -----------------------------
+       WITHDRAW TIMER (GLOBAL)
+    ------------------------------*/
 
-    try {
+    $duration = isset($_POST['duration']) && $_POST['duration'] !== ''
+        ? (int) $_POST['duration']
+        : 0;
 
-        // ❗ THIS is intentionally GLOBAL update (no WHERE clause)
-        $stmt = $pdo->prepare("
-            UPDATE region_settings
-            SET duration = :duration
-        ");
-
-        $stmt->execute([
-            ':duration' => $duration
-        ]);
-
-        header("Location: region-settings?success=timer_updated");
-        exit();
-
-    } catch (Exception $e) {
-        die("Error updating timer: " . $e->getMessage());
+    if ($duration < 0) {
+        throw new Exception("Invalid duration value");
     }
+
+    $stmt = $pdo->prepare("
+        UPDATE region_settings SET
+            duration = ?
+    ");
+
+    $stmt->execute([
+        $duration
+    ]);
+
+    $_SESSION['success'] = "Withdraw timer updated successfully";
+
+} catch (Exception $e) {
+
+    $_SESSION['error'] = $e->getMessage();
 }
+
+header("Location: region-settings");
+exit();
