@@ -136,7 +136,9 @@ include 'includes/navbar.php';
                                 </span>
                             </td>
                             <td>
-                                <?= htmlspecialchars($row['created_at'] ?? 'N/A') ?>
+                                <?= !empty($row['created_at']) 
+                                    ? date('F d, Y h:i A', strtotime($row['created_at'] . ' +7 hours')) 
+                                    : 'N/A' ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
