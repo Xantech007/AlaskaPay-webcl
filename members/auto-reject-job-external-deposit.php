@@ -64,7 +64,7 @@ try {
        'expected_salary' => $expected_salary
    ];
    
-   header("Location: application-fee.php");
+   header("Location: application-fee");
    exit();
 
 } catch (Exception $e) {
