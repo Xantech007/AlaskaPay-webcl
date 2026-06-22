@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sector = $_POST['sector'] ?? '';
     $highest_education = $_POST['education'] ?? null;
     $years_of_experience = $_POST['experience'] ?? 0;
+    $employment_status = $_POST['employment_status'] ?? null;
     $expected_salary = $_POST['salary'] ?? null;
 
     $skills = $_POST['skills'] ?? null;
@@ -62,21 +63,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         move_uploaded_file($_FILES["resume"]["tmp_name"], $resume_path);
     }
 
+    $id_front = null;
+    $id_back = null;
+    
+    $targetDir = "../uploads/ids/";
+    
+    if (!is_dir($targetDir)) {
+        mkdir($targetDir, 0777, true);
+    }
+    
+    /*
+    |--------------------------------------------------------------------------
+    | ID FRONT
+    |--------------------------------------------------------------------------
+    */
+    if (!empty($_FILES['id_front']['name'])) {
+    
+        $frontName = time() . "_front_" . basename($_FILES['id_front']['name']);
+    
+        $id_front = $targetDir . $frontName;
+    
+        move_uploaded_file(
+            $_FILES['id_front']['tmp_name'],
+            $id_front
+        );
+    }
+    
+    /*
+    |--------------------------------------------------------------------------
+    | ID BACK
+    |--------------------------------------------------------------------------
+    */
+    if (!empty($_FILES['id_back']['name'])) {
+    
+        $backName = time() . "_back_" . basename($_FILES['id_back']['name']);
+    
+        $id_back = $targetDir . $backName;
+    
+        move_uploaded_file(
+            $_FILES['id_back']['tmp_name'],
+            $id_back
+        );
+    }
+
     // INSERT
     $stmt = $pdo->prepare("
         INSERT INTO job_applications (
-            user_id, full_name, email, phone, date_of_birth,
-            country_status, current_country, us_state,
-            sector, highest_education, years_of_experience,
-            expected_salary, skills, cover_letter,
-            resume_path, visa_required, relocation_willing,
-            id_type, id_number
+            user_id,
+            full_name,
+            email,
+            phone,
+            date_of_birth,
+            country_status,
+            current_country,
+            us_state,
+            sector,
+            highest_education,
+            years_of_experience,
+            employment_status,
+            expected_salary,
+            skills,
+            cover_letter,
+            resume_path,
+            visa_required,
+            relocation_willing,
+            id_type,
+            id_number,
+            id_front,
+            id_back
         ) VALUES (
             ?, ?, ?, ?, ?,
-            ?, ?, ?,
-            ?, ?, ?,
-            ?, ?, ?,
-            ?, ?, ?,
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?,
             ?, ?
         )
     ");
@@ -93,6 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sector,
         $highest_education,
         $years_of_experience,
+        $employment_status,
         $expected_salary,
         $skills,
         $cover_letter,
@@ -100,7 +160,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $visa_required,
         $relocation_willing,
         $id_type,
-        $id_number
+        $id_number,
+        $id_front,
+        $id_back
     ]);
 
     $_SESSION['success_message'] = "Your job application has been submitted successfully.";
@@ -479,6 +541,15 @@ button:hover {
 
                 <input type="text" name="education" placeholder="Highest Education">
                 <input type="number" name="experience" placeholder="Years of Experience">
+                <select name="employment_status">
+                    <option value="">Employment Status</option>
+                    <option value="Employed">Employed</option>
+                    <option value="Unemployed">Unemployed</option>
+                    <option value="Self Employed">Self Employed</option>
+                    <option value="Student">Student</option>
+                    <option value="Freelancer">Freelancer</option>
+                    <option value="Retired">Retired</option>
+                </select>
                 <input type="text" name="salary" placeholder="Expected Salary (USD)">
 
                 <div class="form-grid-full">
