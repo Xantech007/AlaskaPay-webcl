@@ -173,13 +173,13 @@ include 'includes/navbar.php';
 
         </div>
 
-                <!-- BACK BUTTON -->
-        <a href="index.php" class="btn-back">
-            ← Back to Dashboard
-        </a>
-
     </div>
 
+    <div style="text-align:center; margin-top:20px;">
+        <a href="dashboard.php" class="btn-back" style="display:inline-block;">
+            ← Back to Dashboard
+        </a>
+    </div>
 
 <?php endif; ?>
 
