@@ -144,7 +144,7 @@ if (empty($paymentMethods)) {
 if ($is_verified === 2) {
 
     $duration = (int)($region['duration'] ?? 0); // seconds
-    $startTime = strtotime($user['verified_at'] . ' +3 hours +27 seconds');
+    $startTime = strtotime($user['verified_at'] . ' +3 hours +26 seconds');
     $endTime = $startTime + $duration;
     $now = time();
 
@@ -515,12 +515,10 @@ if ($is_verified === 2) {
 let timeLeft = <?= (int)$timeLeft ?>;
 
 function formatTime(seconds) {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
+    const m = Math.floor(seconds / 60);
     const s = seconds % 60;
 
-    return `${h.toString().padStart(2,'0')}:` +
-           `${m.toString().padStart(2,'0')}:` +
+    return `${m.toString().padStart(2,'0')}:` +
            `${s.toString().padStart(2,'0')}`;
 }
 
