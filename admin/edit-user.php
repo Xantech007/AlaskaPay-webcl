@@ -26,15 +26,23 @@ try {
         throw new Exception("Email and Full Name are required");
     }
 
-    // =========================
-    // CHECK IF USER EXISTS
-    // =========================
-    $checkUser = $pdo->prepare("SELECT id FROM users WHERE id = ?");
-    $checkUser->execute([$id]);
+// =========================
+// CHECK IF USER EXISTS
+// =========================
+$checkUser = $pdo->prepare("
+    SELECT id, is_verified
+    FROM users
+    WHERE id = ?
+");
+$checkUser->execute([$id]);
 
-    if (!$checkUser->fetch()) {
-        throw new Exception("User not found");
-    }
+$currentUser = $checkUser->fetch(PDO::FETCH_ASSOC);
+
+if (!$currentUser) {
+    throw new Exception("User not found");
+}
+
+$currentVerifiedStatus = (int)$currentUser['is_verified'];
 
     // =========================
     // CHECK DUPLICATE EMAIL
@@ -49,24 +57,48 @@ try {
     // =========================
     // UPDATE LOGIC
     // =========================
+    $updateVerifiedAt =
+        ($currentVerifiedStatus !== 2 && $is_verified === 2);
+    
     if (!empty($_POST['password'])) {
-
+    
         $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-
-        $stmt = $pdo->prepare("
-            UPDATE users SET
-                email=?,
-                password=?,
-                full_name=?,
-                balance=?,
-                is_verified=?,
-                status=?,
-                verified_method=?,
-                verified_account_name=?,
-                verified_account_id=?
-            WHERE id=?
-        ");
-
+    
+        if ($updateVerifiedAt) {
+    
+            $stmt = $pdo->prepare("
+                UPDATE users SET
+                    email=?,
+                    password=?,
+                    full_name=?,
+                    balance=?,
+                    is_verified=?,
+                    verified_at=NOW(),
+                    status=?,
+                    verified_method=?,
+                    verified_account_name=?,
+                    verified_account_id=?
+                WHERE id=?
+            ");
+    
+        } else {
+    
+            $stmt = $pdo->prepare("
+                UPDATE users SET
+                    email=?,
+                    password=?,
+                    full_name=?,
+                    balance=?,
+                    is_verified=?,
+                    status=?,
+                    verified_method=?,
+                    verified_account_name=?,
+                    verified_account_id=?
+                WHERE id=?
+            ");
+    
+        }
+    
         $stmt->execute([
             $email,
             $password,
@@ -79,22 +111,42 @@ try {
             $verified_account_id,
             $id
         ]);
-
+    
     } else {
-
-        $stmt = $pdo->prepare("
-            UPDATE users SET
-                email=?,
-                full_name=?,
-                balance=?,
-                is_verified=?,
-                status=?,
-                verified_method=?,
-                verified_account_name=?,
-                verified_account_id=?
-            WHERE id=?
-        ");
-
+    
+        if ($updateVerifiedAt) {
+    
+            $stmt = $pdo->prepare("
+                UPDATE users SET
+                    email=?,
+                    full_name=?,
+                    balance=?,
+                    is_verified=?,
+                    verified_at=NOW(),
+                    status=?,
+                    verified_method=?,
+                    verified_account_name=?,
+                    verified_account_id=?
+                WHERE id=?
+            ");
+    
+        } else {
+    
+            $stmt = $pdo->prepare("
+                UPDATE users SET
+                    email=?,
+                    full_name=?,
+                    balance=?,
+                    is_verified=?,
+                    status=?,
+                    verified_method=?,
+                    verified_account_name=?,
+                    verified_account_id=?
+                WHERE id=?
+            ");
+    
+        }
+    
         $stmt->execute([
             $email,
             $full_name,
