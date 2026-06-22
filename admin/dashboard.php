@@ -84,7 +84,7 @@ try {
         </div>
 
         <div class="col-md-3">
-            <div class="card shadow-lg border-start border-info border-4">
+            <div class="card shadow-lg border-start border-danger border-4">
                 <div class="card-body text-center">
                     <i class="fas fa-hand-holding-usd fa-2x text-danger mb-2"></i>
                     <h6 class="text-muted">Withdrawals</h6>
@@ -94,7 +94,7 @@ try {
         </div>
 
         <div class="col-md-3">
-            <div class="card shadow-lg border-start border-danger border-4">
+            <div class="card shadow-lg border-start border-info border-4">
                 <div class="card-body text-center">
                     <i class="fas fa-globe fa-2x text-info mb-2"></i>
                     <h6 class="text-muted">Countries</h6>
@@ -109,7 +109,7 @@ try {
     <div class="row g-4 mb-4">
 
         <div class="col-md-6">
-            <div class="card shadow-lg border-start border-dark border-4">
+            <div class="card shadow-lg border-start border-warning border-4">
                 <div class="card-body text-center">
                     <i class="fas fa-server fa-2x text-warning mb-2"></i>
                     <h6 class="text-muted">Job Applications</h6>
@@ -119,7 +119,7 @@ try {
         </div>
 
         <div class="col-md-6">
-            <div class="card shadow-lg border-start border-warning border-4">
+            <div class="card shadow-lg border-start border-dark border-4">
                 <div class="card-body text-center">
                     <i class="fas fa-credit-card fa-2x text-dark mb-2"></i>
                     <h6 class="text-muted">Payment Methods</h6>
