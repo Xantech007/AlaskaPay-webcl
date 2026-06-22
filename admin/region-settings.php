@@ -13,13 +13,29 @@ include './includes/countries.php';
 
 try {
 
+    /* -----------------------------
+       TOTAL REGIONS
+    ------------------------------*/
     $totalRegions = $pdo->query("SELECT COUNT(*) FROM region_settings")->fetchColumn();
 
+    /* -----------------------------
+       ALL REGIONS
+    ------------------------------*/
     $regions = $pdo->query("
         SELECT *
         FROM region_settings
         ORDER BY created_at DESC
     ")->fetchAll();
+
+    /* -----------------------------
+       GLOBAL WITHDRAW TIMER
+    ------------------------------*/
+    $currentDuration = $pdo->query("
+        SELECT duration
+        FROM region_settings
+        ORDER BY id DESC
+        LIMIT 1
+    ")->fetchColumn();
 
 } catch (Exception $e) {
     die("Database Error: " . $e->getMessage());
