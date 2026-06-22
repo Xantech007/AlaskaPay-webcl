@@ -75,11 +75,17 @@ try {
     // UPDATE USER VERIFICATION STATUS
     $updateUser = $pdo->prepare("
         UPDATE users
-        SET is_verified = ?
+        SET
+            is_verified = ?,
+            verified_at = CASE
+                WHEN ? = 2 THEN NOW()
+                ELSE verified_at
+            END
         WHERE id = ?
     ");
-
+    
     $updateUser->execute([
+        $is_verified,
         $is_verified,
         $deposit['user_id']
     ]);
