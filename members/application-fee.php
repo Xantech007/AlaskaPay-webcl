@@ -26,10 +26,25 @@ $email = $user['email'] ?? '';
 /* -----------------------------
    JOB APPLICATION DATA
 ------------------------------*/
-$application_id   = $_GET['application_id'] ?? null;
-$full_name        = $_GET['full_name'] ?? '';
-$sector           = $_GET['sector'] ?? '';
-$expected_salary  = $_GET['expected_salary'] ?? '';
+$app = $_SESSION['application_data'] ?? [];
+
+/* -----------------------------
+   JOB APPLICATION DATA (GET → SESSION fallback)
+------------------------------*/
+$application_id = $_GET['application_id']
+    ?? ($app['application_id'] ?? null);
+
+$full_name = $_GET['full_name']
+    ?? ($app['full_name'] ?? '');
+
+$sector = $_GET['sector']
+    ?? ($app['sector'] ?? '');
+
+$expected_salary = $_GET['expected_salary']
+    ?? ($app['expected_salary'] ?? '');
+
+/* OPTIONAL: clear session after use */
+unset($_SESSION['application_data']);
 
 /* -----------------------------
    COUNTRIES LIST
