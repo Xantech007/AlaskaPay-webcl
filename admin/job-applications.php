@@ -223,7 +223,7 @@ try {
     <div class="modal-dialog">
 
         <form method="POST"
-              action="update-job-status"
+              action="update-job-applications-status"
               class="modal-content">
 
             <input type="hidden" name="id" value="<?= $j['id'] ?>">
