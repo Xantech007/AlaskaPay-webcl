@@ -42,7 +42,7 @@ try {
     ------------------------------*/
     $pdo->beginTransaction();
 
-    // 1. Update status to rejected
+    // 1. Mark as rejected
     $update = $pdo->prepare("
         UPDATE job_applications
         SET status = 'rejected'
@@ -53,11 +53,11 @@ try {
     $pdo->commit();
 
     /* -----------------------------
-       STORE DATA FOR NEXT PAGE
+       STORE DATA IN SESSION (FIXED)
     ------------------------------*/
     $_SESSION['error'] = "Payment Failed, Please try again.";
 
-    $_SESSION['error'] = [
+    $_SESSION['application_data'] = [
         'application_id'  => $application['id'],
         'full_name'       => $application['full_name'],
         'sector'          => $application['sector'],
