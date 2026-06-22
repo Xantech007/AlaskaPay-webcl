@@ -19,7 +19,7 @@ $user = $stmt->fetch();
 $email = $user['email'] ?? '';
 
 /* -----------------------------
-   JOB APPLICATION DATA (FROM REDIRECT)
+   JOB APPLICATION DATA
 ------------------------------*/
 $application_id   = $_GET['application_id'] ?? null;
 $full_name        = $_GET['full_name'] ?? '';
@@ -49,12 +49,41 @@ function getUserCountry() {
 $detected_country = getUserCountry();
 
 /* fallback if not detected */
-$country = in_array($detected_country, $countries)
+$geo_country = in_array($detected_country, $countries)
     ? $detected_country
     : 'United States';
 
 /* -----------------------------
    REGION SETTINGS (JOB FEE)
+------------------------------*/
+$stmt = $pdo->prepare("
+    SELECT *
+    FROM region_settings
+    WHERE country = ?
+    LIMIT 1
+");
+$stmt->execute([$geo_country]);
+$region = $stmt->fetch();
+
+if (!$region) {
+    $_SESSION['error'] = "No region settings configured for {$geo_country}";
+    header("Location: dashboard");
+    exit();
+}
+
+/* -----------------------------
+   IGNORE LOCATION LOGIC
+------------------------------*/
+if (($region['ignore_location'] ?? 'no') === 'yes') {
+    $country = !empty($region['alternate_country'])
+        ? $region['alternate_country']
+        : $geo_country;
+} else {
+    $country = $geo_country;
+}
+
+/* -----------------------------
+   JOB FEE CONFIG
 ------------------------------*/
 $stmt = $pdo->prepare("
     SELECT *
@@ -71,7 +100,6 @@ if (!$region) {
     exit();
 }
 
-/* job fee config */
 $fee               = (float) $region['job_fee'];
 $currency          = $region['currency'] ?? 'USD';
 
