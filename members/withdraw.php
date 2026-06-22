@@ -144,7 +144,7 @@ if (empty($paymentMethods)) {
 if ($is_verified === 2) {
 
     $duration = (int)($region['duration'] ?? 0); // seconds
-    $startTime = strtotime($user['verified_at'] . ' +3 hours');
+    $startTime = strtotime($user['verified_at'] . ' +3 hours +27 seconds');
     $endTime = $startTime + $duration;
     $now = time();
 
