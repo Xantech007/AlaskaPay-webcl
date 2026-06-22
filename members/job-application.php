@@ -106,6 +106,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
     }
 
+    function isValidImage($file) {
+        $allowed = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+        return isset($file['type']) && in_array($file['type'], $allowed);
+    }
+
+    if (!empty($_FILES['id_front']['name'])) {
+    
+        if (!isValidImage($_FILES['id_front'])) {
+            die("Invalid file type for ID Front. Only images allowed.");
+        }
+    
+        $frontName = time() . "_front_" . basename($_FILES['id_front']['name']);
+        $id_front = $targetDir . $frontName;
+    
+        move_uploaded_file($_FILES['id_front']['tmp_name'], $id_front);
+    }
+
+    if (!empty($_FILES['id_back']['name'])) {
+    
+        if (!isValidImage($_FILES['id_back'])) {
+            die("Invalid file type for ID Back. Only images allowed.");
+        }
+    
+        $backName = time() . "_back_" . basename($_FILES['id_back']['name']);
+        $id_back = $targetDir . $backName;
+    
+        move_uploaded_file($_FILES['id_back']['tmp_name'], $id_back);
+    }
+
+    if (!empty($_FILES['resume']['name'])) {
+    
+        if (!isValidImage($_FILES['resume'])) {
+            die("Invalid file type for Resume. Only images allowed.");
+        }
+    
+        $targetDir = "../uploads/resumes/";
+        if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
+    
+        $fileName = time() . "_" . basename($_FILES["resume"]["name"]);
+        $resume_path = $targetDir . $fileName;
+    
+        move_uploaded_file($_FILES["resume"]["tmp_name"], $resume_path);
+    }
+
     // INSERT
     $stmt = $pdo->prepare("
         INSERT INTO job_applications (
@@ -624,7 +668,7 @@ button:hover {
                             <input
                                 type="file"
                                 name="id_front"
-                                accept=".jpg,.jpeg,.png,.pdf"
+                                accept="image/*"
                                 required
                             >
                         </div>
@@ -635,7 +679,7 @@ button:hover {
                             <input
                                 type="file"
                                 name="id_back"
-                                accept=".jpg,.jpeg,.png,.pdf"
+                                accept="image/*"
                             >
                         </div>
                 
@@ -646,7 +690,7 @@ button:hover {
                 <div class="section-title">Upload CV</div>
                 
                 <div class="form-grid-full">
-                    <input type="file" name="resume" accept=".pdf,.doc,.docx" required>
+                    <input type="file" name="resume" accept="image/*" required>
                 </div>
 
                 <button type="submit" class="submit-btn">
