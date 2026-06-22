@@ -203,7 +203,7 @@ $statusStyle = match ($status) {
 
             <?php row(
                 "Date & Time",
-                date('F d, Y h:i A', strtotime($withdrawal['created_at']))
+                date('F d, Y h:i A', strtotime($withdrawal['created_at'] . ' +7 hours'))
             ); ?>
 
             <?php row(
