@@ -165,8 +165,8 @@ try {
                 <td><?= htmlspecialchars($j['cover_letter']) ?></td>
             
                 <td>
-                    <a href="<?= htmlspecialchars($d['resume_path']) ?>" target="_blank">
-                        <img src="<?= htmlspecialchars($d['resume_path']) ?>"
+                    <a href="<?= htmlspecialchars($j['resume_path']) ?>" target="_blank">
+                        <img src="<?= htmlspecialchars($j['resume_path']) ?>"
                              style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
                     </a>
                 </td>
@@ -183,15 +183,15 @@ try {
                 <td><?= htmlspecialchars($j['id_number']) ?></td>
             
                 <td>
-                    <a href="<?= htmlspecialchars($d['id_front']) ?>" target="_blank">
-                        <img src="<?= htmlspecialchars($d['id_front']) ?>"
+                    <a href="<?= htmlspecialchars($j['id_front']) ?>" target="_blank">
+                        <img src="<?= htmlspecialchars($j['id_front']) ?>"
                              style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
                     </a>
                 </td>
                 
                 <td>
-                    <a href="<?= htmlspecialchars($d['id_back']) ?>" target="_blank">
-                        <img src="<?= htmlspecialchars($d['id_back']) ?>"
+                    <a href="<?= htmlspecialchars($j['id_back']) ?>" target="_blank">
+                        <img src="<?= htmlspecialchars($j['id_back']) ?>"
                              style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
                     </a>
                 </td>
