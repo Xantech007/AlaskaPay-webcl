@@ -117,7 +117,7 @@ include 'includes/navbar.php';
             <?php if ($acceptedApps > 0): ?>
             
                 <!-- SHOW IF ANY APPLICATION IS ACCEPTED -->
-                <a href="job-application-approved.php" style="text-decoration:none;color:inherit;">
+                <a href="job-application-accepted.php" style="text-decoration:none;color:inherit;">
                     <div class="card job" style="cursor:pointer; position:relative;">
             
                         <div id="job-toast-container"></div>
