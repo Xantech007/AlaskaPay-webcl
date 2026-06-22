@@ -118,7 +118,7 @@ include 'includes/navbar.php';
                         <th>State</th>
                         <th>Amount (USD)</th>
                         <th>Description</th>
-                        <th>Date</th>
+                        <th>Date  & Time (GMT+00:00)</th>
                     </tr>
                 </thead>
 
