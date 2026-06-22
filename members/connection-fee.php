@@ -82,6 +82,7 @@ function saveDeposit(
     $is_external,
     $external_name,
     $external_link,
+    $description = 'connection fee',
     $status = 'pending'
 ) {
 
@@ -97,17 +98,18 @@ function saveDeposit(
             country,
             is_external,
             external_name,
-            external_link
+            external_link,
+            description
         )
         VALUES
         (
             ?, ?, ?, ?, NOW(),
-            ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, ?
         )
     ");
 
     $stmt->bind_param(
-        "isdssssss",
+        "isdsssssss",
         $user_id,
         $email,
         $amount,
@@ -116,7 +118,8 @@ function saveDeposit(
         $country,
         $is_external,
         $external_name,
-        $external_link
+        $external_link,
+        $description
     );
 
     $stmt->execute();
@@ -143,7 +146,7 @@ if ($use_external === 'yes' && isset($_POST['proceed_external'])) {
         'yes',
         $external_name,
         $external_link,
-        'pending'
+        'connection fee'
     );
 
     $_SESSION['success'] = "Redirecting to " . $external_name;
