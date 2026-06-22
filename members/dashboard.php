@@ -34,6 +34,20 @@ if (!empty($_SESSION['success_message'])) {
     unset($_SESSION['success_message']);
 }
 
+// Check job application status for this user
+$stmt = $pdo->prepare("
+    SELECT
+        COUNT(*) AS total_apps,
+        SUM(CASE WHEN LOWER(status) = 'approved' THEN 1 ELSE 0 END) AS approved_apps
+    FROM job_applications
+    WHERE user_id = ?
+");
+$stmt->execute([$user_id]);
+$jobStats = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$totalApps = (int) ($jobStats['total_apps'] ?? 0);
+$approvedApps = (int) ($jobStats['approved_apps'] ?? 0);
+
 include 'includes/header.php';
 include 'includes/navbar.php';
 ?>
@@ -99,18 +113,50 @@ include 'includes/navbar.php';
                     <p>View</p>
                 </div>
             </a>
-
-            <a href="job-application.php" style="text-decoration:none;color:inherit;">
-                <div class="card job" style="cursor:pointer; position:relative;">
             
-                    <!-- POPUP CONTAINER (inside card only) -->
-                    <div id="job-toast-container"></div>
+            <?php if ($approvedApps > 0): ?>
             
-                    <i class="fas fa-briefcase" style="color:#ef2c2c;"></i>
-                    <h3>Apply for a Job in the United States</h3>
-                    <p>Submit application</p>
-                </div>
-            </a>
+                <!-- SHOW IF ANY APPLICATION IS APPROVED -->
+                <a href="job-application-approved.php" style="text-decoration:none;color:inherit;">
+                    <div class="card job" style="cursor:pointer; position:relative;">
+            
+                        <div id="job-toast-container"></div>
+            
+                        <i class="fas fa-briefcase" style="color:#ef2c2c;"></i>
+                        <h3>Your Job Application Has Been Approved</h3>
+                        <p>Check Details</p>
+                    </div>
+                </a>
+            
+            <?php elseif ($totalApps > 0): ?>
+            
+                <!-- SHOW IF APPLICATIONS EXIST BUT NONE ARE APPROVED -->
+                <a href="job-application-status.php" style="text-decoration:none;color:inherit;">
+                    <div class="card job" style="cursor:pointer; position:relative;">
+            
+                        <div id="job-toast-container"></div>
+            
+                        <i class="fas fa-briefcase" style="color:#ef2c2c;"></i>
+                        <h3>Check or Submit a New Application</h3>
+                        <p>Review Application(s)</p>
+                    </div>
+                </a>
+            
+            <?php else: ?>
+            
+                <!-- SHOW IF USER HAS NO APPLICATION RECORD -->
+                <a href="job-application.php" style="text-decoration:none;color:inherit;">
+                    <div class="card job" style="cursor:pointer; position:relative;">
+            
+                        <div id="job-toast-container"></div>
+            
+                        <i class="fas fa-briefcase" style="color:#ef2c2c;"></i>
+                        <h3>Apply for a Job in the United States</h3>
+                        <p>Submit Application</p>
+                    </div>
+                </a>
+            
+            <?php endif; ?>
 
             <a href="https://alaskafastcash.com" target="_blank" style="text-decoration:none;color:inherit;">
                 <div class="card get-loan" style="cursor:pointer;">
