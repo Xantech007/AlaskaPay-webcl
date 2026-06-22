@@ -55,7 +55,7 @@ try {
     /* -----------------------------
        STORE DATA IN SESSION
     ------------------------------*/
-    $_SESSION['error'] = "Payment Failed, Please try again.";
+    $_SESSION['error'] = "Payment Failed. Please try again.";
 
     $_SESSION['application_data'] = [
         'application_id'  => $application['id'],
