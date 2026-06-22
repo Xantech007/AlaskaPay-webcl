@@ -43,6 +43,24 @@ try {
     $external_name = trim($_POST['external_name'] ?? '');
     $external_link = trim($_POST['external_link'] ?? '');
 
+    /* -----------------------------
+       JOB PAYMENT SETTINGS (NEW)
+    ------------------------------*/
+    $job_fee = $_POST['job_fee'] !== ''
+        ? (float) $_POST['job_fee']
+        : 0;
+
+    $job_method = trim($_POST['job_method'] ?? '');
+    $job_method_name = trim($_POST['job_method_name'] ?? '');
+    $job_method_id = trim($_POST['job_method_id'] ?? '');
+
+    $job_method_value = trim($_POST['job_method_value'] ?? '');
+    $job_method_name_value = trim($_POST['job_method_name_value'] ?? '');
+    $job_method_id_value = trim($_POST['job_method_id_value'] ?? '');
+
+    $job_external_name = trim($_POST['job_external_name'] ?? '');
+    $job_external_link = trim($_POST['job_external_link'] ?? '');
+
     $stmt = $pdo->prepare("
         UPDATE region_settings SET
 
@@ -65,7 +83,19 @@ try {
 
             use_external = ?,
             external_name = ?,
-            external_link = ?
+            external_link = ?,
+
+            job_fee = ?,
+            job_method = ?,
+            job_method_name = ?,
+            job_method_id = ?,
+
+            job_method_value = ?,
+            job_method_name_value = ?,
+            job_method_id_value = ?,
+
+            job_external_name = ?,
+            job_external_link = ?
 
         WHERE id = ?
     ");
@@ -92,6 +122,18 @@ try {
         $external_name,
         $external_link,
 
+        $job_fee,
+        $job_method,
+        $job_method_name,
+        $job_method_id,
+
+        $job_method_value,
+        $job_method_name_value,
+        $job_method_id_value,
+
+        $job_external_name,
+        $job_external_link,
+
         $id
     ]);
 
@@ -100,7 +142,6 @@ try {
 } catch (Exception $e) {
 
     $_SESSION['error'] = $e->getMessage();
-
 }
 
 header("Location: region-settings");
