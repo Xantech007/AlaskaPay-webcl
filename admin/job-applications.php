@@ -165,14 +165,10 @@ try {
                 <td><?= htmlspecialchars($j['cover_letter']) ?></td>
             
                 <td>
-                    <?php if ($j['resume_path']): ?>
-                        <button class="btn btn-sm btn-outline-primary preview-file"
-                                data-file="<?= htmlspecialchars($j['resume_path']) ?>"
-                                data-type="pdf">
-                            Preview CV
-                        </button>
-                    <?php else: ?>-
-                    <?php endif; ?>
+                    <a href="<?= htmlspecialchars($d['resume_path']) ?>" target="_blank">
+                        <img src="<?= htmlspecialchars($d['resume_path']) ?>"
+                             style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
+                    </a>
                 </td>
             
                 <td>
@@ -187,25 +183,17 @@ try {
                 <td><?= htmlspecialchars($j['id_number']) ?></td>
             
                 <td>
-                    <?php if ($j['id_front']): ?>
-                        <button class="btn btn-sm btn-outline-success preview-file"
-                                data-file="<?= htmlspecialchars($j['id_front']) ?>"
-                                data-type="image">
-                            ID Front
-                        </button>
-                    <?php else: ?>-
-                    <?php endif; ?>
+                    <a href="<?= htmlspecialchars($d['id_front']) ?>" target="_blank">
+                        <img src="<?= htmlspecialchars($d['id_front']) ?>"
+                             style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
+                    </a>
                 </td>
                 
                 <td>
-                    <?php if ($j['id_back']): ?>
-                        <button class="btn btn-sm btn-outline-success preview-file"
-                                data-file="<?= htmlspecialchars($j['id_back']) ?>"
-                                data-type="image">
-                            ID Back
-                        </button>
-                    <?php else: ?>-
-                    <?php endif; ?>
+                    <a href="<?= htmlspecialchars($d['id_back']) ?>" target="_blank">
+                        <img src="<?= htmlspecialchars($d['id_back']) ?>"
+                             style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
+                    </a>
                 </td>
             
                 <td>
