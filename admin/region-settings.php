@@ -550,11 +550,22 @@ try {
 
             <div class="modal-body">
 
-                <label class="form-label">Duration (seconds)</label>
+                <!-- SHOW CURRENT VALUE -->
+                <div class="mb-3">
+                    <label class="form-label">Current Duration</label>
+                    <input type="text"
+                           class="form-control"
+                           value="<?= (int)$currentDuration ?> seconds"
+                           readonly>
+                </div>
+
+                <!-- EDIT VALUE -->
+                <label class="form-label">Update Duration (seconds)</label>
                 <input type="number"
                        name="duration"
                        class="form-control"
                        min="0"
+                       value="<?= (int)$currentDuration ?>"
                        required>
 
                 <small class="text-muted">
