@@ -118,7 +118,7 @@ try {
                 <th>Expected Salary</th>
                 <th>Skills</th>
                 <th>Cover Letter</th>
-                <th>Resume</th>
+                <th>CV</th>
                 <th>Visa</th>
                 <th>Relocation</th>
                 <th>ID Type</th>
@@ -162,13 +162,7 @@ try {
             
                 <td><?= htmlspecialchars($j['skills']) ?></td>
             
-                <td>
-                    <button class="btn btn-sm btn-outline-info"
-                            data-bs-toggle="modal"
-                            data-bs-target="#cover<?= $j['id'] ?>">
-                        View
-                    </button>
-                </td>
+                <td><?= htmlspecialchars($j['cover_letter']) ?></td>
             
                 <td>
                     <?php if ($j['resume_path']): ?>
