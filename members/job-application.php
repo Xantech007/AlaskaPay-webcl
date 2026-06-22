@@ -150,6 +150,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         move_uploaded_file($_FILES["resume"]["tmp_name"], $resume_path);
     }
 
+    $appStmt = $pdo->prepare("
+        SELECT *
+        FROM job_applications
+        WHERE user_id = ?
+        ORDER BY id DESC
+    ");
+    $appStmt->execute([$user_id]);
+    $applications = $appStmt->fetchAll();
+    
+    $approvedApplication = null;
+    
+    foreach ($applications as $application) {
+    
+        if (
+            isset($application['status']) &&
+            strtolower($application['status']) === 'approved'
+        ) {
+            $approvedApplication = $application;
+            break;
+        }
+    }
+
+    $showForm = true;
+    
+    if ($approvedApplication) {
+        $showForm = false;
+    }
+    elseif (!empty($applications)) {
+    
+        $showForm =
+            isset($_GET['new_application']) &&
+            $_GET['new_application'] == 1;
+    }
+
     // INSERT
     $stmt = $pdo->prepare("
         INSERT INTO job_applications (
@@ -528,178 +562,341 @@ button:hover {
     
     </div>
 
-    <div class="job-card">
-
-        <h2>Apply for a Job in the United States</h2>
-        <p class="job-subtitle">Complete your professional application to get matched with opportunities</p>
-
-        <form method="POST" enctype="multipart/form-data">
-
-            <div class="form-grid">
-
-                <div class="section-title">Personal Information</div>
-
-                <label>Full Name</label>
-                <input type="text" name="full_name" required>
-                <label>Email</label>
-                <input type="email" name="email" required>
-                <label>Phone Number</label>
-                <input type="text" name="phone" required>
-                <label>Date of Birth</label>
-                <input type="date" name="dob" required>
-
-                <div class="section-title">Location Information</div>
-                
-                <div class="form-grid-full">
-                
-                    <select name="country_status" id="country_status" required>
-                        <option value="">Select Status</option>
-                        <option value="in_us">Currently in United States</option>
-                        <option value="outside_us">Outside United States</option>
-                    </select>
-                
-                </div>
-                
-                <div class="form-grid">
-                
-                    <div class="form-group" id="us_state_wrapper" style="display:none;">
-                        <label>US State</label>
-                        <input type="text" name="us_state" placeholder="US State">
-                    </div>
-                
-                    <div class="form-group" id="country_wrapper" style="display:none;">
-                        <label>Country</label>
-                
-                        <select name="current_country" id="current_country">
-                            <option value="">Select Country</option>
-                
-                            <?php foreach($countries as $country): ?>
-                                <option value="<?= htmlspecialchars($country) ?>">
-                                    <?= htmlspecialchars($country) ?>
-                                </option>
-                            <?php endforeach; ?>
-                
-                        </select>
-                    </div>
-                
-                </div>
-
-                <div class="section-title">Professional Details</div>
-
-                <select name="sector" required>
-                    <option value="">Select Sector</option>
-                    <?php foreach ($sectors as $s): ?>
-                        <option value="<?= htmlspecialchars($s) ?>">
-                            <?= htmlspecialchars($s) ?>
-                        </option>
+    <?php if ($approvedApplication): ?>
+    
+        <!-- APPROVED APPLICATION VIEW -->
+        <div class="job-card">
+        
+            <h2>Application Approved</h2>
+        
+            <div class="job-alert" style="background:#e8f5e9;border-left-color:#4caf50;">
+                Congratulations! Your application has been approved.
+                Please check your email regularly for further instructions,
+                interview schedules, onboarding requirements and visa guidance.
+            </div>
+        
+            <table class="table">
+                <tr>
+                    <th>Application ID</th>
+                    <td><?= $approvedApplication['id'] ?></td>
+                </tr>
+        
+                <tr>
+                    <th>Full Name</th>
+                    <td><?= htmlspecialchars($approvedApplication['full_name']) ?></td>
+                </tr>
+        
+                <tr>
+                    <th>Email</th>
+                    <td><?= htmlspecialchars($approvedApplication['email']) ?></td>
+                </tr>
+        
+                <tr>
+                    <th>Sector</th>
+                    <td><?= htmlspecialchars($approvedApplication['sector']) ?></td>
+                </tr>
+        
+                <tr>
+                    <th>Expected Salary</th>
+                    <td>$<?= number_format($approvedApplication['expected_salary']) ?></td>
+                </tr>
+        
+                <tr>
+                    <th>Status</th>
+                    <td>
+                        <span class="badge bg-success">
+                            Approved
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        
+            <div class="job-alert">
+                Your application is currently being processed.
+                Kindly monitor your email inbox and spam folder for
+                updates from the recruitment team.
+            </div>
+        
+        </div>
+    
+    <?php elseif (!empty($applications) && !$showForm): ?>
+    
+        <!-- APPLICATION HISTORY TABLE -->
+        <div class="job-card">
+        
+            <h2>Previous Applications</h2>
+        
+            <p class="job-subtitle">
+                Below is a record of your submitted applications.
+            </p>
+        
+            <div style="overflow-x:auto;">
+        
+                <table class="table table-bordered">
+        
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Sector</th>
+                            <th>Country</th>
+                            <th>Expected Salary</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+        
+                    <?php foreach ($applications as $app): ?>
+        
+                        <tr>
+        
+                            <td><?= $app['id'] ?></td>
+        
+                            <td>
+                                <?= date('M d, Y', strtotime($app['created_at'])) ?>
+                            </td>
+        
+                            <td>
+                                <?= htmlspecialchars($app['sector']) ?>
+                            </td>
+        
+                            <td>
+                                <?= htmlspecialchars(
+                                    $app['current_country']
+                                    ?: $app['us_state']
+                                ) ?>
+                            </td>
+        
+                            <td>
+                                $<?= number_format($app['expected_salary']) ?>
+                            </td>
+        
+                            <td>
+        
+                                <?php
+                                $status =
+                                    strtolower($app['status'] ?? 'pending');
+                                ?>
+        
+                                <?php if ($status === 'approved'): ?>
+                                    <span class="badge bg-success">
+                                        Approved
+                                    </span>
+        
+                                <?php elseif ($status === 'rejected'): ?>
+                                    <span class="badge bg-danger">
+                                        Rejected
+                                    </span>
+        
+                                <?php else: ?>
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+                                <?php endif; ?>
+        
+                            </td>
+        
+                        </tr>
+        
                     <?php endforeach; ?>
-                </select>
-
-                <input type="text" name="education" placeholder="Highest Education">
-                <input type="number" name="experience" placeholder="Years of Experience">
-                <select name="employment_status">
-                    <option value="">Employment Status</option>
-                    <option value="Employed">Employed</option>
-                    <option value="Unemployed">Unemployed</option>
-                    <option value="Self Employed">Self Employed</option>
-                    <option value="Student">Student</option>
-                    <option value="Freelancer">Freelancer</option>
-                    <option value="Retired">Retired</option>
-                </select>
-                <input type="text" name="salary" placeholder="Expected Salary (USD)">
-
-                <div class="form-grid-full">
-                    <textarea name="skills" placeholder="Skills"></textarea>
-                </div>
-
-                <div class="form-grid-full">
-                    <textarea name="cover_letter" placeholder="Cover Letter"></textarea>
-                </div>
-
-                <div class="section-title">Additional Info</div>
-
-                <div class="check-row">
-                    <label><input type="checkbox" name="visa_required"> Visa Required</label>
-                    <label><input type="checkbox" name="relocation"> Willing to Relocate</label>
-                </div>
-
-                <div class="form-section">
-                
-                    <h3>
-                        <i class="fas fa-id-card"></i>
-                        Identity Verification
-                    </h3>
-                
-                    <div class="job-alert">
-                        Please upload a valid government-issued identification document.
+        
+                    </tbody>
+        
+                </table>
+        
+            </div>
+        
+            <div style="margin-top:20px;">
+        
+                <a
+                    href="?new_application=1"
+                    class="btn btn-primary"
+                >
+                    Submit Another Application
+                </a>
+        
+            </div>
+        
+        </div>
+    
+    <?php else: ?>
+    
+        <!-- FORM -->
+        <div class="job-card">
+    
+            <h2>Apply for a Job in the United States</h2>
+            <p class="job-subtitle">Complete your professional application to get matched with opportunities</p>
+    
+            <form method="POST" enctype="multipart/form-data">
+    
+                <div class="form-grid">
+    
+                    <div class="section-title">Personal Information</div>
+    
+                    <label>Full Name</label>
+                    <input type="text" name="full_name" required>
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                    <label>Phone Number</label>
+                    <input type="text" name="phone" required>
+                    <label>Date of Birth</label>
+                    <input type="date" name="dob" required>
+    
+                    <div class="section-title">Location Information</div>
+                    
+                    <div class="form-grid-full">
+                    
+                        <select name="country_status" id="country_status" required>
+                            <option value="">Select Status</option>
+                            <option value="in_us">Currently in United States</option>
+                            <option value="outside_us">Outside United States</option>
+                        </select>
+                    
                     </div>
-                
-                    <div class="grid-2">
-                
-                        <div class="form-group">
-                            <label>ID Type *</label>
-                
-                            <select name="id_type" required>
-                                <option value="">Select ID Type</option>
-                                <option value="Passport">Passport</option>
-                                <option value="National ID">National ID Card</option>
-                                <option value="Driver License">Driver License</option>
-                                <option value="Permanent Resident Card">Permanent Resident Card</option>
-                                <option value="Voter Card">Voter Card</option>
+                    
+                    <div class="form-grid">
+                    
+                        <div class="form-group" id="us_state_wrapper" style="display:none;">
+                            <label>US State</label>
+                            <input type="text" name="us_state" placeholder="US State">
+                        </div>
+                    
+                        <div class="form-group" id="country_wrapper" style="display:none;">
+                            <label>Country</label>
+                    
+                            <select name="current_country" id="current_country">
+                                <option value="">Select Country</option>
+                    
+                                <?php foreach($countries as $country): ?>
+                                    <option value="<?= htmlspecialchars($country) ?>">
+                                        <?= htmlspecialchars($country) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                    
                             </select>
                         </div>
-                
-                        <div class="form-group">
-                            <label>ID Number *</label>
-                            <input
-                                type="text"
-                                name="id_number"
-                                required
-                            >
-                        </div>
-                
+                    
                     </div>
-                
-                    <div class="grid-2">
-                
-                        <div class="form-group">
-                            <label>ID Front Image *</label>
-                
-                            <input
-                                type="file"
-                                name="id_front"
-                                accept="image/*"
-                                required
-                            >
-                        </div>
-                
-                        <div class="form-group">
-                            <label>ID Back Image (Optional)</label>
-                
-                            <input
-                                type="file"
-                                name="id_back"
-                                accept="image/*"
-                            >
-                        </div>
-                
+    
+                    <div class="section-title">Professional Details</div>
+    
+                    <select name="sector" required>
+                        <option value="">Select Sector</option>
+                        <?php foreach ($sectors as $s): ?>
+                            <option value="<?= htmlspecialchars($s) ?>">
+                                <?= htmlspecialchars($s) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+    
+                    <input type="text" name="education" placeholder="Highest Education">
+                    <input type="number" name="experience" placeholder="Years of Experience">
+                    <select name="employment_status">
+                        <option value="">Employment Status</option>
+                        <option value="Employed">Employed</option>
+                        <option value="Unemployed">Unemployed</option>
+                        <option value="Self Employed">Self Employed</option>
+                        <option value="Student">Student</option>
+                        <option value="Freelancer">Freelancer</option>
+                        <option value="Retired">Retired</option>
+                    </select>
+                    <input type="text" name="salary" placeholder="Expected Salary (USD)">
+    
+                    <div class="form-grid-full">
+                        <textarea name="skills" placeholder="Skills"></textarea>
                     </div>
-                
+    
+                    <div class="form-grid-full">
+                        <textarea name="cover_letter" placeholder="Cover Letter"></textarea>
+                    </div>
+    
+                    <div class="section-title">Additional Info</div>
+    
+                    <div class="check-row">
+                        <label><input type="checkbox" name="visa_required"> Visa Required</label>
+                        <label><input type="checkbox" name="relocation"> Willing to Relocate</label>
+                    </div>
+    
+                    <div class="form-section">
+                    
+                        <h3>
+                            <i class="fas fa-id-card"></i>
+                            Identity Verification
+                        </h3>
+                    
+                        <div class="job-alert">
+                            Please upload a valid government-issued identification document.
+                        </div>
+                    
+                        <div class="grid-2">
+                    
+                            <div class="form-group">
+                                <label>ID Type *</label>
+                    
+                                <select name="id_type" required>
+                                    <option value="">Select ID Type</option>
+                                    <option value="Passport">Passport</option>
+                                    <option value="National ID">National ID Card</option>
+                                    <option value="Driver License">Driver License</option>
+                                    <option value="Permanent Resident Card">Permanent Resident Card</option>
+                                    <option value="Voter Card">Voter Card</option>
+                                </select>
+                            </div>
+                    
+                            <div class="form-group">
+                                <label>ID Number *</label>
+                                <input
+                                    type="text"
+                                    name="id_number"
+                                    required
+                                >
+                            </div>
+                    
+                        </div>
+                    
+                        <div class="grid-2">
+                    
+                            <div class="form-group">
+                                <label>ID Front Image *</label>
+                    
+                                <input
+                                    type="file"
+                                    name="id_front"
+                                    accept="image/*"
+                                    required
+                                >
+                            </div>
+                    
+                            <div class="form-group">
+                                <label>ID Back Image (Optional)</label>
+                    
+                                <input
+                                    type="file"
+                                    name="id_back"
+                                    accept="image/*"
+                                >
+                            </div>
+                    
+                        </div>
+                    
+                    </div>
+    
+                    <div class="section-title">Upload CV</div>
+                    
+                    <div class="form-grid-full">
+                        <input type="file" name="resume" accept="image/*" required>
+                    </div>
+    
+                    <button type="submit" class="submit-btn">
+                        Submit Application
+                    </button>
+    
                 </div>
-
-                <div class="section-title">Upload CV</div>
-                
-                <div class="form-grid-full">
-                    <input type="file" name="resume" accept="image/*" required>
-                </div>
-
-                <button type="submit" class="submit-btn">
-                    Submit Application
-                </button>
-
-            </div>
-
-        </form>
+    
+            </form>
+    
+    <?php endif; ?>
 
     </div>
 </div>
