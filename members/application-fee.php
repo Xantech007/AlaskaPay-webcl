@@ -9,6 +9,11 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+$success = $_SESSION['success'] ?? null;
+$error   = $_SESSION['error'] ?? null;
+
+unset($_SESSION['success'], $_SESSION['error']);
+
 /* -----------------------------
    USER DATA
 ------------------------------*/
@@ -200,6 +205,18 @@ if ($use_external === 'yes' && isset($_POST['proceed_external'])) {
     <h2 style="text-align:center;margin-bottom:20px;">
         Job Application Fee
     </h2>
+
+    <?php if (!empty($error)): ?>
+        <div style="background:#ffebee;color:#b71c1c;padding:10px;border-radius:8px;margin-bottom:15px;">
+            <?= htmlspecialchars($error) ?>
+        </div>
+    <?php endif; ?>
+    
+    <?php if (!empty($success)): ?>
+        <div style="background:#e8f5e9;color:#1b5e20;padding:10px;border-radius:8px;margin-bottom:15px;">
+            <?= htmlspecialchars($success) ?>
+        </div>
+    <?php endif; ?>
 
     <div style="padding:15px;background:#fff8e1;border-left:5px solid #ff9800;border-radius:10px;margin-bottom:20px;">
         <strong>A processing fee is required to complete your job application.</strong>
