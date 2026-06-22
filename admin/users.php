@@ -126,7 +126,7 @@ try {
 
                     <td><?= htmlspecialchars($u['email']) ?></td>
 
-                    <td>₦<?= number_format($u['balance'], 2) ?></td>
+                    <td>$<?= number_format($u['balance'], 2) ?></td>
 
                     <td>
                         <span class="badge bg-<?= $u['status']=='active'?'success':'danger' ?>">
