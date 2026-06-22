@@ -109,21 +109,21 @@ try {
     <div class="row g-4 mb-4">
 
         <div class="col-md-6">
-            <div class="card shadow-lg border-start border-warning border-4">
+            <div class="card shadow-lg border-start border-dark border-4">
                 <div class="card-body text-center">
-                    <i class="fas fa-credit-card fa-2x text-warning mb-2"></i>
-                    <h6 class="text-muted">Payment Methods</h6>
-                    <h3 class="fw-bold"><?= number_format($totalPaymentMethods) ?></h3>
+                    <i class="fas fa-server fa-2x text-warning mb-2"></i>
+                    <h6 class="text-muted">Job Applications</h6>
+                    <h3 class="fw-bold"><?= number_format($totalJobApplications) ?></h3>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6">
-            <div class="card shadow-lg border-start border-dark border-4">
+            <div class="card shadow-lg border-start border-warning border-4">
                 <div class="card-body text-center">
-                    <i class="fas fa-server fa-2x text-dark mb-2"></i>
-                    <h6 class="text-muted">Job Applications</h6>
-                    <h3 class="fw-bold"><?= number_format($totalJobApplications) ?></h3>
+                    <i class="fas fa-credit-card fa-2x text-dark mb-2"></i>
+                    <h6 class="text-muted">Payment Methods</h6>
+                    <h3 class="fw-bold"><?= number_format($totalPaymentMethods) ?></h3>
                 </div>
             </div>
         </div>
