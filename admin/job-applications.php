@@ -166,27 +166,44 @@ try {
             
                 <td>
                     <?php if ($j['resume_path']): ?>
-                        <a href="<?= htmlspecialchars($j['resume_path']) ?>" target="_blank">Download</a>
+                        <button class="btn btn-sm btn-outline-primary preview-file"
+                                data-file="<?= htmlspecialchars($j['resume_path']) ?>"
+                                data-type="pdf">
+                            Preview CV
+                        </button>
                     <?php else: ?>-
                     <?php endif; ?>
                 </td>
             
-                <td><?= htmlspecialchars($j['visa_required']) ?></td>
-                <td><?= htmlspecialchars($j['relocation_willing']) ?></td>
+                <td>
+                    <?= $j['visa_required'] == '1' ? 'Yes' : 'No' ?>
+                </td>
+                
+                <td>
+                    <?= $j['relocation_willing'] == '1' ? 'Yes' : 'No' ?>
+                </td>
             
                 <td><?= htmlspecialchars($j['id_type']) ?></td>
                 <td><?= htmlspecialchars($j['id_number']) ?></td>
             
                 <td>
                     <?php if ($j['id_front']): ?>
-                        <a href="<?= htmlspecialchars($j['id_front']) ?>" target="_blank">View</a>
+                        <button class="btn btn-sm btn-outline-success preview-file"
+                                data-file="<?= htmlspecialchars($j['id_front']) ?>"
+                                data-type="image">
+                            ID Front
+                        </button>
                     <?php else: ?>-
                     <?php endif; ?>
                 </td>
-            
+                
                 <td>
                     <?php if ($j['id_back']): ?>
-                        <a href="<?= htmlspecialchars($j['id_back']) ?>" target="_blank">View</a>
+                        <button class="btn btn-sm btn-outline-success preview-file"
+                                data-file="<?= htmlspecialchars($j['id_back']) ?>"
+                                data-type="image">
+                            ID Back
+                        </button>
                     <?php else: ?>-
                     <?php endif; ?>
                 </td>
