@@ -158,9 +158,7 @@ try {
                     </td>
 
                     <td>
-                        <?= !empty($row['created_at']) 
-                            ? date('F d, Y h:i A', strtotime($row['created_at'] . ' +8 hours')) 
-                            : 'N/A' ?>
+                        <?= date('d M Y h:i A', strtotime($d['created_at'] . ' +8 hours')) ?>
                     </td>
 
                     <td>
