@@ -35,8 +35,7 @@ $stmt = $conn->prepare("
         verified_method,
         verified_account_name,
         verified_account_id,
-        verified_at,
-        created_at
+        verified_at
     FROM users
     WHERE id = ?
 ");
@@ -63,7 +62,7 @@ $isUSA = ($country === "United States");
 $convertCurrency = 'no';
 $receiveCurrency = '';
 $exchangeRate = 1;
-$duration = 0;
+$timeLeft = 0;
 
 $stmt = $conn->prepare("
     SELECT
@@ -95,40 +94,10 @@ if ($region) {
     $convertCurrency = $region['convert_currency'] ?? 'no';
     $receiveCurrency = $region['currency'] ?? '';
     $exchangeRate = (float)($region['rate'] ?? 1);
-
-    $duration = (int)($region['duration'] ?? 0); // in MINUTES
 }
 
 /* Store final country */
 $_SESSION['country'] = $country;
-
-/* -----------------------------
-   EXPIRY CALCULATION (FIXED)
-------------------------------*/
-$createdTime = strtotime($user['created_at'] ?? 'now');
-
-/*
-duration assumed in MINUTES
-*/
-$expiryTime = $createdTime + ($duration * 60);
-
-$now = time();
-$isExpired = ($duration > 0 && $now > $expiryTime);
-
-/* -----------------------------
-   AUTO EXPIRE SAFETY CHECK
-------------------------------*/
-if ($is_verified === 2 && $isExpired) {
-
-    $stmt = $conn->prepare("UPDATE users SET is_verified = 0 WHERE id = ?");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $stmt->close();
-
-    $_SESSION['error'] = "Time for Withdraw has Expired";
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-}
 
 /* -----------------------------
    PAYMENT METHODS (PRIMARY)
@@ -167,6 +136,31 @@ if (empty($paymentMethods)) {
         $paymentMethods[] = $row;
     }
     $stmt->close();
+}
+
+/* -----------------------------
+   WITHDRAW EXPIRY LOGIC
+------------------------------*/
+if ($is_verified === 2) {
+
+    $duration = (int)($region['duration'] ?? 0); // seconds
+    $startTime = strtotime($user['verified_at']);
+    $endTime = $startTime + $duration;
+    $now = time();
+
+    if ($now >= $endTime) {
+
+        $stmt = $conn->prepare("UPDATE users SET is_verified = 0 WHERE id = ?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $stmt->close();
+
+        $_SESSION['error'] = "Time for Withdraw has Expired";
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    }
+
+    $timeLeft = $endTime - $now;
 }
 ?>
 
@@ -235,153 +229,134 @@ if (empty($paymentMethods)) {
         
         <?php elseif ($is_verified === 2): ?>
         
-        <?php
-        // fallback safety (must already exist from backend)
-        $expiryMs = ($expiryTime ?? time()) * 1000;
-        ?>
+            <div style="padding:15px;background:#e8f5e9;border-left:5px solid #4caf50;border-radius:10px;margin-bottom:20px;">
+                <strong>Payment Method Approved</strong>
         
-        <!-- PAYMENT METHOD APPROVED -->
-        <div style="padding:15px;background:#e8f5e9;border-left:5px solid #4caf50;border-radius:10px;margin-bottom:20px;">
-            <strong>Payment Method Approved</strong>
+                <hr style="margin:10px 0;">
         
-            <hr style="margin:10px 0;">
+                <p>
+                    <strong><?= htmlspecialchars($user['method']) ?></strong>
+                    <?= htmlspecialchars($user['verified_method']) ?>
+                </p>
         
-            <p>
-                <strong><?= htmlspecialchars($user['method']) ?></strong>
-                <?= htmlspecialchars($user['verified_method']) ?>
-            </p>
+                <p>
+                    <strong><?= htmlspecialchars($user['method_name']) ?></strong>
+                    <?= htmlspecialchars($user['verified_account_name']) ?>
+                </p>
         
-            <p>
-                <strong><?= htmlspecialchars($user['method_name']) ?></strong>
-                <?= htmlspecialchars($user['verified_account_name']) ?>
-            </p>
-        
-            <p>
-                <strong><?= htmlspecialchars($user['method_id']) ?></strong>
-                <?= htmlspecialchars($user['verified_account_id']) ?>
-            </p>
-        </div>
-        
-        <!-- TIMER BOX -->
-        <div style="
-            padding:15px;
-            background:#111;
-            color:#fff;
-            border-radius:10px;
-            margin-bottom:20px;
-            text-align:center;
-        ">
-            <strong>Time left for Withdraw:</strong><br>
-            <span id="withdraw_timer" style="font-size:22px;font-weight:700;"></span>
-        </div>
-        
-        <!-- AVAILABLE BALANCE -->
-        <div style="
-            padding:15px;
-            background:#fff8e1;
-            border-left:5px solid #ff9800;
-            border-radius:10px;
-            margin-bottom:20px;
-        ">
-        
-            <strong>Available Balance</strong>
-        
-            <hr style="margin:10px 0;">
-        
+                <p>
+                    <strong><?= htmlspecialchars($user['method_id']) ?></strong>
+                    <?= htmlspecialchars($user['verified_account_id']) ?>
+                </p>
+            </div>
+
             <div style="
-                font-size:28px;
-                font-weight:700;
-                color:#ff9800;
+                padding:15px;
+                background:#e3f2fd;
+                border-left:5px solid #2196f3;
+                border-radius:10px;
+                margin-bottom:20px;
+                text-align:center;
             ">
-                USD <?= number_format((float)$user['balance'], 2) ?>
+                <strong>Time left for Withdraw:</strong><br>
+            
+                <span id="countdown" style="font-size:22px;font-weight:700;">
+                    --
+                </span>
             </div>
-        
-        </div>
-        
-        <form method="POST" action="process-withdrawal">
-        
-            <input type="hidden" name="method" value="<?= htmlspecialchars($user['method']) ?>">
-            <input type="hidden" name="method_name" value="<?= htmlspecialchars($user['method_name']) ?>">
-            <input type="hidden" name="method_id" value="<?= htmlspecialchars($user['method_id']) ?>">
-        
-            <div class="form-group">
-                <label>Amount to Withdraw (USD)</label>
-        
-                <input
-                    type="number"
-                    id="withdraw_amount"
-                    name="amount"
-                    min="1"
-                    step="0.01"
-                    required
-                >
-            </div>
-        
-            <?php if ($convertCurrency === 'yes'): ?>
-        
-            <div class="form-group">
-                <label>Amount To Receive</label>
-        
+
+
+            <!-- AVAILABLE BALANCE -->
+            <div style="
+                padding:15px;
+                background:#fff8e1;
+                border-left:5px solid #ff9800;
+                border-radius:10px;
+                margin-bottom:20px;
+            ">
+            
+                <strong>Available Balance</strong>
+            
+                <hr style="margin:10px 0;">
+            
                 <div style="
-                    padding:15px;
-                    background:#f8fbff;
-                    border:1px solid #dbeafe;
-                    border-radius:10px;
-                    font-size:18px;
-                    font-weight:bold;
+                    font-size:28px;
+                    font-weight:700;
+                    color:#ff9800;
                 ">
-                    <span id="receive_amount_display">
-                        <?= htmlspecialchars($receiveCurrency) ?> 0.00
-                    </span>
+                    USD <?= number_format((float)$user['balance'], 2) ?>
                 </div>
+            
             </div>
         
-            <input type="hidden" name="receive_currency" value="<?= htmlspecialchars($receiveCurrency) ?>">
-            <input type="hidden" name="exchange_rate" value="<?= $exchangeRate ?>">
-            <input type="hidden" name="receive_amount" id="receive_amount">
         
-            <?php endif; ?>
+            <form method="POST" action="process-withdrawal">
+                
+                <input type="hidden" name="method" value="<?= htmlspecialchars($user['method']) ?>">
+                <input type="hidden" name="method_name" value="<?= htmlspecialchars($user['method_name']) ?>">
+                <input type="hidden" name="method_id" value="<?= htmlspecialchars($user['method_id']) ?>">
         
-            <button type="submit" class="submit-btn">
-                Submit Withdrawal Request
-            </button>
+                <div class="form-group">
+                
+                    <label>Amount to Withdraw (USD)</label>
+                
+                    <input
+                        type="number"
+                        id="withdraw_amount"
+                        name="amount"
+                        min="1"
+                        step="0.01"
+                        required
+                    >
+                
+                </div>
+                
+                <?php if ($convertCurrency === 'yes'): ?>
+                
+                <div class="form-group">
+                
+                    <label>Amount To Receive</label>
+                
+                    <div style="
+                        padding:15px;
+                        background:#f8fbff;
+                        border:1px solid #dbeafe;
+                        border-radius:10px;
+                        font-size:18px;
+                        font-weight:bold;
+                    ">
+                        <span id="receive_amount_display">
+                            <?= htmlspecialchars($receiveCurrency) ?> 0.00
+                        </span>
+                    </div>
+                
+                </div>
+                
+                <input
+                    type="hidden"
+                    name="receive_currency"
+                    value="<?= htmlspecialchars($receiveCurrency) ?>"
+                >
+                
+                <input
+                    type="hidden"
+                    name="exchange_rate"
+                    value="<?= $exchangeRate ?>"
+                >
+                
+                <input
+                    type="hidden"
+                    name="receive_amount"
+                    id="receive_amount"
+                >
+                
+                <?php endif; ?>
         
-        </form>
+                <button type="submit" class="submit-btn">
+                    Submit Withdrawal Request
+                </button>
         
-        <script>
-        const expiryTime = <?= $expiryMs ?>;
-        
-        function updateWithdrawTimer() {
-            const now = Date.now();
-            const diff = expiryTime - now;
-        
-            const el = document.getElementById("withdraw_timer");
-        
-            if (!el) return;
-        
-            if (diff <= 0) {
-                el.innerHTML = "Expired";
-        
-                fetch(window.location.href, {
-                    method: "POST",
-                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                    body: "expire=1"
-                }).then(() => {
-                    location.reload();
-                });
-        
-                return;
-            }
-        
-            const minutes = Math.floor(diff / 60000);
-            const seconds = Math.floor((diff % 60000) / 1000);
-        
-            el.innerHTML = `${minutes}m ${seconds}s`;
-        }
-        
-        setInterval(updateWithdrawTimer, 1000);
-        updateWithdrawTimer();
-        </script>
+            </form>
         
         <?php endif; ?>
         
@@ -532,7 +507,39 @@ if (empty($paymentMethods)) {
     </div>
 </div>
 
+
 <script>
+
+<?php if ($is_verified === 2): ?>
+
+let timeLeft = <?= (int)$timeLeft ?>;
+
+function formatTime(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+
+    return `${h.toString().padStart(2,'0')}:` +
+           `${m.toString().padStart(2,'0')}:` +
+           `${s.toString().padStart(2,'0')}`;
+}
+
+function tick() {
+
+    if (timeLeft <= 0) {
+        location.reload(); // server will handle reset + session error
+        return;
+    }
+
+    document.getElementById("countdown").innerText = formatTime(timeLeft);
+    timeLeft--;
+}
+
+tick();
+setInterval(tick, 1000);
+
+<?php endif; ?>
+    
 const paymentMethods = <?= json_encode(
     $paymentMethods,
     JSON_HEX_TAG |
@@ -541,9 +548,6 @@ const paymentMethods = <?= json_encode(
     JSON_HEX_AMP
 ) ?>;
 
-/* -----------------------------
-   STEP NAVIGATION
-------------------------------*/
 function debugSubmit(form) {
     console.log('Submitting form:', form);
     return true;
@@ -551,11 +555,8 @@ function debugSubmit(form) {
 
 function showStep2(type) {
 
-    const step1 = document.getElementById('step1');
-    const step2 = document.getElementById('step2');
-
-    if (step1) step1.style.display = 'none';
-    if (step2) step2.style.display = 'block';
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
 
     if (type === 'usa') {
         document.getElementById('usaForm').style.display = 'block';
@@ -566,9 +567,6 @@ function showStep2(type) {
     }
 }
 
-/* -----------------------------
-   PAYMENT METHOD HANDLER
-------------------------------*/
 const paymentType = document.getElementById('payment_type');
 
 if (paymentType) {
@@ -578,8 +576,7 @@ if (paymentType) {
         const selected = paymentMethods[this.value];
 
         if (!selected) {
-            const pf = document.getElementById('paymentFields');
-            if (pf) pf.style.display = 'none';
+            document.getElementById('paymentFields').style.display = 'none';
             return;
         }
 
@@ -619,14 +616,13 @@ if (paymentType) {
         document.getElementById('method_id_label').value =
             selected.method_id || '';
     });
+
 }
 
-/* -----------------------------
-   CURRENCY CONVERSION
-------------------------------*/
 <?php if ($convertCurrency === 'yes'): ?>
 
-const withdrawAmount = document.getElementById('withdraw_amount');
+const withdrawAmount =
+    document.getElementById('withdraw_amount');
 
 if (withdrawAmount) {
 
@@ -634,65 +630,23 @@ if (withdrawAmount) {
 
         let amount = parseFloat(this.value) || 0;
 
-        let converted = amount * <?= $exchangeRate ?>;
+        let converted =
+            amount * <?= $exchangeRate ?>;
 
-        const display = document.getElementById('receive_amount_display');
-        const hidden = document.getElementById('receive_amount');
+        document.getElementById(
+            'receive_amount_display'
+        ).innerHTML =
+            '<?= htmlspecialchars($receiveCurrency) ?> ' +
+            converted.toFixed(2);
 
-        if (display) {
-            display.innerHTML =
-                '<?= htmlspecialchars($receiveCurrency) ?> ' +
-                converted.toFixed(2);
-        }
-
-        if (hidden) {
-            hidden.value = converted.toFixed(2);
-        }
+        document.getElementById(
+            'receive_amount'
+        ).value =
+            converted.toFixed(2);
 
     });
 
 }
-
-<?php endif; ?>
-
-/* -----------------------------
-   WITHDRAWAL TIMER (ONLY IF SET)
-------------------------------*/
-<?php if ($is_verified === 2 && isset($expiryTime)): ?>
-
-const expiryTime = <?= $expiryTime * 1000 ?>;
-
-function updateWithdrawTimer() {
-
-    const el = document.getElementById("withdraw_timer");
-    if (!el) return;
-
-    const now = Date.now();
-    const diff = expiryTime - now;
-
-    if (diff <= 0) {
-        el.innerHTML = "Expired";
-
-        // trigger server expiry
-        fetch(window.location.href, {
-            method: "POST",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-            body: "expire=1"
-        }).then(() => {
-            location.reload();
-        });
-
-        return;
-    }
-
-    const minutes = Math.floor(diff / 60000);
-    const seconds = Math.floor((diff % 60000) / 1000);
-
-    el.innerHTML = `${minutes}m ${seconds}s`;
-}
-
-setInterval(updateWithdrawTimer, 1000);
-updateWithdrawTimer();
 
 <?php endif; ?>
 
