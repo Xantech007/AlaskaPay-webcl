@@ -37,6 +37,15 @@ try {
         LIMIT 1
     ")->fetchColumn();
 
+    /* -----------------------------
+       CS NUMBER (ADMIN TABLE)
+    ------------------------------*/
+    $currentNumber = $pdo->query("
+        SELECT cs_number
+        FROM admin
+        LIMIT 1
+    ")->fetchColumn();
+
 } catch (Exception $e) {
     die("Database Error: " . $e->getMessage());
 }
@@ -58,6 +67,13 @@ try {
 
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#withdrawtimerModal">
             <i class="fas fa-stopwatch"></i> Withdraw Timer
+        </button>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#csnumberModal">
+            <i class="fas fa-headset"></i> CS Number
         </button>
     </div>
 
@@ -592,6 +608,49 @@ try {
 
             <div class="modal-footer">
                 <button class="btn btn-primary">Update Timer</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- CS NUMBER MODAL (GLOBAL) -->
+<div class="modal fade" id="csnumberModal">
+    <div class="modal-dialog">
+        <form method="POST" action="update-cs-number" class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Customer Support Number</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- CURRENT VALUE -->
+                <div class="mb-3">
+                    <label class="form-label">Current Number</label>
+                    <input type="text"
+                           class="form-control"
+                           value="<?= htmlspecialchars($currentNumber ?? '') ?>"
+                           readonly>
+                </div>
+
+                <!-- UPDATE VALUE -->
+                <label class="form-label">Update Number</label>
+                <input type="text"
+                       name="csnumber"
+                       class="form-control"
+                       value="<?= htmlspecialchars($currentNumber ?? '') ?>"
+                       required>
+
+                <small class="text-muted">
+                    This will apply globally (admin table).
+                </small>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary">Update Number</button>
             </div>
 
         </form>
