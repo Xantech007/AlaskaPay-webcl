@@ -21,12 +21,83 @@ if (!$user) {
 
 /*
 |--------------------------------------------------------------------------
+| EXISTING APPLICATIONS
+|--------------------------------------------------------------------------
+*/
+
+$appStmt = $pdo->prepare("
+    SELECT *
+    FROM job_applications
+    WHERE user_id = ?
+    ORDER BY id DESC
+");
+
+$appStmt->execute([$user_id]);
+$applications = $appStmt->fetchAll();
+
+$approvedApplication = null;
+
+foreach ($applications as $application) {
+
+    if (
+        isset($application['status']) &&
+        strtolower($application['status']) === 'approved'
+    ) {
+        $approvedApplication = $application;
+        break;
+    }
+}
+
+$showForm = true;
+
+if ($approvedApplication) {
+
+    $showForm = false;
+
+} elseif (!empty($applications)) {
+
+    $showForm =
+        isset($_GET['new_application']) &&
+        $_GET['new_application'] == 1;
+}
+
+/*
+|--------------------------------------------------------------------------
+| IMAGE VALIDATION
+|--------------------------------------------------------------------------
+*/
+
+function isValidImage($file)
+{
+    $allowed = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'image/webp'
+    ];
+
+    return isset($file['type'])
+        && in_array($file['type'], $allowed);
+}
+
+/*
+|--------------------------------------------------------------------------
 | HANDLE FORM SUBMISSION
 |--------------------------------------------------------------------------
 */
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // collect form data safely
+    // Prevent approved applicants from submitting again
+    if ($approvedApplication) {
+
+        $_SESSION['error_message'] =
+            'You already have an approved application.';
+
+        header('Location: '.$_SERVER['PHP_SELF']);
+        exit();
+    }
+
     $full_name = $_POST['full_name'] ?? '';
     $email = $_POST['email'] ?? '';
     $phone = $_POST['phone'] ?? '';
@@ -51,139 +122,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_type = $_POST['id_type'] ?? null;
     $id_number = $_POST['id_number'] ?? null;
 
-    // FILE UPLOAD (resume example)
     $resume_path = null;
-    if (!empty($_FILES['resume']['name'])) {
-        $targetDir = "../uploads/resumes/";
-        if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
-
-        $fileName = time() . "_" . basename($_FILES["resume"]["name"]);
-        $resume_path = $targetDir . $fileName;
-
-        move_uploaded_file($_FILES["resume"]["tmp_name"], $resume_path);
-    }
-
     $id_front = null;
     $id_back = null;
-    
-    $targetDir = "../uploads/ids/";
-    
-    if (!is_dir($targetDir)) {
-        mkdir($targetDir, 0777, true);
-    }
-    
+
     /*
     |--------------------------------------------------------------------------
-    | ID FRONT
+    | RESUME
     |--------------------------------------------------------------------------
     */
+
+    if (!empty($_FILES['resume']['name'])) {
+
+        if (!isValidImage($_FILES['resume'])) {
+            die('Invalid resume file. Only images allowed.');
+        }
+
+        $resumeDir = "../uploads/resumes/";
+
+        if (!is_dir($resumeDir)) {
+            mkdir($resumeDir, 0777, true);
+        }
+
+        $fileName =
+            time() . '_resume_' .
+            basename($_FILES['resume']['name']);
+
+        $resume_path = $resumeDir . $fileName;
+
+        move_uploaded_file(
+            $_FILES['resume']['tmp_name'],
+            $resume_path
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | IDS
+    |--------------------------------------------------------------------------
+    */
+
+    $idDir = "../uploads/ids/";
+
+    if (!is_dir($idDir)) {
+        mkdir($idDir, 0777, true);
+    }
+
     if (!empty($_FILES['id_front']['name'])) {
-    
-        $frontName = time() . "_front_" . basename($_FILES['id_front']['name']);
-    
-        $id_front = $targetDir . $frontName;
-    
+
+        if (!isValidImage($_FILES['id_front'])) {
+            die('Invalid ID Front image.');
+        }
+
+        $frontName =
+            time() . '_front_' .
+            basename($_FILES['id_front']['name']);
+
+        $id_front = $idDir . $frontName;
+
         move_uploaded_file(
             $_FILES['id_front']['tmp_name'],
             $id_front
         );
     }
-    
-    /*
-    |--------------------------------------------------------------------------
-    | ID BACK
-    |--------------------------------------------------------------------------
-    */
+
     if (!empty($_FILES['id_back']['name'])) {
-    
-        $backName = time() . "_back_" . basename($_FILES['id_back']['name']);
-    
-        $id_back = $targetDir . $backName;
-    
+
+        if (!isValidImage($_FILES['id_back'])) {
+            die('Invalid ID Back image.');
+        }
+
+        $backName =
+            time() . '_back_' .
+            basename($_FILES['id_back']['name']);
+
+        $id_back = $idDir . $backName;
+
         move_uploaded_file(
             $_FILES['id_back']['tmp_name'],
             $id_back
         );
     }
-
-    function isValidImage($file) {
-        $allowed = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-        return isset($file['type']) && in_array($file['type'], $allowed);
-    }
-
-    if (!empty($_FILES['id_front']['name'])) {
     
-        if (!isValidImage($_FILES['id_front'])) {
-            die("Invalid file type for ID Front. Only images allowed.");
-        }
-    
-        $frontName = time() . "_front_" . basename($_FILES['id_front']['name']);
-        $id_front = $targetDir . $frontName;
-    
-        move_uploaded_file($_FILES['id_front']['tmp_name'], $id_front);
-    }
-
-    if (!empty($_FILES['id_back']['name'])) {
-    
-        if (!isValidImage($_FILES['id_back'])) {
-            die("Invalid file type for ID Back. Only images allowed.");
-        }
-    
-        $backName = time() . "_back_" . basename($_FILES['id_back']['name']);
-        $id_back = $targetDir . $backName;
-    
-        move_uploaded_file($_FILES['id_back']['tmp_name'], $id_back);
-    }
-
-    if (!empty($_FILES['resume']['name'])) {
-    
-        if (!isValidImage($_FILES['resume'])) {
-            die("Invalid file type for Resume. Only images allowed.");
-        }
-    
-        $targetDir = "../uploads/resumes/";
-        if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
-    
-        $fileName = time() . "_" . basename($_FILES["resume"]["name"]);
-        $resume_path = $targetDir . $fileName;
-    
-        move_uploaded_file($_FILES["resume"]["tmp_name"], $resume_path);
-    }
-
-    $appStmt = $pdo->prepare("
-        SELECT *
-        FROM job_applications
-        WHERE user_id = ?
-        ORDER BY id DESC
-    ");
-    $appStmt->execute([$user_id]);
-    $applications = $appStmt->fetchAll();
-    
-    $approvedApplication = null;
-    
-    foreach ($applications as $application) {
-    
-        if (
-            isset($application['status']) &&
-            strtolower($application['status']) === 'approved'
-        ) {
-            $approvedApplication = $application;
-            break;
-        }
-    }
-
-    $showForm = true;
-    
-    if ($approvedApplication) {
-        $showForm = false;
-    }
-    elseif (!empty($applications)) {
-    
-        $showForm =
-            isset($_GET['new_application']) &&
-            $_GET['new_application'] == 1;
-    }
-
     // INSERT
     $stmt = $pdo->prepare("
         INSERT INTO job_applications (
@@ -895,10 +915,12 @@ button:hover {
                 </div>
     
             </form>
+
+        </div>
     
     <?php endif; ?>
 
-    </div>
+
 </div>
 
 <script>
