@@ -38,7 +38,7 @@ if (!empty($_SESSION['success_message'])) {
 $stmt = $pdo->prepare("
     SELECT
         COUNT(*) AS total_apps,
-        SUM(CASE WHEN LOWER(status) = 'approved' THEN 1 ELSE 0 END) AS approved_apps
+        SUM(CASE WHEN LOWER(status) = 'accepted' THEN 1 ELSE 0 END) AS accepted_apps
     FROM job_applications
     WHERE user_id = ?
 ");
@@ -46,7 +46,7 @@ $stmt->execute([$user_id]);
 $jobStats = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $totalApps = (int) ($jobStats['total_apps'] ?? 0);
-$approvedApps = (int) ($jobStats['approved_apps'] ?? 0);
+$acceptedApps = (int) ($jobStats['accepted_apps'] ?? 0);
 
 include 'includes/header.php';
 include 'includes/navbar.php';
@@ -114,9 +114,9 @@ include 'includes/navbar.php';
                 </div>
             </a>
             
-            <?php if ($approvedApps > 0): ?>
+            <?php if ($acceptedApps > 0): ?>
             
-                <!-- SHOW IF ANY APPLICATION IS APPROVED -->
+                <!-- SHOW IF ANY APPLICATION IS ACCEPTED -->
                 <a href="job-application-approved.php" style="text-decoration:none;color:inherit;">
                     <div class="card job" style="cursor:pointer; position:relative;">
             
@@ -130,7 +130,7 @@ include 'includes/navbar.php';
             
             <?php elseif ($totalApps > 0): ?>
             
-                <!-- SHOW IF APPLICATIONS EXIST BUT NONE ARE APPROVED -->
+                <!-- SHOW IF APPLICATIONS EXIST BUT NONE ARE ACCEPTED -->
                 <a href="job-application-status.php" style="text-decoration:none;color:inherit;">
                     <div class="card job" style="cursor:pointer; position:relative;">
             
