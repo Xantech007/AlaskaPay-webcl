@@ -33,7 +33,7 @@ try {
     ------------------------------*/
     if (!$application) {
         $_SESSION['error'] = "No pending application found.";
-        header("Location: application-fee.php");
+        header("Location: application-fee");
         exit();
     }
 
@@ -67,7 +67,7 @@ try {
     /* -----------------------------
        REDIRECT
     ------------------------------*/
-    header("Location: application-fee.php");
+    header("Location: application-fee");
     exit();
 
 } catch (Exception $e) {
@@ -77,6 +77,6 @@ try {
     }
 
     $_SESSION['error'] = "System error: " . $e->getMessage();
-    header("Location: application-fee.php");
+    header("Location: application-fee");
     exit();
 }
