@@ -27,11 +27,11 @@ $country      = trim($_POST['country'] ?? '');
 $currency     = trim($_POST['currency'] ?? 'USD');
 $amount       = (float)($_POST['amount'] ?? 0);
 
-$is_external  = 'no';
+$is_external   = 'no';
 $external_name = null;
 $external_link = null;
 
-
+$description = "connection fee";
 
 /*
 |--------------------------------------------------------------------------
@@ -79,6 +79,7 @@ $stmt = $conn->prepare("
     (
         user_id,
         email,
+        description,
         amount,
         proof_file,
         status,
@@ -91,15 +92,16 @@ $stmt = $conn->prepare("
     )
     VALUES
     (
-        ?, ?, ?, ?, 'pending', NOW(),
+        ?, ?, ?, ?, ?, 'pending', NOW(),
         ?, ?, ?, ?, ?
     )
 ");
 
 $stmt->bind_param(
-    "isdssssss",
+    "issdssssss",
     $user_id,
     $email,
+    $description,
     $amount,
     $filePath,
     $currency,
@@ -139,3 +141,4 @@ if ($stmt->execute()) {
     header("Location: connection-fee.php");
     exit();
 }
+?>
