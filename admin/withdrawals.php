@@ -36,7 +36,7 @@ try {
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2 class="fw-bold text-primary mb-0">
-            <i class="fas fa-wallet"></i> Withdrawals Management
+            <i class="fas fa-arrow-up"></i> Withdrawals Management
         </h2>
         <small class="text-muted">Manage all withdrawal requests</small>
     </div>
