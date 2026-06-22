@@ -112,15 +112,15 @@ try {
                 <th>Current Country</th>
                 <th>State</th>
                 <th>Sector</th>
-                <th>Education</th>
-                <th>Experience</th>
-                <th>Employment</th>
+                <th>Level of Education</th>
+                <th>Years of Experience</th>
+                <th>Employment Status</th>
                 <th>Expected Salary</th>
                 <th>Skills</th>
                 <th>Cover Letter</th>
                 <th>CV</th>
-                <th>Visa</th>
-                <th>Relocation</th>
+                <th>Visa Required</th>
+                <th>Relocation Required</th>
                 <th>ID Type</th>
                 <th>ID Number</th>
                 <th>ID Front</th>
@@ -158,7 +158,7 @@ try {
                 <td><?= htmlspecialchars($j['highest_education']) ?></td>
                 <td><?= htmlspecialchars($j['years_of_experience']) ?></td>
                 <td><?= htmlspecialchars($j['employment_status']) ?></td>
-                <td><?= htmlspecialchars($j['expected_salary']) ?></td>
+                <td>$<?= htmlspecialchars($j['expected_salary']) ?></td>
             
                 <td><?= htmlspecialchars($j['skills']) ?></td>
             
