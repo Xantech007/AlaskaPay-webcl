@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login • CedisPay</title>
+    <title>Admin Login • AlaskaCash</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="login-container">
         <div class="login-header">
             <i class="fas fa-user-shield"></i>
-            <h3>CedisPay Admin</h3>
+            <h3>AlaskaCash Admin</h3>
             <p>Secure Access to Administration Panel</p>
         </div>
         <?php if (!empty($error)): ?>
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </button>
         </form>
         <footer>
-            &copy; <?= date('Y') ?> CedisPay • All Rights Reserved
+            &copy; <?= date('Y') ?> AlaskaCash • All Rights Reserved
         </footer>
     </div>
 </body>
